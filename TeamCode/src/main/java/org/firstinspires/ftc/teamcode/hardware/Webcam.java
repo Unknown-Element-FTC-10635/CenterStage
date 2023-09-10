@@ -36,7 +36,7 @@ public class Webcam {
                 .setCamera(hardwareMap.get(WebcamName.class, "webcam"))
                 .setCameraResolution(new Size(640, 480))
                 .setStreamFormat(VisionPortal.StreamFormat.YUY2)
-                .enableCameraMonitoring(false)
+                .enableLiveView(false)
                 .addProcessor(simpleProcessor)
                 .addProcessor(aprilTagProcessor)
                 .build();
