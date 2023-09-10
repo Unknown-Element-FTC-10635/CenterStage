@@ -20,6 +20,8 @@ public class TesterTelop extends LinearOpMode {
         robot.webcam.setCurrentProcessor(robot.webcam.aprilTagProcessor);
 
         while (opModeIsActive()) {
+            robot.driveTrain.driveTeleOp(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+
             telemetry.addData("Camera FPS", robot.webcam.getFPS());
             telemetry.update();
         }

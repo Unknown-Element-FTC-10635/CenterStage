@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Robot {
     public Webcam webcam;
+    public DriveTrain driveTrain;
 
     private final HardwareMap hardwareMap;
 
@@ -12,6 +13,7 @@ public class Robot {
     }
 
     public void init() {
+        driveTrain = new DriveTrain(hardwareMap);
         webcam = new Webcam(hardwareMap);
     }
 }
