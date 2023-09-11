@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.teamcode.utils.hardware.MotorBuilder;
 
 public class DriveTrain {
     private final DcMotorEx frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor;
@@ -11,13 +14,21 @@ public class DriveTrain {
     private boolean speedToggle;
 
     public DriveTrain(HardwareMap hardwareMap) {
-        frontLeftMotor = hardwareMap.get(DcMotorEx.class, "front left");
-        backLeftMotor = hardwareMap.get(DcMotorEx.class, "back left");
+        frontLeftMotor = new MotorBuilder(hardwareMap, "front left")
+                .resetEncoder()
+                .build();
+        backLeftMotor = new MotorBuilder(hardwareMap, "back left")
+                .resetEncoder()
+                .build();
 
-        frontRightMotor = hardwareMap.get(DcMotorEx.class, "front right");
-        frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRightMotor = hardwareMap.get(DcMotorEx.class, "back right");
-        backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRightMotor = new MotorBuilder(hardwareMap, "front right")
+                .setDirection(DcMotorSimple.Direction.REVERSE)
+                .resetEncoder()
+                .build();
+        backRightMotor = new MotorBuilder(hardwareMap, "back right")
+                .setDirection(DcMotorSimple.Direction.REVERSE)
+                .resetEncoder()
+                .build();
     }
 
     public void driveTeleOp(float forward, float strafe, float turn) {
