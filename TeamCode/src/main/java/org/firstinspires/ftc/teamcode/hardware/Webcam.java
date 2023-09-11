@@ -11,8 +11,8 @@ import org.firstinspires.ftc.vision.VisionProcessor;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 public class Webcam {
-    public SimpleProcessor simpleProcessor;
-    public AprilTagProcessor aprilTagProcessor;
+    public final SimpleProcessor simpleProcessor;
+    public final AprilTagProcessor aprilTagProcessor;
 
     private final VisionPortal visionPortal;
     private final VisionProcessor[] visionProcessors;
@@ -53,6 +53,10 @@ public class Webcam {
         visionPortal.setProcessorEnabled(currentProcessor, false);
         visionPortal.setProcessorEnabled(processor, true);
         currentProcessor = processor;
+    }
+
+    public void stopWebcam() {
+        visionPortal.stopStreaming();
     }
 
     public float getFPS() {
