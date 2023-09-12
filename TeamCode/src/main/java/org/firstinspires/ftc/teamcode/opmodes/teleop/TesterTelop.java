@@ -4,16 +4,19 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.hardware.Robot;
+import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
 
 @TeleOp()
 public class TesterTelop extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        telemetry.addLine("Ready to start");
-        telemetry.update();
+        CurrentOpmode.setCurrentOpmode(CurrentOpmode.OpMode.TELEOP);
 
         Robot robot = new Robot(hardwareMap);
         robot.init();
+
+        telemetry.addLine("Ready to start");
+        telemetry.update();
 
         waitForStart();
 
