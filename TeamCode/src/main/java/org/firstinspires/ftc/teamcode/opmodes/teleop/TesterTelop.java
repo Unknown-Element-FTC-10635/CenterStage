@@ -3,7 +3,8 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.hardware.Robot;
+import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
+import org.firstinspires.ftc.teamcode.hardware.Webcam;
 import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
 
 @TeleOp()
@@ -12,20 +13,20 @@ public class TesterTelop extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         CurrentOpmode.setCurrentOpmode(CurrentOpmode.OpMode.TELEOP);
 
-        Robot robot = new Robot(hardwareMap);
-        robot.init();
+        DriveTrain driveTrain = new DriveTrain(hardwareMap);
+        Webcam webcam = new Webcam(hardwareMap);
 
         telemetry.addLine("Ready to start");
         telemetry.update();
 
         waitForStart();
 
-        robot.webcam.setCurrentProcessor(robot.webcam.aprilTagProcessor);
+        webcam.setCurrentProcessor(webcam.aprilTagProcessor);
 
         while (opModeIsActive()) {
-            robot.driveTrain.driveTeleOp(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+            driveTrain.driveTeleOp(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
 
-            telemetry.addData("Camera FPS", robot.webcam.getFPS());
+            telemetry.addData("Camera FPS", webcam.getFPS());
             telemetry.update();
         }
     }
