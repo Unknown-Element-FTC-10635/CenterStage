@@ -12,7 +12,7 @@ public class DriveTrain {
     private final DcMotorEx frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor;
     private final GamepadEx driveController;
 
-    private double speedMultiplier = 0.8;
+    private double speedMultiplier = 0.9;
     private boolean speedToggle;
 
     public DriveTrain(HardwareMap hardwareMap) {
@@ -43,22 +43,22 @@ public class DriveTrain {
 
     public void updateTeleOp() {
         float forward = driveController.getLeftThumbstickY();
-        float strafe = driveController.getLeftThumbstickX();
-        float turn = driveController.getRightThumbstickX();
+        float strafe = (float) (driveController.getLeftThumbstickX() * 1.1);
+        float turn = (float) (driveController.getRightThumbstickX() * 0.75);
 
-        frontLeftMotor.setPower((forward - strafe - turn) * speedMultiplier);
-        backLeftMotor.setPower((forward + strafe - turn) * speedMultiplier);
+        frontLeftMotor.setPower(((forward - strafe) * speedMultiplier) - turn);
+        backLeftMotor.setPower(((forward + strafe) * speedMultiplier) - turn);
 
-        frontRightMotor.setPower((forward + strafe + turn) * speedMultiplier);
-        backRightMotor.setPower((forward - strafe + turn) * speedMultiplier);
+        frontRightMotor.setPower(((forward + strafe) * speedMultiplier) + turn);
+        backRightMotor.setPower(((forward - strafe) * speedMultiplier) + turn);
     }
 
     public void toggleSpeedMultiplier() {
         speedToggle = !speedToggle;
         if (speedToggle) {
-            speedMultiplier = 1.0;
+            speedMultiplier = 0.1;
         } else {
-            speedMultiplier = 0.8;
+            speedMultiplier = 1;
         }
     }
 

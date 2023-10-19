@@ -27,7 +27,11 @@ public class UKTeleOp extends OpMode {
     public void loop() {
         update();
 
-        if (controller1.risingEdgeOf(GamepadEx.Buttons.L3)) {
+        if (controller1.leftTriggerPressedLiterallyAtAllRisingEdge()) {
+            driveTrain.toggleSpeedMultiplier();
+        }
+
+        if (controller1.leftTriggerPressedLiterallyAtAllFallingEdge()) {
             driveTrain.toggleSpeedMultiplier();
         }
 
