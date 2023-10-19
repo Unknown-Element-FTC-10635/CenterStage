@@ -42,16 +42,15 @@ public class DriveTrain {
     }
 
     public void updateTeleOp() {
-        float[] leftThumbstick = driveController.getLeftThumbstick();
-        float forward = leftThumbstick[0];
-        float strafe = leftThumbstick[1];
-        float turn = driveController.getRightThumbstick()[1];
+        float forward = driveController.getLeftThumbstickY();
+        float strafe = driveController.getLeftThumbstickX();
+        float turn = driveController.getRightThumbstickX();
 
-        frontLeftMotor.setPower(((forward - turn) + strafe) * speedMultiplier);
-        backLeftMotor.setPower(((forward - turn) - strafe) * speedMultiplier);
+        frontLeftMotor.setPower((forward - strafe - turn) * speedMultiplier);
+        backLeftMotor.setPower((forward + strafe - turn) * speedMultiplier);
 
-        frontRightMotor.setPower(((forward + turn) - strafe) * speedMultiplier);
-        backRightMotor.setPower(((forward + turn) + strafe) * speedMultiplier);
+        frontRightMotor.setPower((forward + strafe + turn) * speedMultiplier);
+        backRightMotor.setPower((forward - strafe + turn) * speedMultiplier);
     }
 
     public void toggleSpeedMultiplier() {
@@ -61,5 +60,9 @@ public class DriveTrain {
         } else {
             speedMultiplier = 0.8;
         }
+    }
+
+    public double getSpeedMultiplier() {
+        return speedMultiplier;
     }
 }

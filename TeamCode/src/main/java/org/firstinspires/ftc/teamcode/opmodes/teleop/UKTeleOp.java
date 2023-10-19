@@ -18,7 +18,9 @@ public class UKTeleOp extends OpMode {
 
         controller1 = new GamepadEx(gamepad1);
         controller2 = new GamepadEx(gamepad2);
-        driveTrain = new DriveTrain(hardwareMap);
+        driveTrain = new DriveTrain(hardwareMap, controller1);
+
+        telemetry.addLine("Ready to start");
     }
 
     @Override
@@ -41,6 +43,6 @@ public class UKTeleOp extends OpMode {
     }
 
     private void write() {
-
+        telemetry.addData("Speed", driveTrain.getSpeedMultiplier());
     }
 }

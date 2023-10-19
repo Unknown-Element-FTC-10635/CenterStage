@@ -79,12 +79,20 @@ public class GamepadEx {
         }
     }
 
-    public float[] getLeftThumbstick() {
-        return new float[]{currentGamepad.left_stick_x, currentGamepad.left_stick_y};
+    public float getLeftThumbstickX() {
+        return currentGamepad.left_stick_x;
     }
 
-    public float[] getRightThumbstick() {
-        return new float[]{currentGamepad.right_stick_x, currentGamepad.right_stick_y};
+    public float getLeftThumbstickY() {
+        return currentGamepad.left_stick_y;
+    }
+
+    public float getRightThumbstickX() {
+        return currentGamepad.right_stick_x;
+    }
+
+    public float getRightThumbstickY() {
+        return currentGamepad.right_stick_y;
     }
 
     public void update() {
