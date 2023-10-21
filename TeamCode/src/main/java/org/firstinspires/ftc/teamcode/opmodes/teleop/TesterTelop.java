@@ -14,8 +14,6 @@ public class TesterTelop extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         CurrentOpmode.setCurrentOpmode(CurrentOpmode.OpMode.TELEOP);
 
-        GamepadEx gamepad = new GamepadEx(gamepad1);
-        DriveTrain driveTrain = new DriveTrain(hardwareMap);
         Webcam webcam = new Webcam(hardwareMap);
 
         telemetry.addLine("Ready to start");
@@ -23,12 +21,10 @@ public class TesterTelop extends LinearOpMode {
 
         waitForStart();
 
-        webcam.setCurrentProcessor(webcam.aprilTagProcessor);
+        webcam.setCurrentProcessor(webcam.propProcessor);
 
         while (opModeIsActive()) {
-            gamepad.update();
-            driveTrain.updateTeleOp();
-
+            telemetry.addData("Pixel location", webcam.propProcessor.getSpikePosition());
             telemetry.addData("Camera FPS", webcam.getFPS());
             telemetry.update();
         }
