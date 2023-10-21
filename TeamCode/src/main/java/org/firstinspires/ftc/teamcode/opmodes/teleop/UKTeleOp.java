@@ -29,18 +29,6 @@ public class UKTeleOp extends OpMode {
     public void loop() {
         update();
 
-        if (controller1.risingEdgeOf(GamepadEx.Buttons.CROSS)) {
-            claw.setClawState(Claw.State.OPEN_SCORE);
-        }
-
-        if (controller1.risingEdgeOf(GamepadEx.Buttons.SQUARE)) {
-            claw.setClawState(Claw.State.CLOSED);
-        }
-
-        if (controller1.risingEdgeOf(GamepadEx.Buttons.CIRCLE)) {
-            claw.setClawState(Claw.State.OPEN_INTAKE);
-        }
-
         if (controller1.risingEdgeOf(GamepadEx.Buttons.L3)) {
             driveTrain.toggleSpeedMultiplier();
         }

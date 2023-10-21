@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.hardware.Claw;
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.hardware.Webcam;
 import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
@@ -15,7 +16,7 @@ public class TesterTelop extends LinearOpMode {
         CurrentOpmode.setCurrentOpmode(CurrentOpmode.OpMode.TELEOP);
 
         GamepadEx gamepad = new GamepadEx(gamepad1);
-        DriveTrain driveTrain = new DriveTrain(hardwareMap);
+        Claw claw = new Claw(hardwareMap);
         Webcam webcam = new Webcam(hardwareMap);
 
         telemetry.addLine("Ready to start");
@@ -27,7 +28,22 @@ public class TesterTelop extends LinearOpMode {
 
         while (opModeIsActive()) {
             gamepad.update();
-            driveTrain.updateTeleOp();
+
+            if (gamepad.risingEdgeOf(GamepadEx.Buttons.CROSS)) {
+                claw.setClawState(Claw.State.OPEN_SCORE);
+         }
+
+            if (gamepad.risingEdgeOf(GamepadEx.Buttons.SQUARE)) {
+                claw.setClawState(Claw.State.CLOSED);
+            }
+
+            if (gamepad.risingEdgeOf(GamepadEx.Buttons.CIRCLE)) {
+                claw.setClawState(Claw.State.OPEN_INTAKE);
+            }
+
+            if (gamepad.risingEdgeOf(GamepadEx.Buttons.TRIANGLE)) {
+                claw.setClawState(Claw.State.SUPER_CLOSE);
+            }
 
             telemetry.addData("Camera FPS", webcam.getFPS());
             telemetry.update();
