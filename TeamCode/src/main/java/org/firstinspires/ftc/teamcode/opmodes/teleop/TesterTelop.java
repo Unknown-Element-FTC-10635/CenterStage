@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.hardware.Claw;
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.hardware.Webcam;
 import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
@@ -25,6 +26,7 @@ public class TesterTelop extends LinearOpMode {
 
         while (opModeIsActive()) {
             telemetry.addData("Pixel location", webcam.propProcessor.getSpikePosition());
+
             telemetry.addData("Camera FPS", webcam.getFPS());
             telemetry.update();
         }

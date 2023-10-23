@@ -3,13 +3,15 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.hardware.Claw;
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
 import org.firstinspires.ftc.teamcode.utils.hardware.GamepadEx;
 
-@TeleOp()
+@TeleOp
 public class UKTeleOp extends OpMode {
     private DriveTrain driveTrain;
+    private Claw claw;
     private GamepadEx controller1, controller2;
 
     @Override
@@ -19,6 +21,7 @@ public class UKTeleOp extends OpMode {
         controller1 = new GamepadEx(gamepad1);
         controller2 = new GamepadEx(gamepad2);
         driveTrain = new DriveTrain(hardwareMap, controller1);
+        claw = new Claw(hardwareMap);
 
         telemetry.addLine("Ready to start");
     }
