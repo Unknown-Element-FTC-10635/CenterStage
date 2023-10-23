@@ -41,7 +41,7 @@ public class DriveTrain {
         driveController = driverController;
     }
 
-    public void updateTeleOp() {
+    public void writeTeleOp() {
         float forward = driveController.getLeftThumbstickY();
         float strafe = (float) (driveController.getLeftThumbstickX() * 1.1);
         float turn = (float) (driveController.getRightThumbstickX() * 0.75);

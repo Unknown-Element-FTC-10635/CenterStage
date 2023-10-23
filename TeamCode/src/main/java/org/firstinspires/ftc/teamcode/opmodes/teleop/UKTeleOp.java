@@ -42,11 +42,11 @@ public class UKTeleOp extends OpMode {
         // Need to be the first things
         controller1.update();
         controller2.update();
-
-        driveTrain.updateTeleOp();
     }
 
     private void write() {
+        driveTrain.writeTeleOp();
+
         telemetry.addData("Speed", driveTrain.getSpeedMultiplier());
     }
 }
