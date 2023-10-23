@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Claw {
-    public enum State {
+    public enum ClawState {
         OPEN_INTAKE(0.04),
         OPEN_SCORE(0.75),
         CLOSED(0.02),
@@ -13,25 +13,25 @@ public class Claw {
 
         public final double position;
 
-        State(double position) {
+        ClawState(double position) {
             this.position = position;
         }
     }
 
     private final Servo clawServo;
-    private State clawState;
+    private ClawState clawState;
 
     public Claw(HardwareMap hardwareMap) {
         clawServo = hardwareMap.get(Servo.class, "claw");
-        clawState = State.UNKNOWN;
+        clawState = ClawState.UNKNOWN;
     }
 
-    public void setClawState(State clawState) {
+    public void setClawState(ClawState clawState) {
         this.clawState = clawState;
         clawServo.setPosition(clawState.position);
     }
 
-    public State getClawState() {
+    public ClawState getClawState() {
         return clawState;
     }
 }
