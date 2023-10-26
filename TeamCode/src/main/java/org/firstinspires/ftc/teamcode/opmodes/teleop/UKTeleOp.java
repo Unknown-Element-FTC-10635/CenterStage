@@ -43,6 +43,12 @@ public class UKTeleOp extends OpMode {
         if (controller1.leftTriggerPressedLiterallyAtAllFallingEdge()) {
             driveTrain.toggleSpeedMultiplier();
         }
+        if (controller1.risingEdgeOf(GamepadEx.Buttons.CROSS)) {
+            delivery.setDeliveryState(Delivery.DeliveryState.INTAKE);
+        }
+        if ( controller1.risingEdgeOf(GamepadEx.Buttons.SQUARE)) {
+            delivery.setDeliveryState(Delivery.DeliveryState.DELIVER);
+        }
 
         write();
     }

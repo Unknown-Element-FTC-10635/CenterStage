@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Delivery {
     public enum DeliveryState {
-        INTAKE(0.4, 0.0, 0.0),
+        INTAKE(0.0, 0.0, 0.0),
         DELIVER(0.0, 0.0, 0.0);
 
 
