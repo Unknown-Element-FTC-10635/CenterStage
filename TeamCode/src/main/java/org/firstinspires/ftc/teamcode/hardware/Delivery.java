@@ -5,9 +5,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Delivery {
     public enum DeliveryState {
-        INTAKE(0.4, 0.0, 0.0),
+        INTAKE(0.0, 0.0, 0.0),
         DELIVER(0.0, 0.0, 0.0);
-
 
         public final double pitchPositionRight;
         public final double pitchPositionLeft;
@@ -32,9 +31,9 @@ public class Delivery {
     private DeliveryState deliveryState;
 
     public Delivery(HardwareMap hardwareMap) {
-        pitchServoRight = hardwareMap.get(Servo.class, "pitchServoRight");
-        pitchServoLeft = hardwareMap.get(Servo.class, "pitchServoLeft");
-        rollServo = hardwareMap.get(Servo.class, "rollServo");
+        pitchServoRight = hardwareMap.get(Servo.class, "pitch right");
+        pitchServoLeft = hardwareMap.get(Servo.class, "pitch left");
+        rollServo = hardwareMap.get(Servo.class, "roll");
 
         deliveryState = DeliveryState.INTAKE;
     }

@@ -59,5 +59,6 @@ public class UKTeleOp extends OpMode {
         driveTrain.writeTeleOp();
 
         telemetry.addData("Speed", driveTrain.getSpeedMultiplier());
+        telemetry.addData("Delivery", delivery.getDeliveryState());
     }
 }
