@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Delivery {
     public enum DeliveryState {
-        INTAKE(0.0, 0.0, 0.0),
-        DELIVER(0.0, 0.0, 0.0);
+        INTAKE(0.0, 0.0, 0.725),
+        DELIVER(0.62, 0.62, 0.04);
 
         public final double pitchPositionRight;
         public final double pitchPositionLeft;
@@ -42,8 +42,8 @@ public class Delivery {
         this.deliveryState = deliveryState;
         pitchServoLeft.setPosition(deliveryState.pitchPositionLeft);
         pitchServoRight.setPosition(deliveryState.pitchPositionRight);
-        waitingForSafePosition = true;
-
+        rollServo.setPosition(deliveryState.rollPosition);
+        waitingForSafePosition = false;
     }
 
     public DeliveryState getDeliveryState() {
@@ -62,10 +62,16 @@ public class Delivery {
                     rollServo.setPosition(deliveryState.rollPosition);
                     waitingForSafePosition = false;
                 }
-
             }
 
         }
     }
 
+    public boolean isWaitingForSafePosition() {
+        return waitingForSafePosition;
+    }
+
+    public double getRollPosition() {
+        return rollServo.getPosition();
+    }
 }
