@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.hardware.Airplane;
 import org.firstinspires.ftc.teamcode.hardware.Claw;
 import org.firstinspires.ftc.teamcode.hardware.Delivery;
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
@@ -12,11 +13,12 @@ import org.firstinspires.ftc.teamcode.utils.hardware.GamepadEx;
 
 @TeleOp
 public class UKTeleOp extends OpMode {
-    private DriveTrain driveTrain;
-    private Claw claw;
     private GamepadEx controller1, controller2;
+    private DriveTrain driveTrain;
+    private Airplane airplane;
     private Delivery delivery;
     private Plane plane;
+    private Claw claw;
 
     @Override
     public void init() {
@@ -24,10 +26,12 @@ public class UKTeleOp extends OpMode {
 
         controller1 = new GamepadEx(gamepad1);
         controller2 = new GamepadEx(gamepad2);
+
         driveTrain = new DriveTrain(hardwareMap, controller1);
-        claw = new Claw(hardwareMap);
+        airplane = new Airplane(hardwareMap);
         delivery = new Delivery(hardwareMap);
         plane = new Plane(hardwareMap);
+        claw = new Claw(hardwareMap);
 
         telemetry.addLine("Ready to start");
     }
@@ -43,11 +47,17 @@ public class UKTeleOp extends OpMode {
         if (controller1.leftTriggerPressedLiterallyAtAllFallingEdge()) {
             driveTrain.toggleSpeedMultiplier();
         }
+
         if (controller1.risingEdgeOf(GamepadEx.Buttons.CROSS)) {
             delivery.setDeliveryState(Delivery.DeliveryState.INTAKE);
         }
-        if ( controller1.risingEdgeOf(GamepadEx.Buttons.SQUARE)) {
+
+        if (controller1.risingEdgeOf(GamepadEx.Buttons.SQUARE)) {
             delivery.setDeliveryState(Delivery.DeliveryState.DELIVER);
+        }
+
+        if (controller1.risingEdgeOf(GamepadEx.Buttons.DPAD_UP)) {
+            airplane.launch();
         }
 
         write();
@@ -66,5 +76,7 @@ public class UKTeleOp extends OpMode {
 
         telemetry.addData("Speed", driveTrain.getSpeedMultiplier());
         telemetry.addData("Delivery", delivery.getDeliveryState());
+        telemetry.addData("Running", delivery.isWaitingForSafePosition());
+        telemetry.addData("Roll", delivery.getRollPosition());
     }
 }
