@@ -7,7 +7,6 @@ import org.firstinspires.ftc.teamcode.hardware.Airplane;
 import org.firstinspires.ftc.teamcode.hardware.Claw;
 import org.firstinspires.ftc.teamcode.hardware.Delivery;
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
-import org.firstinspires.ftc.teamcode.hardware.Plane;
 import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
 import org.firstinspires.ftc.teamcode.utils.hardware.GamepadEx;
 
@@ -17,7 +16,6 @@ public class UKTeleOp extends OpMode {
     private DriveTrain driveTrain;
     private Airplane airplane;
     private Delivery delivery;
-    private Plane plane;
     private Claw claw;
 
     @Override
@@ -30,7 +28,6 @@ public class UKTeleOp extends OpMode {
         driveTrain = new DriveTrain(hardwareMap, controller1);
         airplane = new Airplane(hardwareMap);
         delivery = new Delivery(hardwareMap);
-        plane = new Plane(hardwareMap);
         claw = new Claw(hardwareMap);
 
         telemetry.addLine("Ready to start");
