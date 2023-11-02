@@ -7,16 +7,30 @@ import org.firstinspires.ftc.teamcode.hardware.Airplane;
 import org.firstinspires.ftc.teamcode.hardware.Claw;
 import org.firstinspires.ftc.teamcode.hardware.Delivery;
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
+import org.firstinspires.ftc.teamcode.hardware.Intake;
 import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
 import org.firstinspires.ftc.teamcode.utils.hardware.GamepadEx;
 
 @TeleOp
 public class UKTeleOp extends OpMode {
+    public enum RobotState {
+        INTAKE_TRANSITION,
+        INTAKE,
+        DRIVE_TRANSITION,
+        DRIVE,
+        SCORE_TRANSITION,
+        SCORE
+    }
+
     private GamepadEx controller1, controller2;
     private DriveTrain driveTrain;
     private Airplane airplane;
     private Delivery delivery;
+    private Intake intake;
     private Claw claw;
+
+    private RobotState robotState;
+    private boolean toBackboard;
 
     @Override
     public void init() {
@@ -28,7 +42,10 @@ public class UKTeleOp extends OpMode {
         driveTrain = new DriveTrain(hardwareMap, controller1);
         airplane = new Airplane(hardwareMap);
         delivery = new Delivery(hardwareMap);
+        intake = new Intake(hardwareMap);
         claw = new Claw(hardwareMap);
+
+        robotState = RobotState.DRIVE;
 
         telemetry.addLine("Ready to start");
     }
@@ -45,12 +62,51 @@ public class UKTeleOp extends OpMode {
             driveTrain.toggleSpeedMultiplier();
         }
 
-        if (controller1.risingEdgeOf(GamepadEx.Buttons.CROSS)) {
-            delivery.setDeliveryState(Delivery.DeliveryState.INTAKE);
-        }
+        switch (robotState) {
+            case INTAKE_TRANSITION:
+                delivery.setDeliveryState(Delivery.DeliveryState.INTAKE);
+                claw.setClawState(Claw.ClawState.OPEN_INTAKE);
+                intake.on();
 
-        if (controller1.risingEdgeOf(GamepadEx.Buttons.SQUARE)) {
-            delivery.setDeliveryState(Delivery.DeliveryState.DELIVER);
+                toBackboard = true;
+                robotState = RobotState.INTAKE;
+                break;
+            case INTAKE:
+                if (controller1.risingEdgeOf(GamepadEx.Buttons.L3)) {
+                    robotState = RobotState.DRIVE_TRANSITION;
+                }
+
+                break;
+            case DRIVE_TRANSITION:
+                claw.setClawState(Claw.ClawState.CLOSED);
+                intake.off();
+
+                robotState = RobotState.DRIVE;
+                break;
+            case DRIVE:
+                if (controller1.risingEdgeOf(GamepadEx.Buttons.L3)) {
+                    if (toBackboard) {
+                        robotState = RobotState.SCORE_TRANSITION;
+                    } else {
+                        robotState = RobotState.INTAKE_TRANSITION;
+                    }
+                }
+
+                break;
+            case SCORE_TRANSITION:
+                toBackboard = false;
+                robotState = RobotState.SCORE;
+                break;
+            case SCORE:
+                if (controller1.risingEdgeOf(GamepadEx.Buttons.CROSS)) {
+                    claw.setClawState(Claw.ClawState.OPEN_SCORE);
+                }
+
+                if (controller1.risingEdgeOf(GamepadEx.Buttons.L3)) {
+                    robotState = RobotState.DRIVE_TRANSITION;
+                }
+
+                break;
         }
 
         if (controller1.risingEdgeOf(GamepadEx.Buttons.DPAD_UP)) {
@@ -73,7 +129,6 @@ public class UKTeleOp extends OpMode {
 
         telemetry.addData("Speed", driveTrain.getSpeedMultiplier());
         telemetry.addData("Delivery", delivery.getDeliveryState());
-        telemetry.addData("Running", delivery.isWaitingForSafePosition());
-        telemetry.addData("Roll", delivery.getRollPosition());
+        telemetry.addData("Robot", robotState);
     }
 }
