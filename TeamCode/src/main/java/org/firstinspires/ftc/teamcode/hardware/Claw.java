@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Claw {
     public enum ClawState {
         OPEN_INTAKE(0.04),
-        OPEN_SCORE(0.75),
+        OPEN_SCORE(0.075),
         CLOSED(0.02),
         SUPER_CLOSE(0.0),
         UNKNOWN(0.0);

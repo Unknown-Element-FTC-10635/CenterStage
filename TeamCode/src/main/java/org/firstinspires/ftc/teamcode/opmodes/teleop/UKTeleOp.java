@@ -78,6 +78,7 @@ public class UKTeleOp extends OpMode {
 
                 break;
             case DRIVE_TRANSITION:
+                delivery.setDeliveryState(Delivery.DeliveryState.DRIVE);
                 claw.setClawState(Claw.ClawState.CLOSED);
                 intake.off();
 
@@ -94,6 +95,8 @@ public class UKTeleOp extends OpMode {
 
                 break;
             case SCORE_TRANSITION:
+                delivery.setDeliveryState(Delivery.DeliveryState.SCORE);
+
                 toBackboard = false;
                 robotState = RobotState.SCORE;
                 break;

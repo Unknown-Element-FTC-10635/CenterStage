@@ -15,19 +15,32 @@ public class TesterTelop extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         CurrentOpmode.setCurrentOpmode(CurrentOpmode.OpMode.TELEOP);
 
-        Webcam webcam = new Webcam(hardwareMap);
+        GamepadEx controller = new GamepadEx(gamepad1);
+        Claw claw = new Claw(hardwareMap);
 
         telemetry.addLine("Ready to start");
         telemetry.update();
 
         waitForStart();
 
-        webcam.setCurrentProcessor(webcam.propProcessor);
 
         while (opModeIsActive()) {
-            telemetry.addData("Pixel location", webcam.propProcessor.getSpikePosition());
+            if (controller.risingEdgeOf(GamepadEx.Buttons.CROSS)) {
+                claw.setClawState(Claw.ClawState.CLOSED);
+            }
 
-            telemetry.addData("Camera FPS", webcam.getFPS());
+            if (controller.risingEdgeOf(GamepadEx.Buttons.CIRCLE)) {
+                claw.setClawState(Claw.ClawState.OPEN_SCORE);
+            }
+
+            if (controller.risingEdgeOf(GamepadEx.Buttons.SQUARE)) {
+                claw.setClawState(Claw.ClawState.OPEN_INTAKE);
+            }
+
+            if (controller.risingEdgeOf(GamepadEx.Buttons.TRIANGLE)) {
+                claw.setClawState(Claw.ClawState.SUPER_CLOSE);
+            }
+
             telemetry.update();
         }
     }

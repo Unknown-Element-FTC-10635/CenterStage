@@ -6,7 +6,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Delivery {
     public enum DeliveryState {
         INTAKE(0.0, 0.0, 0.725),
-        DELIVER(0.62, 0.62, 0.04);
+        DRIVE(0.2, 0.2, 0.725),
+        SCORE(0.62, 0.62, 0.04);
 
         public final double pitchPositionRight;
         public final double pitchPositionLeft;
@@ -52,7 +53,7 @@ public class Delivery {
 
     public void update() {
         if (waitingForSafePosition) {
-            if (deliveryState == DeliveryState.DELIVER) {
+            if (deliveryState == DeliveryState.SCORE) {
                 if (pitchServoRight.getPosition() < UP_THRESHOLD) {
                     rollServo.setPosition(deliveryState.rollPosition);
                     waitingForSafePosition = false;
