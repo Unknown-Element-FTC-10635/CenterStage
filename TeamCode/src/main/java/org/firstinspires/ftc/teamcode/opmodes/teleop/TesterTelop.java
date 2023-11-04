@@ -4,8 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.hardware.Claw;
-import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
-import org.firstinspires.ftc.teamcode.hardware.Webcam;
+import org.firstinspires.ftc.teamcode.hardware.Delivery;
 import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
 import org.firstinspires.ftc.teamcode.utils.hardware.GamepadEx;
 
@@ -16,6 +15,7 @@ public class TesterTelop extends LinearOpMode {
         CurrentOpmode.setCurrentOpmode(CurrentOpmode.OpMode.TELEOP);
 
         GamepadEx controller = new GamepadEx(gamepad1);
+        Delivery delivery = new Delivery(hardwareMap);
         Claw claw = new Claw(hardwareMap);
 
         telemetry.addLine("Ready to start");
@@ -23,10 +23,11 @@ public class TesterTelop extends LinearOpMode {
 
         waitForStart();
 
-
         while (opModeIsActive()) {
+            controller.update();
+
             if (controller.risingEdgeOf(GamepadEx.Buttons.CROSS)) {
-                claw.setClawState(Claw.ClawState.CLOSED);
+                claw.setClawState(Claw.ClawState.OPEN_INTAKE);
             }
 
             if (controller.risingEdgeOf(GamepadEx.Buttons.CIRCLE)) {
@@ -34,13 +35,10 @@ public class TesterTelop extends LinearOpMode {
             }
 
             if (controller.risingEdgeOf(GamepadEx.Buttons.SQUARE)) {
-                claw.setClawState(Claw.ClawState.OPEN_INTAKE);
+                claw.setClawState(Claw.ClawState.CLOSED);
             }
 
-            if (controller.risingEdgeOf(GamepadEx.Buttons.TRIANGLE)) {
-                claw.setClawState(Claw.ClawState.SUPER_CLOSE);
-            }
-
+            telemetry.addData("Claw", claw.getClawState());
             telemetry.update();
         }
     }

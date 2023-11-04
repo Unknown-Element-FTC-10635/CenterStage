@@ -9,8 +9,9 @@ import org.firstinspires.ftc.teamcode.utils.controller.PID;
 import org.firstinspires.ftc.teamcode.utils.hardware.MotorBuilder;
 
 public class DeliverySlides {
-    public enum BackdropHeights {
-        FIRST_LEVEL(0),
+    public enum SlidesHeights {
+        BASE(0),
+        TRANSITION_STATE(100),
         SECOND_LEVEL(200),
         THIRD_LEVEL(400),
         FOURTH_LEVEL(600),
@@ -19,7 +20,7 @@ public class DeliverySlides {
 
         public final int targetPosition;
 
-        BackdropHeights(int targetPosition) {
+        SlidesHeights(int targetPosition) {
             this.targetPosition = targetPosition;
         }
     }
@@ -29,6 +30,8 @@ public class DeliverySlides {
 
     private final PID leftPIDController, rightPIDController;
     private final DcMotorEx leftExtension, rightExtension;
+
+    private SlidesHeights currentTarget;
 
     public DeliverySlides(HardwareMap hardwareMap) {
         leftExtension = new MotorBuilder(hardwareMap, "left ext")
@@ -45,9 +48,14 @@ public class DeliverySlides {
         rightPIDController = new PID(0.0, rightExtension.getCurrentPosition(), rP, rI, rD);
     }
 
-    public void setHeight(BackdropHeights targetLevel) {
+    public void setHeight(SlidesHeights targetLevel) {
+        currentTarget = targetLevel;
         leftPIDController.setSetPoint(targetLevel.targetPosition);
         rightPIDController.setSetPoint(targetLevel.targetPosition);
+    }
+
+    public boolean atTargetPosition() {
+        return (leftExtension.getCurrentPosition() > currentTarget.targetPosition);
     }
 
     public void update() {
@@ -56,5 +64,9 @@ public class DeliverySlides {
 
         leftExtension.setPower(leftNewPower);
         rightExtension.setPower(rightNewPower);
+    }
+
+    public SlidesHeights getCurrentTarget() {
+        return currentTarget;
     }
 }
