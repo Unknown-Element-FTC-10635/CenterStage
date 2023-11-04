@@ -50,10 +50,9 @@ public class MeepMeepTesting {
                 .build();
 
         blueBotPos3.runAction(blueBotPos3.getDrive().actionBuilder(new Pose2d(15, 62, Math.toRadians(270)))
-                .splineTo(new Vector2d(20, 38.5), Math.toRadians(290))
+                .splineTo(new Vector2d(25, 38.5), Math.toRadians(230))
                 .waitSeconds(2)
                 .setReversed(true)
-                .lineToY(45)
                 .splineTo(new Vector2d(50, 30), Math.toRadians(0))
                 .lineToX(45)
                 .strafeTo(new Vector2d(45, 60))
