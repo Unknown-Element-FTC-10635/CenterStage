@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.hardware.Claw;
 import org.firstinspires.ftc.teamcode.hardware.Delivery;
+import org.firstinspires.ftc.teamcode.hardware.Slides;
 import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
 import org.firstinspires.ftc.teamcode.utils.hardware.GamepadEx;
 
@@ -15,7 +16,7 @@ public class TesterTelop extends LinearOpMode {
         CurrentOpmode.setCurrentOpmode(CurrentOpmode.OpMode.TELEOP);
 
         GamepadEx controller = new GamepadEx(gamepad1);
-        Delivery delivery = new Delivery(hardwareMap);
+        Slides slides = new Slides(hardwareMap);
         Claw claw = new Claw(hardwareMap);
 
         telemetry.addLine("Ready to start");
@@ -26,19 +27,11 @@ public class TesterTelop extends LinearOpMode {
         while (opModeIsActive()) {
             controller.update();
 
-            if (controller.risingEdgeOf(GamepadEx.Buttons.CROSS)) {
-                claw.setClawState(Claw.ClawState.OPEN_INTAKE);
-            }
-
-            if (controller.risingEdgeOf(GamepadEx.Buttons.CIRCLE)) {
-                claw.setClawState(Claw.ClawState.OPEN_SCORE);
-            }
-
-            if (controller.risingEdgeOf(GamepadEx.Buttons.SQUARE)) {
-                claw.setClawState(Claw.ClawState.CLOSED);
-            }
+            slides.manual(gamepad1.right_trigger - gamepad1.left_trigger);
 
             telemetry.addData("Claw", claw.getClawState());
+            telemetry.addData("Left", slides.getCurrentLeftPosition());
+            telemetry.addData("Right", slides.getCurrentRightPosition());
             telemetry.update();
         }
     }

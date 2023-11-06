@@ -8,32 +8,39 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.utils.controller.PID;
 import org.firstinspires.ftc.teamcode.utils.hardware.MotorBuilder;
 
-public class DeliverySlides {
+public class Slides {
     public enum SlidesHeights {
-        BASE(0),
+        BASE(1),
         TRANSITION_STATE(100),
         SECOND_LEVEL(200),
-        THIRD_LEVEL(400),
-        FOURTH_LEVEL(600),
-        FIFTH_LEVEL(800),
-        SIXTH_LEVEL(1000);
+        FOURTH_LEVEL(300),
+        SIXTH_LEVEL(400);
 
-        public final int targetPosition;
+        public final double targetPosition;
 
-        SlidesHeights(int targetPosition) {
+        SlidesHeights(double targetPosition) {
             this.targetPosition = targetPosition;
+        }
+
+        public static SlidesHeights levelFromInt(int num) {
+            switch (num) {
+                case 1:     return FOURTH_LEVEL;
+                case 2:     return SIXTH_LEVEL;
+                default:    return SECOND_LEVEL;
+            }
         }
     }
 
-    private static final double lP = 0.0, lI = 0.0, lD = 0.0;
-    private static final double rP = 0.0, rI = 0.0, rD = 0.0;
+    private static final double lP = 0.09, lI = 0.0, lD = 0.005;
+    private static final double rP = 0.07, rI = 0.0, rD = 0.005;
 
     private final PID leftPIDController, rightPIDController;
     private final DcMotorEx leftExtension, rightExtension;
 
     private SlidesHeights currentTarget;
+    private double leftError, rightError;
 
-    public DeliverySlides(HardwareMap hardwareMap) {
+    public Slides(HardwareMap hardwareMap) {
         leftExtension = new MotorBuilder(hardwareMap, "left ext")
                 .setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE)
                 .resetEncoder()
@@ -46,6 +53,7 @@ public class DeliverySlides {
 
         leftPIDController = new PID(0.0, leftExtension.getCurrentPosition(), lP, lI, lD);
         rightPIDController = new PID(0.0, rightExtension.getCurrentPosition(), rP, rI, rD);
+        currentTarget = SlidesHeights.BASE;
     }
 
     public void setHeight(SlidesHeights targetLevel) {
@@ -55,18 +63,53 @@ public class DeliverySlides {
     }
 
     public boolean atTargetPosition() {
-        return (leftExtension.getCurrentPosition() > currentTarget.targetPosition);
+        leftError = (1.0 - (leftExtension.getCurrentPosition() / currentTarget.targetPosition));
+        rightError = (1.0 - (rightExtension.getCurrentPosition() / currentTarget.targetPosition));
+        return (Math.abs(leftError) < 0.03 + 5E-8 && Math.abs(rightError) < 0.03 + 5E-8);
     }
 
     public void update() {
-        double leftNewPower = leftPIDController.update(leftExtension.getCurrentPosition());
-        double rightNewPower = rightPIDController.update(rightExtension.getCurrentPosition());
+        double leftNewPower = leftPIDController.update(leftExtension.getCurrentPosition()) * calculateMultiplier(leftExtension.getCurrentPosition());
+        double rightNewPower = rightPIDController.update(rightExtension.getCurrentPosition()) * calculateMultiplier(rightExtension.getCurrentPosition());
 
         leftExtension.setPower(leftNewPower);
         rightExtension.setPower(rightNewPower);
     }
 
+    public void manual(double power) {
+        leftExtension.setPower(power);
+        rightExtension.setPower(power);
+    }
+
+    public double calculateMultiplier(double current) {
+        return Math.abs((1 / (1.1 + Math.pow(Math.E, -((1 / 4.6) * (currentTarget.targetPosition - Math.abs(current)) + 0.1)))) - 0.5) + 0.1;
+    }
+
     public SlidesHeights getCurrentTarget() {
         return currentTarget;
+    }
+
+    public double getCurrentLeftPosition() {
+        return leftExtension.getCurrentPosition();
+    }
+
+    public double getCurrentRightPosition() {
+        return rightExtension.getCurrentPosition();
+    }
+
+    public double getCurrentLeftPower() {
+        return leftExtension.getPower();
+    }
+
+    public double getCurrentRightPower() {
+        return rightExtension.getPower();
+    }
+
+    public double getLeftError() {
+        return leftError;
+    }
+
+    public double getRightError() {
+        return rightError;
     }
 }
