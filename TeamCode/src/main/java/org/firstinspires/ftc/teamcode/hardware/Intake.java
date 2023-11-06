@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.utils.hardware.MotorBuilder;
 
 public class Intake {
-    private static final double ON_POWER = 1.0;
+    private static final double ON_POWER = 0.8;
 
     private final DcMotorEx intake;
 

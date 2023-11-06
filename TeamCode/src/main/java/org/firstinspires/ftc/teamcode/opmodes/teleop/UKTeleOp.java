@@ -40,6 +40,7 @@ public class UKTeleOp extends OpMode {
     private int driveDeliveryTransition;
 
     private ElapsedTime clawTimer;
+    private int targetBackboardLevel = 0;
 
     @Override
     public void init() {
@@ -144,6 +145,7 @@ public class UKTeleOp extends OpMode {
                     case 6:
                         // Move to safe transition point that works for both intake and score
                         delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
+                        slides.setHeight(Slides.SlidesHeights.BASE);
                         driveDeliveryTransition++;
                         break;
                     case 7:
@@ -168,7 +170,7 @@ public class UKTeleOp extends OpMode {
             // Drive -> Score
             case DRIVE_SCORE_TRANSITION:
                 delivery.setDeliveryState(Delivery.DeliveryState.SCORE);
-                slides.setHeight(Slides.SlidesHeights.SECOND_LEVEL);
+                slides.setHeight(Slides.SlidesHeights.levelFromInt(targetBackboardLevel));
 
                 toBackboard = false;
                 robotState = RobotState.SCORE;
@@ -177,6 +179,20 @@ public class UKTeleOp extends OpMode {
             case SCORE:
                 if (controller1.risingEdgeOf(GamepadEx.Buttons.CROSS)) {
                     claw.setClawState(Claw.ClawState.OPEN_SCORE);
+                }
+
+                if (controller1.risingEdgeOf(GamepadEx.Buttons.BUMPER_RIGHT)) {
+                    if (targetBackboardLevel < 2) {
+                        targetBackboardLevel++;
+                        slides.setHeight(Slides.SlidesHeights.levelFromInt(targetBackboardLevel));
+                    }
+                }
+
+                if (controller1.risingEdgeOf(GamepadEx.Buttons.BUMPER_LEFT)) {
+                    if (targetBackboardLevel > 0) {
+                        targetBackboardLevel--;
+                        slides.setHeight(Slides.SlidesHeights.levelFromInt(targetBackboardLevel));
+                    }
                 }
 
                 if (controller1.risingEdgeOf(GamepadEx.Buttons.L3)) {
@@ -190,7 +206,7 @@ public class UKTeleOp extends OpMode {
                 switch (driveDeliveryTransition) {
                     case 0:
                         // Move to transition point between intake and score
-                        slides.setHeight(Slides.SlidesHeights.TRANSITION_STATE);
+                        slides.setHeight(Slides.SlidesHeights.BASE);
                         delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
 
                         driveDeliveryTransition++;
@@ -237,6 +253,12 @@ public class UKTeleOp extends OpMode {
         telemetry.addData("Claw Timer", clawTimer.milliseconds());
         telemetry.addData("Slides Left Position", slides.getCurrentLeftPosition());
         telemetry.addData("Slides Right Position", slides.getCurrentRightPosition());
+        telemetry.addData("Slide Left Power", slides.getCurrentLeftPower());
+        telemetry.addData("Slide Right Power", slides.getCurrentRightPower());
+        telemetry.addData("Slide Left Error", slides.getLeftError());
+        telemetry.addData("Slide Right Error", slides.getRightError());
+        telemetry.addData("Slide at Target Position", slides.atTargetPosition());
+        telemetry.addData("Backboard Level", targetBackboardLevel);
         telemetry.addData("Robot", robotState);
     }
 }
