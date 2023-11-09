@@ -5,10 +5,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Delivery {
     public enum DeliveryState {
-        INTAKE_PICKUP(0.175, 0.17, 0.65),
-        INTAKE_HOLD(0.3, 0.3, 0.65),
-        TRANSITION_2(0.5, 0.5, 0.0),
-        SCORE(0.8, 0.8, 0.05);
+        INTAKE_PICKUP(0.2, 0.2, 0.65),
+        INTAKE_HOLD(0.5, 0.5, 0.65),
+        TRANSITION_2(0.6, 0.6, 0.0),
+        SCORE(0.8, 0.8, 0.00),
+        UNKNOWN(0.6, 0.6, 0.0);
 
         public final double pitchPositionRight;
         public final double pitchPositionLeft;
@@ -32,7 +33,7 @@ public class Delivery {
         pitchServoLeft = hardwareMap.get(Servo.class, "pitch left");
         rollServo = hardwareMap.get(Servo.class, "roll");
 
-        deliveryState = DeliveryState.INTAKE_PICKUP;
+        deliveryState = DeliveryState.UNKNOWN;
     }
 
     public void setDeliveryState(DeliveryState deliveryState) {
@@ -52,5 +53,13 @@ public class Delivery {
 
     public double getRollPosition() {
         return rollServo.getPosition();
+    }
+
+    public double getLeftRotationPosition() {
+        return pitchServoLeft.getPosition();
+    }
+
+    public double getRightRotationPosition() {
+        return pitchServoRight.getPosition();
     }
 }
