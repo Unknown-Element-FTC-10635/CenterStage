@@ -39,7 +39,7 @@ public class UKTeleOp extends OpMode {
     private boolean toBackboard;
     private int driveDeliveryTransition;
 
-    private ElapsedTime clawTimer;
+    private ElapsedTime transitionTimer;
     private int targetBackboardLevel = 0;
 
     @Override
@@ -57,8 +57,8 @@ public class UKTeleOp extends OpMode {
         slides = new Slides(hardwareMap);
         claw = new Claw(hardwareMap);
 
-        clawTimer = new ElapsedTime();
-        clawTimer.startTime();
+        transitionTimer = new ElapsedTime();
+        transitionTimer.startTime();
 
         robotState = RobotState.DRIVE;
 
@@ -95,6 +95,14 @@ public class UKTeleOp extends OpMode {
                     robotState = RobotState.INTAKE_DRIVE_TRANSITION;
                 }
 
+                if (controller1.risingEdgeOf(GamepadEx.Buttons.BUMPER_RIGHT)) {
+                    intake.reverse();
+                }
+
+                if (controller1.fallingEdgeOf(GamepadEx.Buttons.BUMPER_RIGHT)) {
+                    intake.on();
+                }
+
                 break;
             //  Intake -> Drive
             case INTAKE_DRIVE_TRANSITION:
@@ -103,12 +111,13 @@ public class UKTeleOp extends OpMode {
                     case 0:
                         // Move into the holes in the pixel
                         delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_PICKUP);
+                        transitionTimer.reset();
 
                         driveDeliveryTransition++;
                         break;
                     case 1:
                         // Wait until we know the claw is parallel to the ground
-                        if (intakeLimit.isPressed()) {
+                        if (intakeLimit.isPressed() || transitionTimer.milliseconds() > 750) {
                             driveDeliveryTransition++;
                         }
 
@@ -116,13 +125,13 @@ public class UKTeleOp extends OpMode {
                     case 2:
                         // Close claw onto the pixels
                         claw.setClawState(Claw.ClawState.CLOSED);
-                        clawTimer.reset();
+                        transitionTimer.reset();
 
                         driveDeliveryTransition++;
                         break;
                     case 3:
                         // Wait <milliseconds> so the physical robot has time to actually close
-                        if (clawTimer.milliseconds() > 500) {
+                        if (transitionTimer.milliseconds() > 500) {
                             driveDeliveryTransition++;
                         }
 
@@ -130,14 +139,13 @@ public class UKTeleOp extends OpMode {
                     case 4:
                         // Move to safe transition point to avoid the cross-beam
                         delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_HOLD);
-                        slides.setHeight(Slides.SlidesHeights.TRANSITION_STATE);
                         intake.off();
+                        transitionTimer.reset();
 
                         driveDeliveryTransition++;
                         break;
                     case 5:
-                        // Wait until slides are at said safe point (claw should be done by then??)
-                        if (slides.atTargetPosition()) {
+                        if (transitionTimer.milliseconds() > 1000) {
                             driveDeliveryTransition++;
                         }
 
@@ -145,7 +153,6 @@ public class UKTeleOp extends OpMode {
                     case 6:
                         // Move to safe transition point that works for both intake and score
                         delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
-                        slides.setHeight(Slides.SlidesHeights.BASE);
                         driveDeliveryTransition++;
                         break;
                     case 7:
@@ -249,8 +256,10 @@ public class UKTeleOp extends OpMode {
 
         telemetry.addData("Speed", driveTrain.getSpeedMultiplier());
         telemetry.addData("Delivery", delivery.getDeliveryState());
+        telemetry.addData("Delivery Left Rotation", delivery.getLeftRotationPosition());
+        telemetry.addData("Delivery Right Rotation", delivery.getRightRotationPosition());
         telemetry.addData("Intake Switch", intakeLimit.isPressed());
-        telemetry.addData("Claw Timer", clawTimer.milliseconds());
+        telemetry.addData("Claw Timer", transitionTimer.milliseconds());
         telemetry.addData("Slides Left Position", slides.getCurrentLeftPosition());
         telemetry.addData("Slides Right Position", slides.getCurrentRightPosition());
         telemetry.addData("Slide Left Power", slides.getCurrentLeftPower());
