@@ -7,6 +7,7 @@ import org.firstinspires.ftc.robotcore.external.function.Consumer;
 import org.firstinspires.ftc.robotcore.external.function.Continuation;
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
+import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
@@ -21,20 +22,6 @@ import java.util.logging.Logger;
 public class PropProcessor implements VisionProcessor, CameraStreamSource {
     private final Logger logger = Logger.getLogger(this.getClass().getName());
 
-    private final AtomicReference<Bitmap> lastFrame =
-            new AtomicReference<>(Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565));
-    private static final Scalar LOWER_BLUE = new Scalar(100, 70, 80);
-    private static final Scalar UPPER_BLUE = new Scalar(130, 255, 255);
-
-    private static final Scalar LOWER_RED = new Scalar(100, 70, 80);
-    private static final Scalar UPPER_RED = new Scalar(130, 255, 255);
-
-
-    @Override
-    public void getFrameBitmap(Continuation<? extends Consumer<Bitmap>> continuation) {
-        continuation.dispatch(bitmapConsumer -> bitmapConsumer.accept(lastFrame.get()));
-    }
-
     public enum Spikes {
         LEFT,
         RIGHT,
@@ -42,16 +29,48 @@ public class PropProcessor implements VisionProcessor, CameraStreamSource {
         UNKNOWN
     }
 
-    private static final Rect LEFT_SPIKE = new Rect(70, 400, 200, 200);
-    private static final Rect MIDDLE_SPIKE = new Rect(540, 375, 200, 200);
-    private static final Rect RIGHT_SPIKE = new Rect(950, 400, 200, 200);
+    private static final Scalar LOWER_BLUE = new Scalar(100, 70, 80);
+    private static final Scalar UPPER_BLUE = new Scalar(130, 255, 255);
+
+    private static final Scalar LOWER_RED = new Scalar(0, 70, 80);
+    private static final Scalar UPPER_RED = new Scalar(20, 255, 255);
+
+    private static final Rect BLUE_LEFT_SPIKE = new Rect(70, 400, 200, 200);
+    private static final Rect BLUE_MIDDLE_SPIKE = new Rect(540, 375, 200, 200);
+    private static final Rect BLUE_RIGHT_SPIKE = new Rect(950, 400, 200, 200);
+
+    private static final Rect RED_LEFT_SPIKE = new Rect(190, 410, 200, 200);
+    private static final Rect RED_MIDDLE_SPIKE = new Rect(620, 375, 200, 200);
+    private static final Rect RED_RIGHT_SPIKE = new Rect(1080, 440, 200, 200);
+
+    private final Rect leftSpike, middleSpike, rightSpike;
+    private final Scalar lowerColor, upperColor;
+
+    private final AtomicReference<Bitmap> lastFrame =
+        new AtomicReference<>(Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565));
 
     private static final Size BLUR_SIZE = new Size(5, 5);
 
-    private double[] spikeLocations = new double[4];
+    private final double[] spikeLocations = new double[4];
     private int largestSpikeIndex = 3;
 
-    private Mat processMat = new Mat();
+    private final Mat processMat = new Mat();
+
+    public PropProcessor(boolean blue) {
+        if (blue) {
+            leftSpike = BLUE_LEFT_SPIKE;
+            middleSpike = BLUE_MIDDLE_SPIKE;
+            rightSpike = BLUE_RIGHT_SPIKE;
+            lowerColor = LOWER_BLUE;
+            upperColor = UPPER_BLUE;
+        } else {
+            leftSpike = RED_LEFT_SPIKE;
+            middleSpike = RED_MIDDLE_SPIKE;
+            rightSpike = RED_RIGHT_SPIKE;
+            lowerColor = LOWER_RED;
+            upperColor = UPPER_RED;
+        }
+    }
 
     @Override
     public void init(int width, int height, CameraCalibration calibration) {
@@ -65,16 +84,16 @@ public class PropProcessor implements VisionProcessor, CameraStreamSource {
         Imgproc.cvtColor(frame, processMat, Imgproc.COLOR_RGB2HSV);
         Imgproc.GaussianBlur(processMat, processMat, BLUR_SIZE, 0);
 
-        Core.inRange(processMat, LOWER_BLUE, UPPER_BLUE, frame);
-        Core.inRange(processMat, LOWER_BLUE, UPPER_BLUE, processMat);
+        Core.inRange(processMat, lowerColor, upperColor, frame);
+        Core.inRange(processMat, lowerColor, upperColor, processMat);
 
-        spikeLocations[0] = Core.mean(processMat.submat(LEFT_SPIKE)).val[0];
-        spikeLocations[1] = Core.mean(processMat.submat(MIDDLE_SPIKE)).val[0];
-        spikeLocations[2] = Core.mean(processMat.submat(RIGHT_SPIKE)).val[0];
+        spikeLocations[0] = Core.mean(processMat.submat(leftSpike)).val[0];
+        spikeLocations[1] = Core.mean(processMat.submat(middleSpike)).val[0];
+        spikeLocations[2] = Core.mean(processMat.submat(rightSpike)).val[0];
 
-        Imgproc.rectangle(frame, LEFT_SPIKE, new Scalar(255, 0, 0), 5);
-        Imgproc.rectangle(frame, RIGHT_SPIKE, new Scalar(255, 0, 0), 5);
-        Imgproc.rectangle(frame, MIDDLE_SPIKE, new Scalar(255, 0, 0), 5);
+        Imgproc.rectangle(frame, leftSpike, new Scalar(255, 0, 0), 5);
+        Imgproc.rectangle(frame, middleSpike, new Scalar(255, 0, 0), 5);
+        Imgproc.rectangle(frame, rightSpike, new Scalar(255, 0, 0), 5);
 
         Bitmap b = Bitmap.createBitmap(processMat.width(), processMat.height(), Bitmap.Config.RGB_565);
         Utils.matToBitmap(frame, b);
@@ -101,5 +120,10 @@ public class PropProcessor implements VisionProcessor, CameraStreamSource {
             case 2:     return Spikes.RIGHT;
             default:    return Spikes.UNKNOWN;
         }
+    }
+
+    @Override
+    public void getFrameBitmap(Continuation<? extends Consumer<Bitmap>> continuation) {
+        continuation.dispatch(bitmapConsumer -> bitmapConsumer.accept(lastFrame.get()));
     }
 }
