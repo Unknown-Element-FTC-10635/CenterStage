@@ -16,10 +16,18 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Logger;
 
 public class PropProcessor implements VisionProcessor, CameraStreamSource {
+    private final Logger logger = Logger.getLogger(this.getClass().getName());
+
     private final AtomicReference<Bitmap> lastFrame =
             new AtomicReference<>(Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565));
+    private static final Scalar LOWER_BLUE = new Scalar(100, 70, 80);
+    private static final Scalar UPPER_BLUE = new Scalar(130, 255, 255);
+
+    private static final Scalar LOWER_RED = new Scalar(100, 70, 80);
+    private static final Scalar UPPER_RED = new Scalar(130, 255, 255);
 
 
     @Override
@@ -34,19 +42,22 @@ public class PropProcessor implements VisionProcessor, CameraStreamSource {
         UNKNOWN
     }
 
-    private static final Rect LEFT_SPIKE = new Rect(70, 400, 200, 300);
-    private static final Rect MIDDLE_SPIKE = new Rect(540, 375, 170, 175);
-    private static final Rect RIGHT_SPIKE = new Rect(950, 400, 200, 300);
+    private static final Rect LEFT_SPIKE = new Rect(70, 400, 200, 200);
+    private static final Rect MIDDLE_SPIKE = new Rect(540, 375, 200, 200);
+    private static final Rect RIGHT_SPIKE = new Rect(950, 400, 200, 200);
 
     private static final Size BLUR_SIZE = new Size(5, 5);
 
-    private double[] spikeLocations = new double[3];
-    private int largestSpikeIndex = -1;
-    private Mat processMat= new Mat();
+    private double[] spikeLocations = new double[4];
+    private int largestSpikeIndex = 3;
+
+    private Mat processMat = new Mat();
 
     @Override
     public void init(int width, int height, CameraCalibration calibration) {
+        logger.info("starting!");
         lastFrame.set(Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565));
+        spikeLocations[3] = 0.0;
     }
 
     @Override
@@ -54,6 +65,8 @@ public class PropProcessor implements VisionProcessor, CameraStreamSource {
         Imgproc.cvtColor(frame, processMat, Imgproc.COLOR_RGB2HSV);
         Imgproc.GaussianBlur(processMat, processMat, BLUR_SIZE, 0);
 
+        Core.inRange(processMat, LOWER_BLUE, UPPER_BLUE, frame);
+        Core.inRange(processMat, LOWER_BLUE, UPPER_BLUE, processMat);
 
         spikeLocations[0] = Core.mean(processMat.submat(LEFT_SPIKE)).val[0];
         spikeLocations[1] = Core.mean(processMat.submat(MIDDLE_SPIKE)).val[0];
@@ -76,8 +89,8 @@ public class PropProcessor implements VisionProcessor, CameraStreamSource {
     }
 
     public Spikes getSpikePosition() {
-        for (int i = 0; i < 1; i++) {
-            if (spikeLocations[i] > largestSpikeIndex) {
+        for (int i = 0; i < 3; i++) {
+            if (spikeLocations[i] > spikeLocations[largestSpikeIndex]) {
                 largestSpikeIndex = i;
             }
         }
