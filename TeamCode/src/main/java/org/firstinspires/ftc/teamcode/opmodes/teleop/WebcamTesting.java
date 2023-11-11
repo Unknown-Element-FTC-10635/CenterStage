@@ -12,7 +12,7 @@ public class WebcamTesting extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         CurrentOpmode.setCurrentOpmode(CurrentOpmode.OpMode.TELEOP);
 
-        Webcam webcam = new Webcam(hardwareMap);
+        Webcam webcam = new Webcam(hardwareMap, false);
 
         telemetry.addLine("Ready to start");
         telemetry.update();

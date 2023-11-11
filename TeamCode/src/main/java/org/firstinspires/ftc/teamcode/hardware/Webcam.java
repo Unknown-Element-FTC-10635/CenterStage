@@ -21,7 +21,7 @@ public class Webcam {
     private final VisionPortal visionPortal;
     private VisionProcessor currentProcessor;
 
-    public Webcam(HardwareMap hardwareMap) {
+    public Webcam(HardwareMap hardwareMap, boolean blue) {
 //        simpleProcessor = new SimpleProcessor();
 //        aprilTagProcessor = new AprilTagProcessor.Builder()
 //                .setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
@@ -30,7 +30,7 @@ public class Webcam {
 //                .setDrawAxes(true)
 //                .setDrawCubeProjection(true)
 //                .build();
-        propProcessor = new PropProcessor();
+        propProcessor = new PropProcessor(blue);
 
         visionPortal = new VisionPortal.Builder()
                 .setCamera(hardwareMap.get(WebcamName.class, "webcam"))
