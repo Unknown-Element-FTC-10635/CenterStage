@@ -4,8 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.hardware.Claw;
-import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
-import org.firstinspires.ftc.teamcode.hardware.Webcam;
+import org.firstinspires.ftc.teamcode.hardware.Delivery;
+import org.firstinspires.ftc.teamcode.hardware.Slides;
 import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
 import org.firstinspires.ftc.teamcode.utils.hardware.GamepadEx;
 
@@ -15,19 +15,23 @@ public class TesterTelop extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         CurrentOpmode.setCurrentOpmode(CurrentOpmode.OpMode.TELEOP);
 
-        Webcam webcam = new Webcam(hardwareMap);
+        GamepadEx controller = new GamepadEx(gamepad1);
+        Slides slides = new Slides(hardwareMap);
+        Claw claw = new Claw(hardwareMap);
 
         telemetry.addLine("Ready to start");
         telemetry.update();
 
         waitForStart();
 
-        webcam.setCurrentProcessor(webcam.propProcessor);
-
         while (opModeIsActive()) {
-            telemetry.addData("Pixel location", webcam.propProcessor.getSpikePosition());
+            controller.update();
 
-            telemetry.addData("Camera FPS", webcam.getFPS());
+            slides.manual(gamepad1.right_trigger - gamepad1.left_trigger);
+
+            telemetry.addData("Claw", claw.getClawState());
+            telemetry.addData("Left", slides.getCurrentLeftPosition());
+            telemetry.addData("Right", slides.getCurrentRightPosition());
             telemetry.update();
         }
     }

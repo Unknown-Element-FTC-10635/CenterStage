@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.hardware;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.utils.hardware.MotorBuilder;
@@ -14,6 +15,7 @@ public class Intake {
     public Intake(HardwareMap hardwareMap) {
         intake = new MotorBuilder(hardwareMap, "intake")
                 .setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT)
+                .setDirection(DcMotorSimple.Direction.REVERSE)
                 .build();
     }
 
@@ -23,5 +25,9 @@ public class Intake {
 
     public void off() {
         intake.setPower(0);
+    }
+
+    public void reverse() {
+        intake.setPower(-ON_POWER);
     }
 }
