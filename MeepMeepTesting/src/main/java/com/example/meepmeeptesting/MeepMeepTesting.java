@@ -58,26 +58,64 @@ public class MeepMeepTesting {
                 .strafeTo(new Vector2d(45, 60))
                 .build());
 
-
-        // Declare out second bot
-        RoadRunnerBotEntity mySecondBot = new DefaultBotBuilder(meepMeep)
+        RoadRunnerBotEntity redBotPos1 = new DefaultBotBuilder(meepMeep)
                 // We set this bot to be red
                 .setColorScheme(new ColorSchemeRedDark())
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        mySecondBot.runAction(mySecondBot.getDrive().actionBuilder(new Pose2d(-30, -30, Math.toRadians(180)))
-                .lineToX(0)
+        redBotPos1.runAction(redBotPos1.getDrive().actionBuilder(new Pose2d(15, -62, Math.toRadians(90)))
+                .splineTo(new Vector2d(9, -38.5), Math.toRadians(135))
+                .waitSeconds(2)
+                .setReversed(true)
+                .splineTo(new Vector2d(50, -30), Math.toRadians(0))
+                .lineToX(45)
+                .strafeTo(new Vector2d(45, -60))
                 .build());
+
+        RoadRunnerBotEntity redBotPos2 = new DefaultBotBuilder(meepMeep)
+                .setColorScheme(new ColorSchemeRedDark())
+                .setConstraints(60,60, Math.toRadians(180), Math.toRadians(105), 15)
+                .build();
+
+        redBotPos2.runAction(redBotPos2.getDrive().actionBuilder(new Pose2d(15, -62, Math.toRadians(90)))
+                .splineTo(new Vector2d(10, -35), Math.toRadians(95))
+                .waitSeconds(2)
+                .setReversed(true)
+                .splineTo(new Vector2d(50, -36), Math.toRadians(0))
+                .lineToX(45)
+                .strafeTo(new Vector2d(45, -60))
+                .build());
+
+        RoadRunnerBotEntity redBotPos3 = new DefaultBotBuilder(meepMeep)
+                .setColorScheme(new ColorSchemeRedDark())
+                .setConstraints(60,60, Math.toRadians(180), Math.toRadians(105), 15)
+                .build();
+
+        redBotPos3.runAction(redBotPos3.getDrive().actionBuilder(new Pose2d(15, -62, Math.toRadians(90)))
+                .splineTo(new Vector2d(25, -38.5), Math.toRadians(135))
+                .waitSeconds(2)
+                .setReversed(true)
+                .splineTo(new Vector2d(50, -41.5), Math.toRadians(0))
+                .lineToX(45)
+                .strafeTo(new Vector2d(45, -60))
+                .build());
+        
+
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_JUICE_DARK)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
                 // Add both of our declared bot entities
-        //        .addEntity(blueBotPos1)
-        //        .addEntity(mySecondBot)
-        //        .addEntity(blueBotPos2)
+                // .addEntity(blueBotPos1)
+                // .addEntity(mySecondBot)
+                // .addEntity(blueBotPos2)
+                // .addEntity(blueBotPos1)
+                // .addEntity(blueBotPos2)
                 .addEntity(blueBotPos3)
+                // .addEntity(redBotPos1)
+                // .addEntity(redBotPos2)
+                .addEntity(redBotPos3)
                 .start();
     }
 }
