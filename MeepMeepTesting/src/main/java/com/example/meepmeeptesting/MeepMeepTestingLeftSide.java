@@ -19,8 +19,8 @@ public class MeepMeepTestingLeftSide{
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        blueBotPos1.runAction(blueBotPos1.getDrive().actionBuilder(new Pose2d(-32, 62, Math.toRadians(270)))
-                .splineTo(new Vector2d(-35, 38.5), Math.toRadians(225))
+        blueBotPos1.runAction(blueBotPos1.getDrive().actionBuilder(new Pose2d(-38, 62, Math.toRadians(270)))
+                .splineTo(new Vector2d(-45, 38.5), Math.toRadians(270))
                 .build());
 
         RoadRunnerBotEntity blueBotPos2 = new DefaultBotBuilder(meepMeep)
@@ -28,7 +28,7 @@ public class MeepMeepTestingLeftSide{
                 .setConstraints(60,60, Math.toRadians(180), Math.toRadians(105), 15)
                 .build();
 
-        blueBotPos2.runAction(blueBotPos2.getDrive().actionBuilder(new Pose2d(-32, 62, Math.toRadians(270)))
+        blueBotPos2.runAction(blueBotPos2.getDrive().actionBuilder(new Pose2d(-38, 62, Math.toRadians(270)))
                 .splineTo(new Vector2d(-35, 35), Math.toRadians(270))
                 .build());
 
@@ -37,8 +37,8 @@ public class MeepMeepTestingLeftSide{
                 .setConstraints(60,60, Math.toRadians(180), Math.toRadians(105), 15)
                 .build();
 
-        blueBotPos3.runAction(blueBotPos3.getDrive().actionBuilder(new Pose2d(-32, 62, Math.toRadians(270)))
-                .splineTo(new Vector2d(-30, 38.5), Math.toRadians(300))
+        blueBotPos3.runAction(blueBotPos3.getDrive().actionBuilder(new Pose2d(-38, 62, Math.toRadians(270)))
+                .splineTo(new Vector2d(-37, 35), Math.toRadians(340))
                 .build());
 
         RoadRunnerBotEntity redBotPos1 = new DefaultBotBuilder(meepMeep)
@@ -47,8 +47,8 @@ public class MeepMeepTestingLeftSide{
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        redBotPos1.runAction(redBotPos1.getDrive().actionBuilder(new Pose2d(-32, -62, Math.toRadians(90)))
-                .splineTo(new Vector2d(-37, -38.5), Math.toRadians(135))
+        redBotPos1.runAction(redBotPos1.getDrive().actionBuilder(new Pose2d(-38, -62, Math.toRadians(90)))
+                .splineTo(new Vector2d(-45, -38.5), Math.toRadians(90))
                 .build());
 
         RoadRunnerBotEntity redBotPos2 = new DefaultBotBuilder(meepMeep)
@@ -56,7 +56,7 @@ public class MeepMeepTestingLeftSide{
                 .setConstraints(60,60, Math.toRadians(180), Math.toRadians(105), 15)
                 .build();
 
-        redBotPos2.runAction(redBotPos2.getDrive().actionBuilder(new Pose2d(-32, -62, Math.toRadians(90)))
+        redBotPos2.runAction(redBotPos2.getDrive().actionBuilder(new Pose2d(-38, -62, Math.toRadians(90)))
                 .splineTo(new Vector2d(-35, -35), Math.toRadians(95))
                 .build());
 
@@ -65,8 +65,8 @@ public class MeepMeepTestingLeftSide{
                 .setConstraints(60,60, Math.toRadians(180), Math.toRadians(105), 15)
                 .build();
 
-        redBotPos3.runAction(redBotPos3.getDrive().actionBuilder(new Pose2d(-35, -62, Math.toRadians(90)))
-                .splineTo(new Vector2d(-33, -38.5), Math.toRadians(50))
+        redBotPos3.runAction(redBotPos3.getDrive().actionBuilder(new Pose2d(-38, -62, Math.toRadians(90)))
+                .splineTo(new Vector2d(-34, -38.5), Math.toRadians(45))
                 .build());
 
 
@@ -75,12 +75,13 @@ public class MeepMeepTestingLeftSide{
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
                 // Add both of our declared bot entities
-//                .addEntity(blueBotPos1)
-//                .addEntity(blueBotPos2)
                 .addEntity(blueBotPos3)
-//                .addEntity(redBotPos1)
-//                .addEntity(redBotPos2)
                 .addEntity(redBotPos3)
+                .addEntity(blueBotPos2)
+                .addEntity(redBotPos2)
+                .addEntity(blueBotPos1)
+                .addEntity(redBotPos1)
+
                 .start();
 
     }
