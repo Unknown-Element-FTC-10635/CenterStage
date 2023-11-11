@@ -34,9 +34,9 @@ public class PropProcessor implements VisionProcessor, CameraStreamSource {
         UNKNOWN
     }
 
-    private static final Rect LEFT_SPIKE = new Rect(0, 10, 426, 700);
-    private static final Rect MIDDLE_SPIKE = new Rect(0, 10, 426, 700);
-    private static final Rect RIGHT_SPIKE = new Rect(0, 10, 426, 700);
+    private static final Rect LEFT_SPIKE = new Rect(70, 400, 200, 300);
+    private static final Rect MIDDLE_SPIKE = new Rect(540, 375, 170, 175);
+    private static final Rect RIGHT_SPIKE = new Rect(950, 400, 200, 300);
 
     private static final Size BLUR_SIZE = new Size(5, 5);
 
