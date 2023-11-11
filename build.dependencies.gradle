@@ -5,6 +5,7 @@ repositories {
     maven {
         url = 'https://maven.brott.dev/'
     }
+
     maven {
         url = 'https://www.matthewo.tech/maven/'
     }
