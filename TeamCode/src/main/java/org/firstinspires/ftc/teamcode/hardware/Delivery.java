@@ -7,8 +7,8 @@ public class Delivery {
     public enum DeliveryState {
         INTAKE_PICKUP(0.16, 0.16, 0.65),
         INTAKE_HOLD(0.5, 0.5, 0.65),
-        TRANSITION_2(0.6, 0.6, 0.0),
-        SCORE(0.8, 0.8, 0.00),
+        TRANSITION_2(0.7, 0.7, 0.0),
+        SCORE(0.9, 0.9, 0.00),
         UNKNOWN(0.6, 0.6, 0.0);
 
         public final double pitchPositionRight;

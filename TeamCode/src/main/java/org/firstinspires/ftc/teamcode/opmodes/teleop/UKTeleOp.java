@@ -27,7 +27,7 @@ public class UKTeleOp extends OpMode {
     }
 
     private GamepadEx controller1, controller2;
-    private LimitSwitch intakeLimit;
+    private LimitSwitch intakeLimit, slideLimit;
     private DriveTrain driveTrain;
     private Airplane airplane;
     private Delivery delivery;
@@ -50,6 +50,7 @@ public class UKTeleOp extends OpMode {
         controller2 = new GamepadEx(gamepad2);
 
         intakeLimit = new LimitSwitch(hardwareMap, "intake limit");
+        slideLimit = new LimitSwitch(hardwareMap, "slide limit");
         driveTrain = new DriveTrain(hardwareMap, controller1);
         airplane = new Airplane(hardwareMap);
         delivery = new Delivery(hardwareMap);
@@ -167,6 +168,17 @@ public class UKTeleOp extends OpMode {
                 if (controller1.risingEdgeOf(GamepadEx.Buttons.L3)) {
                     // The cross over
                     if (toBackboard) {
+                        driveDeliveryTransition = 0;
+                        robotState = RobotState.DRIVE_SCORE_TRANSITION;
+                    } else {
+                        robotState = RobotState.DRIVE_INTAKE_TRANSITION;
+                    }
+                }
+
+                if (controller1.risingEdgeOf(GamepadEx.Buttons.TRIANGLE)) {
+                    // The cross over
+                    if (!toBackboard) {
+                        driveDeliveryTransition = 0;
                         robotState = RobotState.DRIVE_SCORE_TRANSITION;
                     } else {
                         robotState = RobotState.DRIVE_INTAKE_TRANSITION;
@@ -176,11 +188,29 @@ public class UKTeleOp extends OpMode {
                 break;
             // Drive -> Score
             case DRIVE_SCORE_TRANSITION:
-                delivery.setDeliveryState(Delivery.DeliveryState.SCORE);
-                slides.setHeight(Slides.SlidesHeights.levelFromInt(targetBackboardLevel));
+                switch (driveDeliveryTransition) {
+                    case 0:
+                        // Move to transition point between intake and score
+                        slides.setHeight(Slides.SlidesHeights.levelFromInt(targetBackboardLevel));
+                        transitionTimer.reset();
+
+                        driveDeliveryTransition++;
+                        break;
+                    case 1:
+                        // Wait until the slides are at that position
+                        if (slides.atTargetPosition() || transitionTimer.milliseconds() > 2000) {
+                            driveDeliveryTransition++;
+                        }
+
+                        break;
+                    case 2:
+                        // Advance
+                        delivery.setDeliveryState(Delivery.DeliveryState.SCORE);
+                        robotState = RobotState.SCORE;
+                        break;
+                }
 
                 toBackboard = false;
-                robotState = RobotState.SCORE;
                 break;
             // For scoring on the backboard
             case SCORE:
@@ -215,12 +245,13 @@ public class UKTeleOp extends OpMode {
                         // Move to transition point between intake and score
                         slides.setHeight(Slides.SlidesHeights.BASE);
                         delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
+                        transitionTimer.reset();
 
                         driveDeliveryTransition++;
                         break;
                     case 1:
                         // Wait until the slides are at that position
-                        if (slides.atTargetPosition()) {
+                        if (slides.atTargetPosition() || slideLimit.isPressed() || transitionTimer.milliseconds() > 2000) {
                             driveDeliveryTransition++;
                         }
 
@@ -247,6 +278,7 @@ public class UKTeleOp extends OpMode {
         controller2.update();
 
         intakeLimit.update();
+        slideLimit.update();
         delivery.update();
         slides.update();
     }
@@ -259,7 +291,8 @@ public class UKTeleOp extends OpMode {
         telemetry.addData("Delivery Left Rotation", delivery.getLeftRotationPosition());
         telemetry.addData("Delivery Right Rotation", delivery.getRightRotationPosition());
         telemetry.addData("Intake Switch", intakeLimit.isPressed());
-        telemetry.addData("Claw Timer", transitionTimer.milliseconds());
+        telemetry.addData("Slide Switch", slideLimit.isPressed());
+        telemetry.addData("Transition Timer", transitionTimer.milliseconds());
         telemetry.addData("Slides Left Position", slides.getCurrentLeftPosition());
         telemetry.addData("Slides Right Position", slides.getCurrentRightPosition());
         telemetry.addData("Slide Left Power", slides.getCurrentLeftPower());
