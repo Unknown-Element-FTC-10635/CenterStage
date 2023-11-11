@@ -43,7 +43,7 @@ public class DriveTrain {
 
     public void writeTeleOp() {
         float forward = driveController.getLeftThumbstickY();
-        float strafe = (float) (driveController.getLeftThumbstickX() * 1.1);
+        float strafe = (float) (driveController.getLeftThumbstickX() * 0.9);
         float turn = (float) (driveController.getRightThumbstickX() * 0.75);
 
         frontLeftMotor.setPower(((forward - strafe) * speedMultiplier) - turn);
