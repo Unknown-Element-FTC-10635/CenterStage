@@ -27,7 +27,7 @@ public class UKTeleOp extends OpMode {
     }
 
     private GamepadEx controller1, controller2;
-    private LimitSwitch intakeLimit, slideLimit;
+    private LimitSwitch slideLimit;
     private DriveTrain driveTrain;
     private Airplane airplane;
     private Delivery delivery;
@@ -49,7 +49,6 @@ public class UKTeleOp extends OpMode {
         controller1 = new GamepadEx(gamepad1);
         controller2 = new GamepadEx(gamepad2);
 
-        intakeLimit = new LimitSwitch(hardwareMap, "intake limit");
         slideLimit = new LimitSwitch(hardwareMap, "slide limit");
         driveTrain = new DriveTrain(hardwareMap, controller1);
         airplane = new Airplane(hardwareMap);
@@ -91,7 +90,7 @@ public class UKTeleOp extends OpMode {
                 break;
             // For intake-ing new pixels
             case INTAKE:
-                if (controller1.risingEdgeOf(GamepadEx.Buttons.L3)) {
+                if (controller1.risingEdgeOf(GamepadEx.Buttons.CROSS)) {
                     driveDeliveryTransition = 0;
                     robotState = RobotState.INTAKE_DRIVE_TRANSITION;
                 }
@@ -118,7 +117,7 @@ public class UKTeleOp extends OpMode {
                         break;
                     case 1:
                         // Wait until we know the claw is parallel to the ground
-                        if (intakeLimit.isPressed() || transitionTimer.milliseconds() > 750) {
+                        if (transitionTimer.milliseconds() > 750) {
                             driveDeliveryTransition++;
                         }
 
@@ -165,7 +164,7 @@ public class UKTeleOp extends OpMode {
                 break;
             // Mostly just a transition state, don't think anything special needs to be here
             case DRIVE:
-                if (controller1.risingEdgeOf(GamepadEx.Buttons.L3)) {
+                if (controller1.risingEdgeOf(GamepadEx.Buttons.CROSS)) {
                     // The cross over
                     if (toBackboard) {
                         driveDeliveryTransition = 0;
@@ -214,10 +213,6 @@ public class UKTeleOp extends OpMode {
                 break;
             // For scoring on the backboard
             case SCORE:
-                if (controller1.risingEdgeOf(GamepadEx.Buttons.CROSS)) {
-                    claw.setClawState(Claw.ClawState.OPEN_SCORE);
-                }
-
                 if (controller1.risingEdgeOf(GamepadEx.Buttons.BUMPER_RIGHT)) {
                     if (targetBackboardLevel < 2) {
                         targetBackboardLevel++;
@@ -232,7 +227,7 @@ public class UKTeleOp extends OpMode {
                     }
                 }
 
-                if (controller1.risingEdgeOf(GamepadEx.Buttons.L3)) {
+                if (controller1.risingEdgeOf(GamepadEx.Buttons.CROSS)) {
                     driveDeliveryTransition = 0;
                     robotState = RobotState.SCORE_DRIVE_TRANSITION;
                 }
@@ -242,6 +237,30 @@ public class UKTeleOp extends OpMode {
             case SCORE_DRIVE_TRANSITION:
                 switch (driveDeliveryTransition) {
                     case 0:
+                        claw.setClawState(Claw.ClawState.OPEN_SCORE);
+                        transitionTimer.reset();
+
+                        driveDeliveryTransition++;
+                        break;
+                    case 1:
+                        if (transitionTimer.milliseconds() > 250) {
+                            driveDeliveryTransition++;
+                        }
+
+                        break;
+                    case 2:
+                        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
+                        transitionTimer.reset();
+
+                        driveDeliveryTransition++;
+                        break;
+                    case 3:
+                        if (transitionTimer.milliseconds() > 500) {
+                            driveDeliveryTransition++;
+                        }
+
+                        break;
+                    case 4:
                         // Move to transition point between intake and score
                         slides.setHeight(Slides.SlidesHeights.BASE);
                         delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
@@ -249,14 +268,14 @@ public class UKTeleOp extends OpMode {
 
                         driveDeliveryTransition++;
                         break;
-                    case 1:
+                    case 5:
                         // Wait until the slides are at that position
                         if (slides.atTargetPosition() || slideLimit.isPressed() || transitionTimer.milliseconds() > 2000) {
                             driveDeliveryTransition++;
                         }
 
                         break;
-                    case 2:
+                    case 6:
                         // Advance
                         robotState = RobotState.DRIVE;
                         break;
@@ -277,7 +296,6 @@ public class UKTeleOp extends OpMode {
         controller1.update();
         controller2.update();
 
-        intakeLimit.update();
         slideLimit.update();
         delivery.update();
         slides.update();
@@ -290,7 +308,6 @@ public class UKTeleOp extends OpMode {
         telemetry.addData("Delivery", delivery.getDeliveryState());
         telemetry.addData("Delivery Left Rotation", delivery.getLeftRotationPosition());
         telemetry.addData("Delivery Right Rotation", delivery.getRightRotationPosition());
-        telemetry.addData("Intake Switch", intakeLimit.isPressed());
         telemetry.addData("Slide Switch", slideLimit.isPressed());
         telemetry.addData("Transition Timer", transitionTimer.milliseconds());
         telemetry.addData("Slides Left Position", slides.getCurrentLeftPosition());
