@@ -27,7 +27,7 @@ public class UKTeleOp extends OpMode {
     }
 
     private GamepadEx controller1, controller2;
-    private LimitSwitch intakeLimit, slideLimit;
+    private LimitSwitch slideLimit;
     private DriveTrain driveTrain;
     private Airplane airplane;
     private Delivery delivery;
@@ -49,7 +49,6 @@ public class UKTeleOp extends OpMode {
         controller1 = new GamepadEx(gamepad1);
         controller2 = new GamepadEx(gamepad2);
 
-        intakeLimit = new LimitSwitch(hardwareMap, "intake limit");
         slideLimit = new LimitSwitch(hardwareMap, "slide limit");
         driveTrain = new DriveTrain(hardwareMap, controller1);
         airplane = new Airplane(hardwareMap);
@@ -118,7 +117,7 @@ public class UKTeleOp extends OpMode {
                         break;
                     case 1:
                         // Wait until we know the claw is parallel to the ground
-                        if (intakeLimit.isPressed() || transitionTimer.milliseconds() > 750) {
+                        if (transitionTimer.milliseconds() > 750) {
                             driveDeliveryTransition++;
                         }
 
@@ -297,7 +296,6 @@ public class UKTeleOp extends OpMode {
         controller1.update();
         controller2.update();
 
-        intakeLimit.update();
         slideLimit.update();
         delivery.update();
         slides.update();
@@ -310,7 +308,6 @@ public class UKTeleOp extends OpMode {
         telemetry.addData("Delivery", delivery.getDeliveryState());
         telemetry.addData("Delivery Left Rotation", delivery.getLeftRotationPosition());
         telemetry.addData("Delivery Right Rotation", delivery.getRightRotationPosition());
-        telemetry.addData("Intake Switch", intakeLimit.isPressed());
         telemetry.addData("Slide Switch", slideLimit.isPressed());
         telemetry.addData("Transition Timer", transitionTimer.milliseconds());
         telemetry.addData("Slides Left Position", slides.getCurrentLeftPosition());
