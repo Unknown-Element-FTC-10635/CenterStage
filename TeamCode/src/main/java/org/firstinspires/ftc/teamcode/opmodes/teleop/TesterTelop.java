@@ -29,6 +29,14 @@ public class TesterTelop extends LinearOpMode {
 
             slides.manual(gamepad1.right_trigger - gamepad1.left_trigger);
 
+            if (controller.risingEdgeOf(GamepadEx.Buttons.TRIANGLE)) {
+                claw.setClawState(Claw.ClawState.SINGLE_CLOSED);
+            }
+
+            if (controller.risingEdgeOf(GamepadEx.Buttons.CROSS)) {
+                claw.setClawState(Claw.ClawState.OPEN_INTAKE);
+            }
+
             telemetry.addData("Claw", claw.getClawState());
             telemetry.addData("Left", slides.getCurrentLeftPosition());
             telemetry.addData("Right", slides.getCurrentRightPosition());

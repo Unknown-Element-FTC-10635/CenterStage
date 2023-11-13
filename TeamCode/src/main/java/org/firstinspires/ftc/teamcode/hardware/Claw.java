@@ -8,6 +8,7 @@ public class Claw {
         OPEN_INTAKE(0.33),
         OPEN_SCORE(0.29),
         CLOSED(0.23),
+        SINGLE_CLOSED(0.25),
         UNKNOWN(0.0);
 
         public final double position;
