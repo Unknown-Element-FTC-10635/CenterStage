@@ -25,7 +25,7 @@ public class MeepMeepTesting {
                 .setColorScheme(new ColorSchemeBlueDark())
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(15, 62, Math.toRadians(270)))
+                        drive.trajectorySequenceBuilder(new Pose2d(10, 62, Math.toRadians(270)))
                                 .splineTo(new Vector2d(9, 38.5), Math.toRadians(225))
                                 .waitSeconds(2)
                                 .setReversed(true)
@@ -39,7 +39,7 @@ public class MeepMeepTesting {
                 .setColorScheme(new ColorSchemeBlueDark())
                 .setConstraints(60,60, Math.toRadians(180), Math.toRadians(105), 15)
                 .followTrajectorySequence(drive ->
-                drive.trajectorySequenceBuilder(new Pose2d(15, 62, Math.toRadians(270)))
+                drive.trajectorySequenceBuilder(new Pose2d(10, 62, Math.toRadians(270)))
                         .splineTo(new Vector2d(10, 35), Math.toRadians(270))
                         .waitSeconds(2)
                         .setReversed(true)
@@ -53,7 +53,7 @@ public class MeepMeepTesting {
                 .setColorScheme(new ColorSchemeBlueDark())
                 .setConstraints(60,60, Math.toRadians(180), Math.toRadians(105), 15)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(15, 62, Math.toRadians(270)))
+                        drive.trajectorySequenceBuilder(new Pose2d(10, 62, Math.toRadians(270)))
                                 .splineTo(new Vector2d(25, 38.5), Math.toRadians(230))
                                 .waitSeconds(2)
                                 .setReversed(true)
@@ -70,7 +70,7 @@ public class MeepMeepTesting {
                 .setColorScheme(new ColorSchemeRedDark())
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(15, -62, Math.toRadians(90)))
+                        drive.trajectorySequenceBuilder(new Pose2d(10, -62, Math.toRadians(90)))
                             .splineTo(new Vector2d(9, -38.5), Math.toRadians(135))
                             .waitSeconds(2)
                             .setReversed(true)
@@ -85,7 +85,7 @@ public class MeepMeepTesting {
                 .setColorScheme(new ColorSchemeRedDark())
                 .setConstraints(60,60, Math.toRadians(180), Math.toRadians(105), 15)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(15, -62, Math.toRadians(90)))
+                        drive.trajectorySequenceBuilder(new Pose2d(10, -62, Math.toRadians(90)))
                                 .splineTo(new Vector2d(10, -35), Math.toRadians(95))
                                 .waitSeconds(2)
                                 .setReversed(true)
@@ -100,7 +100,7 @@ public class MeepMeepTesting {
                 .setColorScheme(new ColorSchemeRedDark())
                 .setConstraints(60,60, Math.toRadians(180), Math.toRadians(105), 15)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(15, -62, Math.toRadians(90)))
+                        drive.trajectorySequenceBuilder(new Pose2d(10, -62, Math.toRadians(90)))
                                 .splineTo(new Vector2d(25, -38.5), Math.toRadians(135))
                                 .waitSeconds(2)
                                 .setReversed(true)
@@ -130,7 +130,7 @@ public class MeepMeepTesting {
                 // .addEntity(blueBotPos2)
                 // .addEntity(blueBotPos1)
                 // .addEntity(blueBotPos2)
-                .addEntity(redBotPos3)
+                .addEntity(redBotPos1)
                 // .addEntity(redBotPos1)
                 // .addEntity(redBotPos2)
 //                .addEntity(redBotPos3)
