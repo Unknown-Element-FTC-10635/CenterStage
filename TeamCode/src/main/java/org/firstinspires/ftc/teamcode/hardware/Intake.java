@@ -30,4 +30,12 @@ public class Intake {
     public void reverse() {
         intake.setPower(-ON_POWER);
     }
+
+    public void reverse(double power) {
+        intake.setPower(-power);
+    }
+
+    public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior behavior) {
+        intake.setZeroPowerBehavior(behavior);
+    }
 }

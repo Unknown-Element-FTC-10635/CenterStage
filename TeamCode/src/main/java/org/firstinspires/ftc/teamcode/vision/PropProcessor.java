@@ -34,20 +34,19 @@ public class PropProcessor implements VisionProcessor, CameraStreamSource {
 
     private static final Scalar LOWER_RED = new Scalar(0, 70, 80);
     private static final Scalar UPPER_RED = new Scalar(20, 255, 255);
+    private static final Scalar SECONDARY_LOWER_RED = new Scalar(170, 70, 80);
+    private static final Scalar SECONDARY_UPPER_RED = new Scalar(180, 255, 255);
 
     private static final Rect BLUE_LEFT_SPIKE = new Rect(70, 400, 200, 200);
     private static final Rect BLUE_MIDDLE_SPIKE = new Rect(540, 375, 200, 200);
     private static final Rect BLUE_RIGHT_SPIKE = new Rect(950, 400, 200, 200);
 
     private static final Rect RED_LEFT_SPIKE = new Rect(190, 410, 200, 200);
-    private static final Rect RED_MIDDLE_SPIKE = new Rect(620, 375, 200, 200);
+    private static final Rect RED_MIDDLE_SPIKE = new Rect(630, 375, 200, 200);
     private static final Rect RED_RIGHT_SPIKE = new Rect(1080, 440, 200, 200);
 
     private final Rect leftSpike, middleSpike, rightSpike;
     private final Scalar lowerColor, upperColor;
-
-    private final AtomicReference<Bitmap> lastFrame =
-        new AtomicReference<>(Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565));
 
     private static final Size BLUR_SIZE = new Size(5, 5);
 
@@ -55,8 +54,14 @@ public class PropProcessor implements VisionProcessor, CameraStreamSource {
     private int largestSpikeIndex = 3;
 
     private final Mat processMat = new Mat();
+    private final Mat redBitwiseMat = new Mat();
+    private final AtomicReference<Bitmap> lastFrame =
+            new AtomicReference<>(Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565));
+
+    private final boolean blue;
 
     public PropProcessor(boolean blue) {
+        this.blue = blue;
         if (blue) {
             leftSpike = BLUE_LEFT_SPIKE;
             middleSpike = BLUE_MIDDLE_SPIKE;
@@ -86,6 +91,12 @@ public class PropProcessor implements VisionProcessor, CameraStreamSource {
 
         Core.inRange(processMat, lowerColor, upperColor, frame);
         Core.inRange(processMat, lowerColor, upperColor, processMat);
+
+        if (!blue) {
+            Core.inRange(processMat, SECONDARY_LOWER_RED, SECONDARY_UPPER_RED, redBitwiseMat);
+            Core.bitwise_or(processMat, redBitwiseMat, processMat);
+            Core.bitwise_or(processMat, redBitwiseMat, frame);
+        }
 
         spikeLocations[0] = Core.mean(processMat.submat(leftSpike)).val[0];
         spikeLocations[1] = Core.mean(processMat.submat(middleSpike)).val[0];

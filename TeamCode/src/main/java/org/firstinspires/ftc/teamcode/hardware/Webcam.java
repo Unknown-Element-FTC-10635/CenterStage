@@ -14,22 +14,11 @@ import org.firstinspires.ftc.vision.VisionProcessor;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 public class Webcam {
-//    public final SimpleProcessor simpleProcessor;
-//    public final AprilTagProcessor aprilTagProcessor;
     public final PropProcessor propProcessor;
 
     private final VisionPortal visionPortal;
-    private VisionProcessor currentProcessor;
 
     public Webcam(HardwareMap hardwareMap, boolean blue) {
-//        simpleProcessor = new SimpleProcessor();
-//        aprilTagProcessor = new AprilTagProcessor.Builder()
-//                .setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
-//                .setDrawTagID(true)
-//                .setDrawTagOutline(true)`
-//                .setDrawAxes(true)
-//                .setDrawCubeProjection(true)
-//                .build();
         propProcessor = new PropProcessor(blue);
 
         visionPortal = new VisionPortal.Builder()
@@ -42,20 +31,11 @@ public class Webcam {
 
         visionPortal.setProcessorEnabled(propProcessor, true);
 
-
-
         FtcDashboard.getInstance().startCameraStream(propProcessor, 0);
     }
 
-
-    public void setCurrentProcessor(VisionProcessor processor) {
-        visionPortal.setProcessorEnabled(currentProcessor, false);
-        visionPortal.setProcessorEnabled(processor, true);
-        currentProcessor = processor;
-    }
-
     public void stopWebcam() {
-        visionPortal.stopStreaming();
+        //visionPortal.stopStreaming();
     }
 
     public float getFPS() {

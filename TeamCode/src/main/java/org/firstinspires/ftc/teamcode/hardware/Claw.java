@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.hardware;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 public class Claw {
     public enum ClawState {
@@ -18,11 +19,11 @@ public class Claw {
         }
     }
 
-    private final Servo clawServo;
+    private final ServoImplEx clawServo;
     private ClawState clawState;
 
     public Claw(HardwareMap hardwareMap) {
-        clawServo = hardwareMap.get(Servo.class, "claw");
+        clawServo = hardwareMap.get(ServoImplEx.class, "claw");
         clawState = ClawState.UNKNOWN;
     }
 
@@ -33,5 +34,13 @@ public class Claw {
 
     public ClawState getClawState() {
         return clawState;
+    }
+
+    public void depowerServo() {
+        clawServo.setPwmDisable();
+    }
+
+    public void repowerServo() {
+        clawServo.setPwmEnable();
     }
 }
