@@ -29,7 +29,7 @@ public class PropProcessor implements VisionProcessor, CameraStreamSource {
         UNKNOWN
     }
 
-    private static final Scalar LOWER_BLUE = new Scalar(100, 70, 80);
+    private static final Scalar LOWER_BLUE = new Scalar(90, 60, 60);
     private static final Scalar UPPER_BLUE = new Scalar(130, 255, 255);
 
     private static final Scalar LOWER_RED = new Scalar(0, 70, 80);
