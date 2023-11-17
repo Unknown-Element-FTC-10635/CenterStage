@@ -182,6 +182,7 @@ public class RedRight20 extends LinearOpMode {
             slides.update();
         }
 
+        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
         driveTrain.followTrajectorySequence(park);
     }
 }
