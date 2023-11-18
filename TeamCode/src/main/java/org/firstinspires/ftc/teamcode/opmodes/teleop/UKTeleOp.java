@@ -39,7 +39,7 @@ public class UKTeleOp extends OpMode {
     private boolean toBackboard;
     private int driveDeliveryTransition;
 
-    private ElapsedTime transitionTimer;
+    private ElapsedTime transitionTimer, matchTimer;
     private int targetBackboardLevel = 0;
 
     @Override
@@ -59,6 +59,9 @@ public class UKTeleOp extends OpMode {
 
         transitionTimer = new ElapsedTime();
         transitionTimer.startTime();
+
+        matchTimer = new ElapsedTime();
+        matchTimer.startTime();
 
         robotState = RobotState.DRIVE;
 
@@ -297,6 +300,7 @@ public class UKTeleOp extends OpMode {
         controller2.update();
 
         slideLimit.update();
+
         delivery.update();
         slides.update();
     }
@@ -305,6 +309,7 @@ public class UKTeleOp extends OpMode {
         driveTrain.writeTeleOp();
 
         telemetry.addData("Speed", driveTrain.getSpeedMultiplier());
+        /*
         telemetry.addData("Delivery", delivery.getDeliveryState());
         telemetry.addData("Delivery Left Rotation", delivery.getLeftRotationPosition());
         telemetry.addData("Delivery Right Rotation", delivery.getRightRotationPosition());
@@ -318,6 +323,10 @@ public class UKTeleOp extends OpMode {
         telemetry.addData("Slide Right Error", slides.getRightError());
         telemetry.addData("Slide at Target Position", slides.atTargetPosition());
         telemetry.addData("Backboard Level", targetBackboardLevel);
+         */
         telemetry.addData("Robot", robotState);
+
+        telemetry.addData("Loop time", matchTimer.milliseconds());
+        matchTimer.reset();
     }
 }

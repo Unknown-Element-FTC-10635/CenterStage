@@ -5,10 +5,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Delivery {
     public enum DeliveryState {
-        INTAKE_PICKUP(0.17, 0.17, 0.65),
+        INTAKE_PICKUP(0.19, 0.19, 0.65),
         INTAKE_HOLD(0.5, 0.5, 0.65),
         TRANSITION_2(0.7, 0.7, 0.0),
-        SCORE(0.9, 0.9, 0.00),
+        SCORE(0.925, 0.925, 0.00),
         SCORE_AUTO(1.0, 1.0, 0.00),
         UNKNOWN(0.6, 0.6, 0.0);
 

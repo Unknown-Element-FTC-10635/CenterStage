@@ -85,6 +85,14 @@ public class Slides {
         return Math.abs((1 / (1.1 + Math.pow(Math.E, -((1 / 4.6) * (currentTarget.targetPosition - Math.abs(current)) + 0.1)))) - 0.5) + 0.1;
     }
 
+    public void resetEncoders () {
+        leftExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftExtension.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightExtension.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
     public SlidesHeights getCurrentTarget() {
         return currentTarget;
     }
