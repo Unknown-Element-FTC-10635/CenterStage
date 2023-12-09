@@ -8,6 +8,16 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.utils.hardware.MotorBuilder;
 
 public class Intake {
+
+    public enum IntakeState{
+        GROUND_POSITION(0);
+
+        private final double intakeServoPosition;
+
+        IntakeState(double intakeServo){
+            this.intakeServoPosition = intakeServo;
+        }
+    }
     private static final double ON_POWER = 1.0;
 
     private final DcMotorEx intake;

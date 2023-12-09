@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.hardware.Airplane;
 import org.firstinspires.ftc.teamcode.hardware.Claw;
 import org.firstinspires.ftc.teamcode.hardware.Delivery;
+import org.firstinspires.ftc.teamcode.hardware.Hang;
 import org.firstinspires.ftc.teamcode.hardware.Slides;
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.hardware.Intake;
@@ -23,7 +24,9 @@ public class UKTeleOp extends OpMode {
         DRIVE,
         DRIVE_SCORE_TRANSITION,
         SCORE,
-        SCORE_DRIVE_TRANSITION
+        SCORE_DRIVE_TRANSITION,
+        ENDGAME,
+        TRANSITION_ENDGAME
     }
 
     private GamepadEx controller1, controller2;
@@ -34,6 +37,7 @@ public class UKTeleOp extends OpMode {
     private Intake intake;
     private Slides slides;
     private Claw claw;
+    private Hang hang;
 
     private RobotState robotState;
     private boolean toBackboard;
@@ -56,7 +60,7 @@ public class UKTeleOp extends OpMode {
         intake = new Intake(hardwareMap);
         slides = new Slides(hardwareMap);
         claw = new Claw(hardwareMap);
-
+        hang = new Hang(hardwareMap);
         transitionTimer = new ElapsedTime();
         transitionTimer.startTime();
 
@@ -284,13 +288,31 @@ public class UKTeleOp extends OpMode {
                         break;
                 }
 
+            case TRANSITION_ENDGAME:
+                airplane.launch();
+
+                if (transitionTimer.milliseconds() > 250) {
+                    hang.setHangState(Hang.HangState.UP);
+                    robotState = RobotState.ENDGAME;
+                }
+
                 break;
+
+            case ENDGAME:
+                hang.motor(gamepad1.right_trigger-gamepad1.left_trigger);
+
+                if(controller1.risingEdgeOf(GamepadEx.Buttons.CIRCLE)){
+                    hang.setHangState(Hang.HangState.DOWN);
+                }
+
+                break;
+
         }
 
         if (controller1.risingEdgeOf(GamepadEx.Buttons.DPAD_UP)) {
-            airplane.launch();
+            robotState = RobotState.TRANSITION_ENDGAME;
+            transitionTimer.reset();
         }
-
         write();
     }
 
