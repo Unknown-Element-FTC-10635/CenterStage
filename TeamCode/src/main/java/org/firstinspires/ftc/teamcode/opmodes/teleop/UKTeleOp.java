@@ -87,6 +87,7 @@ public class UKTeleOp extends OpMode {
                 slides.setHeight(Slides.SlidesHeights.BASE);
                 claw.setClawState(Claw.ClawState.OPEN_INTAKE);
                 intake.on();
+                intake.setServoPosition(Intake.IntakeState.GROUND);
 
                 toBackboard = true;
                 robotState = RobotState.INTAKE;
@@ -114,6 +115,7 @@ public class UKTeleOp extends OpMode {
                     case 0:
                         // Move into the holes in the pixel
                         delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_PICKUP);
+                        intake.setServoPosition(Intake.IntakeState.STACK_MID);
                         transitionTimer.reset();
 
                         driveDeliveryTransition++;
@@ -309,7 +311,6 @@ public class UKTeleOp extends OpMode {
         driveTrain.writeTeleOp();
 
         telemetry.addData("Speed", driveTrain.getSpeedMultiplier());
-        /*
         telemetry.addData("Delivery", delivery.getDeliveryState());
         telemetry.addData("Delivery Left Rotation", delivery.getLeftRotationPosition());
         telemetry.addData("Delivery Right Rotation", delivery.getRightRotationPosition());
@@ -323,7 +324,6 @@ public class UKTeleOp extends OpMode {
         telemetry.addData("Slide Right Error", slides.getRightError());
         telemetry.addData("Slide at Target Position", slides.atTargetPosition());
         telemetry.addData("Backboard Level", targetBackboardLevel);
-         */
         telemetry.addData("Robot", robotState);
 
         telemetry.addData("Loop time", matchTimer.milliseconds());
