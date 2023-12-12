@@ -287,17 +287,19 @@ public class UKTeleOp extends OpMode {
                         robotState = RobotState.DRIVE;
                         break;
                 }
-
             case TRANSITION_ENDGAME:
                 airplane.launch();
 
-                if (transitionTimer.milliseconds() > 250) {
-                    hang.setHangState(Hang.HangState.UP);
+                if (transitionTimer.milliseconds() > 1000) {
+                    hang.motor(0);
                     robotState = RobotState.ENDGAME;
+                } else if (transitionTimer.milliseconds() > 750) {
+                    hang.motor(-0.4);
+                } else if (transitionTimer.milliseconds() > 250) {
+                    hang.setHangState(Hang.HangState.UP);
                 }
 
                 break;
-
             case ENDGAME:
                 hang.motor(gamepad1.right_trigger-gamepad1.left_trigger);
 
@@ -306,7 +308,6 @@ public class UKTeleOp extends OpMode {
                 }
 
                 break;
-
         }
 
         if (controller1.risingEdgeOf(GamepadEx.Buttons.DPAD_UP)) {
@@ -331,7 +332,6 @@ public class UKTeleOp extends OpMode {
         driveTrain.writeTeleOp();
 
         telemetry.addData("Speed", driveTrain.getSpeedMultiplier());
-        /*
         telemetry.addData("Delivery", delivery.getDeliveryState());
         telemetry.addData("Delivery Left Rotation", delivery.getLeftRotationPosition());
         telemetry.addData("Delivery Right Rotation", delivery.getRightRotationPosition());
@@ -345,7 +345,6 @@ public class UKTeleOp extends OpMode {
         telemetry.addData("Slide Right Error", slides.getRightError());
         telemetry.addData("Slide at Target Position", slides.atTargetPosition());
         telemetry.addData("Backboard Level", targetBackboardLevel);
-         */
         telemetry.addData("Robot", robotState);
 
         telemetry.addData("Loop time", matchTimer.milliseconds());
