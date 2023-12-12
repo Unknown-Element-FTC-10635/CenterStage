@@ -11,10 +11,10 @@ import org.firstinspires.ftc.teamcode.utils.hardware.MotorBuilder;
 
 public class Intake {
     public enum IntakeState {
-        START_POSITION(0.5),
-        STACK_HIGH(0.3),
-        STACK_MID(0.2),
-        GROUND(0.1);
+        START_POSITION(0.0),
+        STACK_HIGH(0.2),
+        STACK_MID(0.27),
+        GROUND(0.39);
 
         public final double position;
 
@@ -23,7 +23,7 @@ public class Intake {
         }
     }
 
-    private static final double ON_POWER = 0.8;
+    private static final double ON_POWER = 1.0;
 
     private final DcMotorEx intake;
     private final ServoImplEx servo;
@@ -33,7 +33,6 @@ public class Intake {
                 .setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT)
                 .build();
         servo = hardwareMap.get(ServoImplEx.class, "intake servo");
-        servo.setPosition(IntakeState.START_POSITION.position);
     }
 
     public void on() {

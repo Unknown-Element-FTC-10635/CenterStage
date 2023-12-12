@@ -69,6 +69,11 @@ public class UKTeleOp extends OpMode {
     }
 
     @Override
+    public void start() {
+        intake.setServoPosition(Intake.IntakeState.STACK_MID);
+    }
+
+    @Override
     public void loop() {
         update();
 
@@ -86,8 +91,8 @@ public class UKTeleOp extends OpMode {
                 delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_HOLD);
                 slides.setHeight(Slides.SlidesHeights.BASE);
                 claw.setClawState(Claw.ClawState.OPEN_INTAKE);
-                intake.on();
                 intake.setServoPosition(Intake.IntakeState.GROUND);
+                intake.on();
 
                 toBackboard = true;
                 robotState = RobotState.INTAKE;
