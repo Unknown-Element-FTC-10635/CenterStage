@@ -131,7 +131,7 @@ public class UKTeleOp extends OpMode {
                         break;
                     case 1:
                         // Wait until we know the claw is parallel to the ground
-                        if (transitionTimer.milliseconds() > 750) {
+                        if (transitionTimer.milliseconds() > 900) {
                             driveDeliveryTransition++;
                         }
 
@@ -159,7 +159,7 @@ public class UKTeleOp extends OpMode {
                         driveDeliveryTransition++;
                         break;
                     case 5:
-                        if (transitionTimer.milliseconds() > 1000) {
+                        if (transitionTimer.milliseconds() > 1250) {
                             driveDeliveryTransition++;
                         }
 
@@ -294,6 +294,8 @@ public class UKTeleOp extends OpMode {
                         robotState = RobotState.DRIVE;
                         break;
                 }
+
+                break;
             case TRANSITION_ENDGAME:
                 airplane.launch();
 
@@ -340,7 +342,6 @@ public class UKTeleOp extends OpMode {
 
         telemetry.addData("Speed", driveTrain.getSpeedMultiplier());
         telemetry.addData("Delivery", delivery.getDeliveryState());
-        telemetry.addData("Delivery Left Rotation", delivery.getLeftRotationPosition());
         telemetry.addData("Delivery Right Rotation", delivery.getRightRotationPosition());
         telemetry.addData("Slide Switch", slideLimit.isPressed());
         telemetry.addData("Transition Timer", transitionTimer.milliseconds());

@@ -17,6 +17,7 @@ public class TesterTelop extends LinearOpMode {
         CurrentOpmode.setCurrentOpmode(CurrentOpmode.OpMode.TELEOP);
 
         GamepadEx controller = new GamepadEx(gamepad1);
+        Delivery delivery = new Delivery(hardwareMap);
         Intake intake = new Intake(hardwareMap);
         Slides slides = new Slides(hardwareMap);
         Claw claw = new Claw(hardwareMap);
@@ -33,20 +34,19 @@ public class TesterTelop extends LinearOpMode {
             slides.manual(gamepad1.right_trigger - gamepad1.left_trigger);
 
             if (controller.risingEdgeOf(GamepadEx.Buttons.TRIANGLE)) {
-                intake.setServoPosition(Intake.IntakeState.GROUND);
+                delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_PICKUP);
             }
 
             if (controller.risingEdgeOf(GamepadEx.Buttons.SQUARE)) {
-                intake.on();
+                delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_HOLD);
             }
 
             if (controller.risingEdgeOf(GamepadEx.Buttons.CROSS)) {
-                intake.setServoPosition(Intake.IntakeState.STACK_MID);
+                claw.setClawState(Claw.ClawState.CLOSED);
             }
 
             if (controller.risingEdgeOf(GamepadEx.Buttons.CIRCLE)) {
-                intake.off();
-                intake.setServoPosition(Intake.IntakeState.START_POSITION);
+                claw.setClawState(Claw.ClawState.OPEN_INTAKE);
             }
 
             telemetry.addData("Claw", claw.getClawState());
