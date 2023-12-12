@@ -73,6 +73,11 @@ public class UKTeleOp extends OpMode {
     }
 
     @Override
+    public void start() {
+        intake.setServoPosition(Intake.IntakeState.STACK_MID);
+    }
+
+    @Override
     public void loop() {
         update();
 
@@ -90,6 +95,7 @@ public class UKTeleOp extends OpMode {
                 delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_HOLD);
                 slides.setHeight(Slides.SlidesHeights.BASE);
                 claw.setClawState(Claw.ClawState.OPEN_INTAKE);
+                intake.setServoPosition(Intake.IntakeState.GROUND);
                 intake.on();
 
                 toBackboard = true;
@@ -118,6 +124,7 @@ public class UKTeleOp extends OpMode {
                     case 0:
                         // Move into the holes in the pixel
                         delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_PICKUP);
+                        intake.setServoPosition(Intake.IntakeState.STACK_MID);
                         transitionTimer.reset();
 
                         driveDeliveryTransition++;

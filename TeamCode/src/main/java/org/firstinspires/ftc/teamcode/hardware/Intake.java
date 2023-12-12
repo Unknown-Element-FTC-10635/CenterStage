@@ -4,29 +4,35 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 import org.firstinspires.ftc.teamcode.utils.hardware.MotorBuilder;
 
 public class Intake {
+   public enum IntakeState {
+        START_POSITION(0.0),
+        STACK_HIGH(0.2),
+        STACK_MID(0.27),
+        GROUND(0.39);
 
-    public enum IntakeState{
-        GROUND_POSITION(0);
+        public final double position;
 
-        private final double intakeServoPosition;
-
-        IntakeState(double intakeServo){
-            this.intakeServoPosition = intakeServo;
+        IntakeState(double position) {
+            this.position = position;
         }
     }
+
     private static final double ON_POWER = 1.0;
 
     private final DcMotorEx intake;
+    private final ServoImplEx servo;
 
     public Intake(HardwareMap hardwareMap) {
         intake = new MotorBuilder(hardwareMap, "intake")
                 .setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT)
-                .setDirection(DcMotorSimple.Direction.REVERSE)
                 .build();
+        servo = hardwareMap.get(ServoImplEx.class, "intake servo");
     }
 
     public void on() {
@@ -43,6 +49,18 @@ public class Intake {
 
     public void reverse(double power) {
         intake.setPower(-power);
+    }
+
+    public void setServoPosition(IntakeState intakeState) {
+        servo.setPosition(intakeState.position);
+    }
+
+    public void disableServo() {
+        servo.setPwmDisable();
+    }
+
+    public void enableServo() {
+        servo.setPwmEnable();
     }
 
     public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior behavior) {
