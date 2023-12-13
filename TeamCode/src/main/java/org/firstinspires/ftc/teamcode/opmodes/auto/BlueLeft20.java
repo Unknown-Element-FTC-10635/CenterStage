@@ -40,6 +40,9 @@ public class BlueLeft20 extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        telemetry.addLine("Building hardware");
+        telemetry.update();
+
         slideLimit = new LimitSwitch(hardwareMap, "slide limit");
         driveTrain = new SampleMecanumDrive(hardwareMap);
         airplane = new Airplane(hardwareMap);
@@ -48,51 +51,61 @@ public class BlueLeft20 extends LinearOpMode {
         slides = new Slides(hardwareMap);
         claw = new Claw(hardwareMap);
 
+        telemetry.addLine("Creating timers");
+        telemetry.update();
+
         timer = new ElapsedTime();
         timer.startTime();
+
+        telemetry.addLine("Initializing robot");
+        telemetry.update();
 
         webcam = new Webcam(hardwareMap, true);
         claw.setClawState(Claw.ClawState.SINGLE_CLOSED);
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        Pose2d startPose = new Pose2d( 10, 62, Math.toRadians(270));
+        telemetry.addLine("Building paths");
+        telemetry.update();
+
+        Pose2d startPose = new Pose2d( 9, 62, Math.toRadians(270));
         driveTrain.setPoseEstimate(startPose);
 
         TrajectorySequence preloadDeliveryLeft = driveTrain.trajectorySequenceBuilder(startPose)
-                .lineTo(new Vector2d(16, 40))
+                .lineTo(new Vector2d(14, 53))
+                .lineTo(new Vector2d(25, 40))
                 .build();
 
         TrajectorySequence preloadDeliveryMiddle = driveTrain.trajectorySequenceBuilder(startPose)
-                .splineTo(new Vector2d(12, 35), Math.toRadians(265))
+                .lineTo(new Vector2d(14, 53))
+                .lineTo(new Vector2d(12, 35))
                 .build();
 
         TrajectorySequence preloadDeliveryRight = driveTrain.trajectorySequenceBuilder(startPose)
-                .splineTo(new Vector2d(10, 40), Math.toRadians(215))
+                .lineTo(new Vector2d(14, 53))
+                .lineToLinearHeading(new Pose2d(16, 26, Math.toRadians(180)))
                 .build();
 
         TrajectorySequence preloadBackboardLeftDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryLeft.end())
                 .back(10)
                 .turn(Math.toRadians(-90))
                 .setReversed(true)
-                .lineTo(new Vector2d(50, 36))
-                .back(6)
+                .lineTo(new Vector2d(50, 38))
+                .back(7)
                 .build();
 
         TrajectorySequence preloadBackboardMiddleDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryMiddle.end())
-                .back(3)
+                .back(6)
                 .strafeLeft(3)
                 .setReversed(true)
-                .splineTo(new Vector2d(50, 34), Math.toRadians(0))
+                .lineToLinearHeading(new Pose2d(50, 32, Math.toRadians(180)))
                 .back(7)
                 .build();
 
         TrajectorySequence preloadBackboardRightDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryRight.end())
                 .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(30, 30, DriveConstants.TRACK_WIDTH))
                 .back(10)
-                .turn(Math.toRadians(-45))
-                .back(5)
                 .setReversed(true)
-                .lineTo(new Vector2d(50, 26))
+                .lineTo(new Vector2d(50, 25))
                 .back(8)
                 .build();
 
@@ -104,7 +117,7 @@ public class BlueLeft20 extends LinearOpMode {
 
         TrajectorySequence parkMiddle = driveTrain.trajectorySequenceBuilder(preloadBackboardMiddleDelivery.end())
                 .forward(5)
-                .lineTo(new Vector2d(45, 14))
+                .lineTo(new Vector2d(45, 10))
                 .back(15)
                 .build();
 
@@ -121,6 +134,9 @@ public class BlueLeft20 extends LinearOpMode {
 
         PropProcessor.Spikes spikePosition = webcam.propProcessor.getSpikePosition();
         webcam.stopWebcam();
+
+        telemetry.addData("Going to", spikePosition);
+        telemetry.update();
 
         switch (spikePosition) {
             case LEFT:
@@ -141,11 +157,12 @@ public class BlueLeft20 extends LinearOpMode {
         }
 
         delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_HOLD);
+        intake.setServoPosition(Intake.IntakeState.STACK_HIGH);
         driveTrain.followTrajectorySequence(preloadDelivery);
 
         intake.reverse(0.5);
         timer.reset();
-        while (!(timer.milliseconds() > 1000)) { }
+        while (!(timer.milliseconds() > 800)) { }
         intake.off();
 
         delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
