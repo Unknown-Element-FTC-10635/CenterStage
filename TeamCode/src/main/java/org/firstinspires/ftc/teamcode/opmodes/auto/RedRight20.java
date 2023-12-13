@@ -40,6 +40,9 @@ public class RedRight20 extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        telemetry.addLine("Building hardware");
+        telemetry.update();
+
         slideLimit = new LimitSwitch(hardwareMap, "slide limit");
         driveTrain = new SampleMecanumDrive(hardwareMap);
         airplane = new Airplane(hardwareMap);
@@ -48,50 +51,61 @@ public class RedRight20 extends LinearOpMode {
         slides = new Slides(hardwareMap);
         claw = new Claw(hardwareMap);
 
+        telemetry.addLine("Creating timers");
+        telemetry.update();
+
         timer = new ElapsedTime();
         timer.startTime();
+
+        telemetry.addLine("Initializing robot");
+        telemetry.update();
 
         webcam = new Webcam(hardwareMap, false);
         claw.setClawState(Claw.ClawState.SINGLE_CLOSED);
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        Pose2d startPose = new Pose2d(10, -62, Math.toRadians(90));
+        telemetry.addLine("Building paths");
+        telemetry.update();
+
+        Pose2d startPose = new Pose2d(9, -62, Math.toRadians(90));
         driveTrain.setPoseEstimate(startPose);
 
         TrajectorySequence preloadDeliveryLeft = driveTrain.trajectorySequenceBuilder(startPose)
-                .splineTo(new Vector2d(10, -38.5), Math.toRadians(135))
+                .lineTo(new Vector2d(14, -53))
+                .lineToLinearHeading(new Pose2d(16, -26, Math.toRadians(180)))
                 .build();
 
         TrajectorySequence preloadDeliveryMiddle = driveTrain.trajectorySequenceBuilder(startPose)
-                .splineTo(new Vector2d(15, -35), Math.toRadians(95))
+                .lineTo(new Vector2d(14, -53))
+                .lineTo(new Vector2d(12, -35))
                 .build();
 
         TrajectorySequence preloadDeliveryRight = driveTrain.trajectorySequenceBuilder(startPose)
-                .lineTo(new Vector2d(22, -40))
+                .lineTo(new Vector2d(14, -53))
+                .lineTo(new Vector2d(25, -40))
                 .build();
 
         TrajectorySequence preloadBackboardLeftDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryLeft.end())
-                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(30, 30, DriveConstants.TRACK_WIDTH))
                 .back(10)
-                .turn(Math.toRadians(45))
-                .back(5)
                 .setReversed(true)
-                .lineTo(new Vector2d(46, -23))
-                .back(12)
+                .lineTo(new Vector2d(50, -27))
+                .back(9)
                 .build();
 
         TrajectorySequence preloadBackboardMiddleDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryMiddle.end())
+                .back(6)
+                .strafeLeft(3)
                 .setReversed(true)
-                .splineTo(new Vector2d(57, -32), Math.toRadians(0))
-                .back(2)
+                .lineToLinearHeading(new Pose2d(50, -32, Math.toRadians(180)))
+                .back(9)
                 .build();
 
         TrajectorySequence preloadBackboardRightDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryRight.end())
                 .back(10)
                 .turn(Math.toRadians(90))
                 .setReversed(true)
-                .lineTo(new Vector2d(50, -42))
-                .back(8)
+                .lineTo(new Vector2d(50, -38))
+                .back(7)
                 .build();
 
         TrajectorySequence parkLeft = driveTrain.trajectorySequenceBuilder(preloadBackboardLeftDelivery.end())
@@ -118,7 +132,11 @@ public class RedRight20 extends LinearOpMode {
         waitForStart();
 
         PropProcessor.Spikes spikePosition = webcam.propProcessor.getSpikePosition();
+        intake.setServoPosition(Intake.IntakeState.STACK_HIGH);
         webcam.stopWebcam();
+
+        telemetry.addData("Going to", spikePosition);
+        telemetry.update();
 
         switch (spikePosition) {
             case LEFT:
