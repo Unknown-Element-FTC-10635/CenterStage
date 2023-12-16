@@ -13,6 +13,6 @@ public class Airplane {
     }
 
     public void launch() {
-       airplane.setPosition(LAUNCH_POSITION);
+        airplane.setPosition(LAUNCH_POSITION);
     }
 }

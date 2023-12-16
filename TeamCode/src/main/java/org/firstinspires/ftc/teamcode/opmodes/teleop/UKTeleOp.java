@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
+import static org.firstinspires.ftc.teamcode.opmodes.teleop.UKTeleOp.RobotState.ENDGAME;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -297,23 +299,21 @@ public class UKTeleOp extends OpMode {
 
                 break;
             case TRANSITION_ENDGAME:
-                airplane.launch();
-
-                if (transitionTimer.milliseconds() > 1000) {
-                    hang.motor(0);
-                    robotState = RobotState.ENDGAME;
-                } else if (transitionTimer.milliseconds() > 750) {
-                    hang.motor(-0.4);
-                } else if (transitionTimer.milliseconds() > 250) {
-                    hang.setHangState(Hang.HangState.UP);
+                hang.setHangState(Hang.HangState.UP);
+                if (transitionTimer.milliseconds() > 250) {
+                    robotState = ENDGAME;
                 }
 
                 break;
             case ENDGAME:
-                hang.motor(gamepad1.right_trigger-gamepad1.left_trigger);
+                hang.motor(gamepad1.left_trigger - gamepad1.right_trigger);
 
                 if(controller1.risingEdgeOf(GamepadEx.Buttons.CIRCLE)){
                     hang.setHangState(Hang.HangState.DOWN);
+                }
+
+                if (controller1.risingEdgeOf(GamepadEx.Buttons.SQUARE)) {
+                    airplane.launch();
                 }
 
                 break;
@@ -323,6 +323,7 @@ public class UKTeleOp extends OpMode {
             robotState = RobotState.TRANSITION_ENDGAME;
             transitionTimer.reset();
         }
+
         write();
     }
 
