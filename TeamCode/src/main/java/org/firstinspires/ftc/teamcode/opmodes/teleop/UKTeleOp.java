@@ -118,6 +118,14 @@ public class UKTeleOp extends OpMode {
                     intake.on();
                 }
 
+                if (controller1.risingEdgeOf(GamepadEx.Buttons.SQUARE)) {
+                    intake.setServoPosition(Intake.IntakeState.STACK_HIGH);
+                }
+
+                if (controller1.fallingEdgeOf(GamepadEx.Buttons.SQUARE)) {
+                    intake.setServoPosition(Intake.IntakeState.GROUND);
+                }
+
                 break;
             //  Intake -> Drive
             case INTAKE_DRIVE_TRANSITION:
@@ -230,7 +238,7 @@ public class UKTeleOp extends OpMode {
             // For scoring on the backboard
             case SCORE:
                 if (controller1.risingEdgeOf(GamepadEx.Buttons.BUMPER_RIGHT)) {
-                    if (targetBackboardLevel < 2) {
+                    if (targetBackboardLevel < 3) {
                         targetBackboardLevel++;
                         slides.setHeight(Slides.SlidesHeights.levelFromInt(targetBackboardLevel));
                     }

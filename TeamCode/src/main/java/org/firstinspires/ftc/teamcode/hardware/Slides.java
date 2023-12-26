@@ -14,7 +14,8 @@ public class Slides {
         AUTO(150),
         SECOND_LEVEL(200),
         FOURTH_LEVEL(300),
-        SIXTH_LEVEL(400);
+        SIXTH_LEVEL(400),
+        EIGTH_LEVEL(500);
 
         public final double targetPosition;
 
@@ -26,6 +27,7 @@ public class Slides {
             switch (num) {
                 case 1:     return FOURTH_LEVEL;
                 case 2:     return SIXTH_LEVEL;
+                case 3:     return EIGTH_LEVEL;
                 default:    return SECOND_LEVEL;
             }
         }
