@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.hardware.Airplane;
+import org.firstinspires.ftc.teamcode.hardware.BreakBeam;
 import org.firstinspires.ftc.teamcode.hardware.Claw;
 import org.firstinspires.ftc.teamcode.hardware.Delivery;
 import org.firstinspires.ftc.teamcode.hardware.Hang;
@@ -32,6 +33,7 @@ public class UKTeleOp extends OpMode {
     }
 
     private GamepadEx controller1, controller2;
+    private BreakBeam leftBeam, rightBeam;
     private LimitSwitch slideLimit;
     private DriveTrain driveTrain;
     private Airplane airplane;
@@ -56,6 +58,8 @@ public class UKTeleOp extends OpMode {
         controller2 = new GamepadEx(gamepad2);
 
         slideLimit = new LimitSwitch(hardwareMap, "slide limit");
+        rightBeam = new BreakBeam(hardwareMap, "right break");
+        leftBeam = new BreakBeam(hardwareMap, "left break");
         driveTrain = new DriveTrain(hardwareMap, controller1);
         airplane = new Airplane(hardwareMap);
         delivery = new Delivery(hardwareMap);
@@ -112,18 +116,18 @@ public class UKTeleOp extends OpMode {
 
                 if (controller1.risingEdgeOf(GamepadEx.Buttons.BUMPER_RIGHT)) {
                     intake.reverse();
-                }
-
-                if (controller1.fallingEdgeOf(GamepadEx.Buttons.BUMPER_RIGHT)) {
+                } else if (controller1.fallingEdgeOf(GamepadEx.Buttons.BUMPER_RIGHT)) {
                     intake.on();
                 }
 
                 if (controller1.risingEdgeOf(GamepadEx.Buttons.SQUARE)) {
                     intake.setServoPosition(Intake.IntakeState.STACK_HIGH);
+                } else if (controller1.fallingEdgeOf(GamepadEx.Buttons.SQUARE)) {
+                    intake.setServoPosition(Intake.IntakeState.GROUND);
                 }
 
-                if (controller1.fallingEdgeOf(GamepadEx.Buttons.SQUARE)) {
-                    intake.setServoPosition(Intake.IntakeState.GROUND);
+                if (leftBeam.broken() && rightBeam.broken() && !gamepad1.isRumbling()) {
+                    gamepad1.rumble(250);
                 }
 
                 break;
@@ -340,10 +344,11 @@ public class UKTeleOp extends OpMode {
         controller1.update();
         controller2.update();
 
-        slideLimit.update();
-
         delivery.update();
+        slideLimit.update();
         slides.update();
+        leftBeam.update();
+        rightBeam.update();
     }
 
     private void write() {
@@ -362,6 +367,8 @@ public class UKTeleOp extends OpMode {
         telemetry.addData("Slide Right Error", slides.getRightError());
         telemetry.addData("Slide at Target Position", slides.atTargetPosition());
         telemetry.addData("Backboard Level", targetBackboardLevel);
+        telemetry.addData("Left Beam Broken", leftBeam.broken());
+        telemetry.addData("Right Beam Broken", rightBeam.broken());
         telemetry.addData("Robot", robotState);
 
         telemetry.addData("Loop time", matchTimer.milliseconds());

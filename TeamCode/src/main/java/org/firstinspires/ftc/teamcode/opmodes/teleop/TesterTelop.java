@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.hardware.BreakBeam;
 import org.firstinspires.ftc.teamcode.hardware.Claw;
 import org.firstinspires.ftc.teamcode.hardware.Delivery;
 import org.firstinspires.ftc.teamcode.hardware.Intake;
@@ -21,15 +22,16 @@ public class TesterTelop extends LinearOpMode {
         Intake intake = new Intake(hardwareMap);
         Slides slides = new Slides(hardwareMap);
         Claw claw = new Claw(hardwareMap);
+        BreakBeam leftBeam = new BreakBeam(hardwareMap, "left break");
 
         telemetry.addLine("Ready to start");
         telemetry.update();
 
         waitForStart();
 
-
         while (opModeIsActive()) {
             controller.update();
+            leftBeam.update();
 
             slides.manual(gamepad1.right_trigger - gamepad1.left_trigger);
 
@@ -52,6 +54,7 @@ public class TesterTelop extends LinearOpMode {
             telemetry.addData("Claw", claw.getClawState());
             telemetry.addData("Left", slides.getCurrentLeftPosition());
             telemetry.addData("Right", slides.getCurrentRightPosition());
+            telemetry.addData("Left Bream", leftBeam.broken());
             telemetry.update();
         }
     }
