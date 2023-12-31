@@ -48,6 +48,7 @@ public class UKTeleOp extends OpMode {
     private int driveDeliveryTransition;
 
     private ElapsedTime transitionTimer, matchTimer;
+    private boolean leftRumble, rightRumble, fullRumble;
     private int targetBackboardLevel = 0;
 
     @Override
@@ -126,8 +127,19 @@ public class UKTeleOp extends OpMode {
                     intake.setServoPosition(Intake.IntakeState.GROUND);
                 }
 
-                if (leftBeam.broken() && rightBeam.broken() && !gamepad1.isRumbling()) {
-                    gamepad1.rumble(250);
+                if (!gamepad1.isRumbling()) {
+                    if (!fullRumble && leftBeam.broken() && rightBeam.broken()) {
+                        gamepad1.rumble(250);
+                        fullRumble = true;
+                        leftRumble = true;
+                        rightRumble = true;
+                    } else if (!leftRumble && leftBeam.broken()) {
+                        gamepad1.rumble(1, 0, 150);
+                        leftRumble = true;
+                    } else if (!rightRumble && rightBeam.broken()) {
+                        gamepad1.rumble(0, 1, 150);
+                        rightRumble = true;
+                    }
                 }
 
                 break;
