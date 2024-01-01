@@ -12,10 +12,10 @@ public class Slides {
     public enum SlidesHeights {
         BASE(1),
         AUTO(150),
-        SECOND_LEVEL(200),
-        FOURTH_LEVEL(300),
-        SIXTH_LEVEL(400),
-        EIGTH_LEVEL(500);
+        SECOND_LEVEL(250),
+        FOURTH_LEVEL(350),
+        SIXTH_LEVEL(450),
+        EIGTH_LEVEL(550);
 
         public final double targetPosition;
 
@@ -41,6 +41,8 @@ public class Slides {
 
     private SlidesHeights currentTarget;
     private double leftError, rightError;
+
+    private boolean pidEnabled = true;
 
     public Slides(HardwareMap hardwareMap) {
         leftExtension = new MotorBuilder(hardwareMap, "left ext")
@@ -71,11 +73,13 @@ public class Slides {
     }
 
     public void update() {
-        double leftNewPower = leftPIDController.update(leftExtension.getCurrentPosition()) * calculateMultiplier(leftExtension.getCurrentPosition());
-        double rightNewPower = rightPIDController.update(rightExtension.getCurrentPosition()) * calculateMultiplier(rightExtension.getCurrentPosition());
+        if (pidEnabled) {
+            double leftNewPower = leftPIDController.update(leftExtension.getCurrentPosition()) * calculateMultiplier(leftExtension.getCurrentPosition());
+            double rightNewPower = rightPIDController.update(rightExtension.getCurrentPosition()) * calculateMultiplier(rightExtension.getCurrentPosition());
 
-        leftExtension.setPower(leftNewPower);
-        rightExtension.setPower(rightNewPower);
+            leftExtension.setPower(leftNewPower);
+            rightExtension.setPower(rightNewPower);
+        }
     }
 
     public void manual(double power) {
@@ -88,11 +92,16 @@ public class Slides {
     }
 
     public void resetEncoders () {
+        DcMotor.RunMode mode = leftExtension.getMode();
         leftExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftExtension.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightExtension.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftExtension.setMode(mode);
+        rightExtension.setMode(mode);
+    }
+
+    public void setPidEnabled(boolean pidEnabled) {
+        this.pidEnabled = pidEnabled;
     }
 
     public SlidesHeights getCurrentTarget() {

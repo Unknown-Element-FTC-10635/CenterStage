@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class LimitSwitch {
     private final DigitalChannel limitSwitch;
 
-    private boolean state;
+    private boolean state, previousState;
     private boolean isInverted = false;
 
     public LimitSwitch(HardwareMap hardwareMap, String name) {
@@ -17,11 +17,16 @@ public class LimitSwitch {
         return state;
     }
 
+    public boolean isRisingEdge() {
+        return state && !previousState;
+    }
+
     public void setInverted(boolean invert) {
         isInverted = invert;
     }
 
     public void update() {
+        previousState = state;
         state = isInverted ? !limitSwitch.getState() : limitSwitch.getState();
     }
 }

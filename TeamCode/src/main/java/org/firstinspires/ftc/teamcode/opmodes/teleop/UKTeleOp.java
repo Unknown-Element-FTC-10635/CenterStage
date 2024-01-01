@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
 import static org.firstinspires.ftc.teamcode.opmodes.teleop.UKTeleOp.RobotState.ENDGAME;
+import static org.firstinspires.ftc.teamcode.opmodes.teleop.UKTeleOp.RobotState.INTAKE_DRIVE_TRANSITION;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -50,6 +51,7 @@ public class UKTeleOp extends OpMode {
     private ElapsedTime transitionTimer, matchTimer;
     private boolean leftRumble, rightRumble, fullRumble;
     private int targetBackboardLevel = 0;
+    private boolean stackIntakeToggle;
 
     @Override
     public void init() {
@@ -122,19 +124,22 @@ public class UKTeleOp extends OpMode {
                 }
 
                 if (controller1.risingEdgeOf(GamepadEx.Buttons.SQUARE)) {
-                    intake.setServoPosition(Intake.IntakeState.STACK_HIGH);
-                } else if (controller1.fallingEdgeOf(GamepadEx.Buttons.SQUARE)) {
-                    intake.setServoPosition(Intake.IntakeState.GROUND);
+                    stackIntakeToggle = !stackIntakeToggle;
+                    if (stackIntakeToggle) {
+                        intake.setServoPosition(Intake.IntakeState.STACK_HIGH);
+                    } else {
+                        intake.setServoPosition(Intake.IntakeState.GROUND);
+                    }
                 }
 
                 if (!gamepad1.isRumbling()) {
                     if (!fullRumble && leftBeam.broken() && rightBeam.broken()) {
-                        gamepad1.rumble(250);
+                        gamepad1.rumble(350);
                         fullRumble = true;
                         leftRumble = true;
                         rightRumble = true;
                     } else if (!leftRumble && leftBeam.broken()) {
-                        gamepad1.rumble(1, 0, 150);
+                        gamepad1.rumble(1, 0, 200);
                         leftRumble = true;
                     } else if (!rightRumble && rightBeam.broken()) {
                         gamepad1.rumble(0, 1, 150);
@@ -170,7 +175,8 @@ public class UKTeleOp extends OpMode {
                         driveDeliveryTransition++;
                         break;
                     case 3:
-                        // Wait <milliseconds> so the physical robot has time to actually close
+                    case 7:
+                        // Wait <milliseconds> so the physical servo has time to actually move
                         if (transitionTimer.milliseconds() > 500) {
                             driveDeliveryTransition++;
                         }
@@ -194,8 +200,11 @@ public class UKTeleOp extends OpMode {
                         // Move to safe transition point that works for both intake and score
                         delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
                         driveDeliveryTransition++;
+                        transitionTimer.reset();
                         break;
-                    case 7:
+                        // A pause to prevent spamming immediately from intake -> score, which
+                        // smashes the pixels against the edge of the intake
+                    case 8:
                         // Advance
                         robotState = RobotState.DRIVE;
                         break;
@@ -323,7 +332,10 @@ public class UKTeleOp extends OpMode {
 
                 break;
             case TRANSITION_ENDGAME:
+                slides.setHeight(Slides.SlidesHeights.BASE);
+                intake.off();
                 hang.setHangState(Hang.HangState.UP);
+
                 if (transitionTimer.milliseconds() > 250) {
                     robotState = ENDGAME;
                 }
@@ -346,6 +358,10 @@ public class UKTeleOp extends OpMode {
         if (controller1.risingEdgeOf(GamepadEx.Buttons.DPAD_UP)) {
             robotState = RobotState.TRANSITION_ENDGAME;
             transitionTimer.reset();
+        }
+
+        if (slideLimit.isRisingEdge()) {
+            slides.resetEncoders();
         }
 
         write();
