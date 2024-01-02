@@ -37,11 +37,11 @@ public class PropProcessor implements VisionProcessor, CameraStreamSource {
     private static final Scalar SECONDARY_LOWER_RED = new Scalar(170, 70, 80);
     private static final Scalar SECONDARY_UPPER_RED = new Scalar(180, 255, 255);
 
-    private static final Rect BLUE_LEFT_SPIKE = new Rect(90, 400, 200, 200);
-    private static final Rect BLUE_MIDDLE_SPIKE = new Rect(550, 375, 200, 200);
-    private static final Rect BLUE_RIGHT_SPIKE = new Rect(950, 400, 200, 200);
+    private static final Rect BLUE_LEFT_SPIKE = new Rect(50, 400, 200, 200);
+    private static final Rect BLUE_MIDDLE_SPIKE = new Rect(500, 375, 200, 200);
+    private static final Rect BLUE_RIGHT_SPIKE = new Rect(900, 440, 200, 200);
 
-    private static final Rect RED_LEFT_SPIKE = new Rect(190, 410, 200, 200);
+    private static final Rect RED_LEFT_SPIKE = new Rect(225, 430, 200, 200);
     private static final Rect RED_MIDDLE_SPIKE = new Rect(630, 375, 200, 200);
     private static final Rect RED_RIGHT_SPIKE = new Rect(1080, 440, 200, 200);
 
@@ -50,7 +50,7 @@ public class PropProcessor implements VisionProcessor, CameraStreamSource {
 
     private static final Size BLUR_SIZE = new Size(5, 5);
 
-    private final double[] spikeLocations = new double[4];
+    private final double[] spikeLocations = new double[3];
     private int largestSpikeIndex = 3;
 
     private final Mat processMat = new Mat();
@@ -59,6 +59,7 @@ public class PropProcessor implements VisionProcessor, CameraStreamSource {
             new AtomicReference<>(Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565));
 
     private final boolean blue;
+    private Scalar rectColor;
 
     public PropProcessor(boolean blue) {
         this.blue = blue;
@@ -68,12 +69,14 @@ public class PropProcessor implements VisionProcessor, CameraStreamSource {
             rightSpike = BLUE_RIGHT_SPIKE;
             lowerColor = LOWER_BLUE;
             upperColor = UPPER_BLUE;
+            rectColor = new Scalar(0, 0, 255);
         } else {
             leftSpike = RED_LEFT_SPIKE;
             middleSpike = RED_MIDDLE_SPIKE;
             rightSpike = RED_RIGHT_SPIKE;
             lowerColor = LOWER_RED;
             upperColor = UPPER_RED;
+            rectColor = new Scalar(255, 0, 0);
         }
     }
 
@@ -81,15 +84,14 @@ public class PropProcessor implements VisionProcessor, CameraStreamSource {
     public void init(int width, int height, CameraCalibration calibration) {
         logger.info("starting!");
         lastFrame.set(Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565));
-        spikeLocations[3] = 0.0;
     }
 
     @Override
     public Object processFrame(Mat frame, long captureTimeNanos) {
-        Imgproc.cvtColor(frame, processMat, Imgproc.COLOR_RGB2HSV);
+        Imgproc.cvtColor(frame, processMat, Imgproc.COLOR_RGB2YCrCb);
         Imgproc.GaussianBlur(processMat, processMat, BLUR_SIZE, 0);
 
-        Core.inRange(processMat, lowerColor, upperColor, frame);
+/*        Core.inRange(processMat, lowerColor, upperColor, frame);
         Core.inRange(processMat, lowerColor, upperColor, processMat);
 
         if (!blue) {
@@ -97,14 +99,14 @@ public class PropProcessor implements VisionProcessor, CameraStreamSource {
             Core.bitwise_or(processMat, redBitwiseMat, processMat);
             Core.bitwise_or(processMat, redBitwiseMat, frame);
         }
-
+*/
         spikeLocations[0] = Core.mean(processMat.submat(leftSpike)).val[0];
         spikeLocations[1] = Core.mean(processMat.submat(middleSpike)).val[0];
         spikeLocations[2] = Core.mean(processMat.submat(rightSpike)).val[0];
 
-        Imgproc.rectangle(frame, leftSpike, new Scalar(255, 0, 0), 5);
-        Imgproc.rectangle(frame, middleSpike, new Scalar(255, 0, 0), 5);
-        Imgproc.rectangle(frame, rightSpike, new Scalar(255, 0, 0), 5);
+        Imgproc.rectangle(frame, leftSpike, rectColor, 5);
+        Imgproc.rectangle(frame, middleSpike, rectColor, 5);
+        Imgproc.rectangle(frame, rightSpike, rectColor, 5);
 
         Bitmap b = Bitmap.createBitmap(processMat.width(), processMat.height(), Bitmap.Config.RGB_565);
         Utils.matToBitmap(frame, b);
@@ -119,8 +121,9 @@ public class PropProcessor implements VisionProcessor, CameraStreamSource {
     }
 
     public Spikes getSpikePosition() {
-        for (int i = 0; i < 3; i++) {
-            if (spikeLocations[i] > spikeLocations[largestSpikeIndex]) {
+        largestSpikeIndex = 0;
+        for (int i = 1; i < spikeLocations.length; i++) {
+            if (spikeLocations[i] < spikeLocations[largestSpikeIndex]) {
                 largestSpikeIndex = i;
             }
         }
@@ -131,6 +134,10 @@ public class PropProcessor implements VisionProcessor, CameraStreamSource {
             case 2:     return Spikes.RIGHT;
             default:    return Spikes.UNKNOWN;
         }
+    }
+
+    public double[] getValues(){
+        return spikeLocations;
     }
 
     @Override

@@ -22,6 +22,9 @@ public class WebcamTesting extends LinearOpMode {
         while (opModeIsActive()) {
             telemetry.addData("Pixel location", webcam.propProcessor.getSpikePosition());
             telemetry.addData("Camera FPS", webcam.getFPS());
+            telemetry.addData("left", webcam.propProcessor.getValues()[0]);
+            telemetry.addData("mid", webcam.propProcessor.getValues()[1]);
+            telemetry.addData("riggt", webcam.propProcessor.getValues()[2]);
             telemetry.update();
         }
     }

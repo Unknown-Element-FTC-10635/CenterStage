@@ -295,9 +295,10 @@ public class UKTeleOp extends OpMode {
                         break;
                 }
 
+
                 break;
             case TRANSITION_ENDGAME:
-                airplane.launch();
+                intake.off();
 
                 if (transitionTimer.milliseconds() > 1000) {
                     hang.motor(0);
@@ -310,7 +311,11 @@ public class UKTeleOp extends OpMode {
 
                 break;
             case ENDGAME:
-                hang.motor(gamepad1.right_trigger-gamepad1.left_trigger);
+                if(controller1.risingEdgeOf(GamepadEx.Buttons.DPAD_DOWN)) {
+                    airplane.launch();
+                }
+
+                hang.motor(gamepad1.left_trigger-gamepad1.right_trigger);
 
                 if(controller1.risingEdgeOf(GamepadEx.Buttons.CIRCLE)){
                     hang.setHangState(Hang.HangState.DOWN);
