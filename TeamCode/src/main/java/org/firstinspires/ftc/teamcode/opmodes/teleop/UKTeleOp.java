@@ -1,10 +1,13 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
+import static org.firstinspires.ftc.teamcode.opmodes.teleop.UKTeleOp.RobotState.ENDGAME;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.hardware.Airplane;
+import org.firstinspires.ftc.teamcode.hardware.BreakBeam;
 import org.firstinspires.ftc.teamcode.hardware.Claw;
 import org.firstinspires.ftc.teamcode.hardware.Delivery;
 import org.firstinspires.ftc.teamcode.hardware.Hang;
@@ -30,6 +33,7 @@ public class UKTeleOp extends OpMode {
     }
 
     private GamepadEx controller1, controller2;
+    private BreakBeam leftBeam, rightBeam;
     private LimitSwitch slideLimit;
     private DriveTrain driveTrain;
     private Airplane airplane;
@@ -44,6 +48,7 @@ public class UKTeleOp extends OpMode {
     private int driveDeliveryTransition;
 
     private ElapsedTime transitionTimer, matchTimer;
+    private boolean leftRumble, rightRumble, fullRumble;
     private int targetBackboardLevel = 0;
 
     @Override
@@ -54,6 +59,8 @@ public class UKTeleOp extends OpMode {
         controller2 = new GamepadEx(gamepad2);
 
         slideLimit = new LimitSwitch(hardwareMap, "slide limit");
+        rightBeam = new BreakBeam(hardwareMap, "right break");
+        leftBeam = new BreakBeam(hardwareMap, "left break");
         driveTrain = new DriveTrain(hardwareMap, controller1);
         airplane = new Airplane(hardwareMap);
         delivery = new Delivery(hardwareMap);
@@ -110,10 +117,29 @@ public class UKTeleOp extends OpMode {
 
                 if (controller1.risingEdgeOf(GamepadEx.Buttons.BUMPER_RIGHT)) {
                     intake.reverse();
+                } else if (controller1.fallingEdgeOf(GamepadEx.Buttons.BUMPER_RIGHT)) {
+                    intake.on();
                 }
 
-                if (controller1.fallingEdgeOf(GamepadEx.Buttons.BUMPER_RIGHT)) {
-                    intake.on();
+                if (controller1.risingEdgeOf(GamepadEx.Buttons.SQUARE)) {
+                    intake.setServoPosition(Intake.IntakeState.STACK_HIGH);
+                } else if (controller1.fallingEdgeOf(GamepadEx.Buttons.SQUARE)) {
+                    intake.setServoPosition(Intake.IntakeState.GROUND);
+                }
+
+                if (!gamepad1.isRumbling()) {
+                    if (!fullRumble && leftBeam.broken() && rightBeam.broken()) {
+                        gamepad1.rumble(250);
+                        fullRumble = true;
+                        leftRumble = true;
+                        rightRumble = true;
+                    } else if (!leftRumble && leftBeam.broken()) {
+                        gamepad1.rumble(1, 0, 150);
+                        leftRumble = true;
+                    } else if (!rightRumble && rightBeam.broken()) {
+                        gamepad1.rumble(0, 1, 150);
+                        rightRumble = true;
+                    }
                 }
 
                 break;
@@ -228,7 +254,7 @@ public class UKTeleOp extends OpMode {
             // For scoring on the backboard
             case SCORE:
                 if (controller1.risingEdgeOf(GamepadEx.Buttons.BUMPER_RIGHT)) {
-                    if (targetBackboardLevel < 2) {
+                    if (targetBackboardLevel < 3) {
                         targetBackboardLevel++;
                         slides.setHeight(Slides.SlidesHeights.levelFromInt(targetBackboardLevel));
                     }
@@ -298,27 +324,21 @@ public class UKTeleOp extends OpMode {
 
                 break;
             case TRANSITION_ENDGAME:
-                intake.off();
-
-                if (transitionTimer.milliseconds() > 1000) {
-                    hang.motor(0);
-                    robotState = RobotState.ENDGAME;
-                } else if (transitionTimer.milliseconds() > 750) {
-                    hang.motor(-0.4);
-                } else if (transitionTimer.milliseconds() > 250) {
-                    hang.setHangState(Hang.HangState.UP);
+                hang.setHangState(Hang.HangState.UP);
+                if (transitionTimer.milliseconds() > 250) {
+                    robotState = ENDGAME;
                 }
 
                 break;
             case ENDGAME:
-                if(controller1.risingEdgeOf(GamepadEx.Buttons.DPAD_DOWN)) {
-                    airplane.launch();
-                }
-
-                hang.motor(gamepad1.left_trigger-gamepad1.right_trigger);
+                hang.motor(gamepad1.left_trigger - gamepad1.right_trigger);
 
                 if(controller1.risingEdgeOf(GamepadEx.Buttons.CIRCLE)){
                     hang.setHangState(Hang.HangState.DOWN);
+                }
+
+                if (controller1.risingEdgeOf(GamepadEx.Buttons.SQUARE)) {
+                    airplane.launch();
                 }
 
                 break;
@@ -328,6 +348,7 @@ public class UKTeleOp extends OpMode {
             robotState = RobotState.TRANSITION_ENDGAME;
             transitionTimer.reset();
         }
+
         write();
     }
 
@@ -336,10 +357,11 @@ public class UKTeleOp extends OpMode {
         controller1.update();
         controller2.update();
 
-        slideLimit.update();
-
         delivery.update();
+        slideLimit.update();
         slides.update();
+        leftBeam.update();
+        rightBeam.update();
     }
 
     private void write() {
@@ -358,6 +380,8 @@ public class UKTeleOp extends OpMode {
         telemetry.addData("Slide Right Error", slides.getRightError());
         telemetry.addData("Slide at Target Position", slides.atTargetPosition());
         telemetry.addData("Backboard Level", targetBackboardLevel);
+        telemetry.addData("Left Beam Broken", leftBeam.broken());
+        telemetry.addData("Right Beam Broken", rightBeam.broken());
         telemetry.addData("Robot", robotState);
 
         telemetry.addData("Loop time", matchTimer.milliseconds());
