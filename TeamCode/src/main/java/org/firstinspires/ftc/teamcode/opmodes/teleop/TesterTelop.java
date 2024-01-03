@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.hardware.BreakBeam;
 import org.firstinspires.ftc.teamcode.hardware.Claw;
 import org.firstinspires.ftc.teamcode.hardware.Delivery;
+import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.hardware.Intake;
 import org.firstinspires.ftc.teamcode.hardware.Slides;
 import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
@@ -18,6 +19,7 @@ public class TesterTelop extends LinearOpMode {
         CurrentOpmode.setCurrentOpmode(CurrentOpmode.OpMode.TELEOP);
 
         GamepadEx controller = new GamepadEx(gamepad1);
+        DriveTrain driveTrain = new DriveTrain(hardwareMap, controller);
         Delivery delivery = new Delivery(hardwareMap);
         Intake intake = new Intake(hardwareMap);
         Slides slides = new Slides(hardwareMap);
@@ -55,6 +57,10 @@ public class TesterTelop extends LinearOpMode {
             telemetry.addData("Left", slides.getCurrentLeftPosition());
             telemetry.addData("Right", slides.getCurrentRightPosition());
             telemetry.addData("Left Bream", leftBeam.broken());
+            telemetry.addData("Left Front", driveTrain.getEncoderValues()[0]);
+            telemetry.addData("Right Front", driveTrain.getEncoderValues()[1]);
+            telemetry.addData("Left Back", driveTrain.getEncoderValues()[2]);
+            telemetry.addData("Right Back", driveTrain.getEncoderValues()[3]);
             telemetry.update();
         }
     }

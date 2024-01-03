@@ -65,4 +65,12 @@ public class DriveTrain {
     public double getSpeedMultiplier() {
         return speedMultiplier;
     }
+
+    public double[] getEncoderValues() {
+        return new double[] {frontLeftMotor.getCurrentPosition(),
+                frontRightMotor.getCurrentPosition(),
+                backLeftMotor.getCurrentPosition(),
+                backRightMotor.getCurrentPosition()
+        };
+    }
 }
