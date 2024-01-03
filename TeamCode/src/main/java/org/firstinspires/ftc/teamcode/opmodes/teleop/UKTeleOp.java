@@ -139,10 +139,10 @@ public class UKTeleOp extends OpMode {
                         leftRumble = true;
                         rightRumble = true;
                     } else if (!leftRumble && leftBeam.broken()) {
-                        gamepad1.rumble(1, 0, 200);
+                        //gamepad1.rumble(1, 0, 200);
                         leftRumble = true;
                     } else if (!rightRumble && rightBeam.broken()) {
-                        gamepad1.rumble(0, 1, 150);
+                        //gamepad1.rumble(0, 1, 150);
                         rightRumble = true;
                     }
                 }
