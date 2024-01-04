@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.utils.hardware.MotorBuilder;
 public class Intake {
    public enum IntakeState {
         START_POSITION(0.0),
-        STACK_HIGH(0.21),
+        STACK_HIGH(0.18),
         STACK_MID(0.27),
         GROUND(0.39);
 
@@ -37,6 +37,10 @@ public class Intake {
 
     public void on() {
         intake.setPower(ON_POWER);
+    }
+
+    public void on(double power) {
+        intake.setPower(power);
     }
 
     public void off() {

@@ -190,16 +190,22 @@ public class BlueLeft22 extends OpMode {
                         break;
                     case 5:
                         delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
-                        slides.setHeight(Slides.SlidesHeights.BASE);
 
                         subTransition++;
                         break;
                     case 6:
+                        if (timerAt(500)) {
+                            subTransition++;
+                        }
+
+                        break;
+                    case 7:
+                        slides.setHeight(Slides.SlidesHeights.BASE);
                         intake.setServoPosition(Intake.IntakeState.STACK_HIGH);
                         driveTrain.followTrajectorySequenceAsync(toCommonPath);
 
                         subTransition = 0;
-                        targetState = AutoStates.PICKUP_STACK_PIXELS;
+                        targetState = AutoStates.DRIVE_TO_STACK;
                         currentState = AutoStates.WAIT_ARRIVAL;
                         break;
                 }
@@ -218,14 +224,14 @@ public class BlueLeft22 extends OpMode {
                         delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_HOLD);
                         claw.repowerServo();
                         claw.setClawState(Claw.ClawState.OPEN_INTAKE);
-                        intake.on();
+                        intake.on(0.8);
                         intake.setServoPosition(Intake.IntakeState.STACK_HIGH);
 
                         timer.reset();
                         subTransition++;
                         break;
                     case 1:
-                        if (timer.milliseconds() > 800) {
+                        if (timer.milliseconds() > 500) {
                             subTransition++;
                         }
 
@@ -237,13 +243,14 @@ public class BlueLeft22 extends OpMode {
                         timer.reset();
                         break;
                     case 3:
-                        if (timer.milliseconds() > 1000) {
+                        if (timer.milliseconds() > 1500) {
                             subTransition++;
                         }
 
                         break;
                     case 4:
                         driveTrain.followTrajectorySequenceAsync(backToKnownPosition);
+                        intake.on();
 
                         subTransition = 0;
                         targetState = AutoStates.SCORE_STACK_PIXELS;
@@ -263,6 +270,7 @@ public class BlueLeft22 extends OpMode {
                     case 1:
                     case 3:
                     case 11:
+                    case 13:
                         // Wait <milliseconds> so the physical servo has time to actually move
                         // Wait until we know the claw is parallel to the ground
                         if (timer.milliseconds() > 500) {
@@ -325,9 +333,13 @@ public class BlueLeft22 extends OpMode {
                         subTransition++;
                         break;
                     case 12:
-                        slides.setHeight(Slides.SlidesHeights.BASE);
                         delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
 
+                        subTransition++;
+                    case 14:
+                        slides.setHeight(Slides.SlidesHeights.BASE);
+
+                        subTransition = 0;
                         currentState = AutoStates.PARK;
                         break;
                 }
@@ -369,7 +381,7 @@ public class BlueLeft22 extends OpMode {
                 .build();
 
         preloadDeliveryCenter = driveTrain.trajectorySequenceBuilder(startPose)
-                .lineTo(new Vector2d(14, 32))
+                .lineTo(new Vector2d(14, 30))
                 .build();
 
         preloadDeliveryRight = driveTrain.trajectorySequenceBuilder(startPose)
@@ -385,7 +397,7 @@ public class BlueLeft22 extends OpMode {
         preloadDeliveryBackdropCenter = driveTrain.trajectorySequenceBuilder(preloadDeliveryCenter.end())
                 .back(6)
                 .setReversed(true)
-                .lineToLinearHeading(new Pose2d(50, 34, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(50, 32, Math.toRadians(180)))
                 .back(7)
                 .build();
 
@@ -399,7 +411,7 @@ public class BlueLeft22 extends OpMode {
                 .build();
 
         toCommonPathCenter = driveTrain.trajectorySequenceBuilder(preloadDeliveryBackdropCenter.end())
-                .forward(5)
+                .forward(7)
                 .build();
 
         toCommonPathRight = driveTrain.trajectorySequenceBuilder(preloadDeliveryBackdropRight.end())
@@ -408,19 +420,19 @@ public class BlueLeft22 extends OpMode {
 
         toStack = driveTrain.trajectorySequenceBuilder(toCommonPathCenter.end())
                 .splineTo(new Vector2d(20, 5), Math.toRadians(180))
-                .splineTo(new Vector2d(-52, 7.25), Math.toRadians(180))
+                .splineTo(new Vector2d(-59, 8), Math.toRadians(180))
                 .build();
 
         backToKnownPosition = driveTrain.trajectorySequenceBuilder(new Pose2d(-60, 9, Math.toRadians(180)))
                 .setReversed(true)
-                .lineTo(new Vector2d(-30, 8))
+                .lineTo(new Vector2d(-45, 7))
                 .build();
 
         stackDeliveryBackdrop = driveTrain.trajectorySequenceBuilder(backToKnownPosition.end())
                 .setReversed(true)
-                .lineTo(new Vector2d(26, 7))
-                .splineTo(new Vector2d(46, 33), Math.toRadians(0))
-                .back(6)
+                .lineTo(new Vector2d(25, 7))
+                .splineTo(new Vector2d(46, 32), Math.toRadians(0))
+                .back(7)
                 .build();
     }
 }
