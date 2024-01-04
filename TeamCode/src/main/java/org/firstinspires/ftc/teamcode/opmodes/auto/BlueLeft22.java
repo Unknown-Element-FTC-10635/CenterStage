@@ -19,8 +19,6 @@ import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySe
 import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
 import org.firstinspires.ftc.teamcode.vision.PropProcessor;
 
-import java.lang.annotation.Native;
-
 @Autonomous(name = "BLUE (Left) - 2+2")
 public class BlueLeft22 extends OpMode {
     public enum AutoStates {
@@ -32,7 +30,6 @@ public class BlueLeft22 extends OpMode {
         SCORE_STACK_PIXELS,
         PARK,
         WAIT_ARRIVAL,
-        SLIDE_TIMEOUT,
     }
 
     private SampleMecanumDrive driveTrain;
@@ -199,7 +196,7 @@ public class BlueLeft22 extends OpMode {
                         break;
                     case 6:
                         intake.setServoPosition(Intake.IntakeState.STACK_HIGH);
-                        driveTrain.followTrajectorySequenceAsync(toStack);
+                        driveTrain.followTrajectorySequenceAsync(toCommonPath);
 
                         subTransition = 0;
                         targetState = AutoStates.PICKUP_STACK_PIXELS;
@@ -264,8 +261,11 @@ public class BlueLeft22 extends OpMode {
                         subTransition++;
                         break;
                     case 1:
+                    case 3:
+                    case 11:
+                        // Wait <milliseconds> so the physical servo has time to actually move
                         // Wait until we know the claw is parallel to the ground
-                        if (timer.milliseconds() > 900) {
+                        if (timer.milliseconds() > 500) {
                             subTransition++;
                         }
 
@@ -277,14 +277,7 @@ public class BlueLeft22 extends OpMode {
 
                         subTransition++;
                         break;
-                    case 3:
-                    case 11:
-                        // Wait <milliseconds> so the physical servo has time to actually move
-                        if (timer.milliseconds() > 500) {
-                            subTransition++;
-                        }
 
-                        break;
                     case 4:
                         // Move to safe transition point to avoid the cross-beam
                         delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_HOLD);
@@ -348,33 +341,6 @@ public class BlueLeft22 extends OpMode {
                 }
 
                 break;
-            case SLIDE_TIMEOUT:
-                switch (subTransition) {
-                    case 0:
-                        slides.setPidEnabled(false);
-                        slides.manual(-0.3);
-
-                        subTransition++;
-                        break;
-                    case 1:
-                        if (slideLimit.isPressed()) {
-                            slides.manual(0);
-                            slides.resetEncoders();
-
-                            subTransition++;
-                        }
-
-                        break;
-                    case 2:
-                        slides.setHeight(Slides.SlidesHeights.BASE);
-                        slides.setPidEnabled(true);
-
-                        subTransition = 0;
-                        currentState = targetState;
-                        break;
-                }
-
-                break;
         }
 
         if (slideLimit.isRisingEdge()) {
@@ -430,21 +396,17 @@ public class BlueLeft22 extends OpMode {
 
         toCommonPathLeft = driveTrain.trajectorySequenceBuilder(preloadDeliveryBackdropLeft.end())
                 .forward(5)
-                .lineTo(new Vector2d(38, 8))
                 .build();
 
         toCommonPathCenter = driveTrain.trajectorySequenceBuilder(preloadDeliveryBackdropCenter.end())
                 .forward(5)
-                .lineTo(new Vector2d(38, 8))
                 .build();
 
         toCommonPathRight = driveTrain.trajectorySequenceBuilder(preloadDeliveryBackdropRight.end())
                 .forward(5)
-                .lineTo(new Vector2d(38, 8))
                 .build();
 
         toStack = driveTrain.trajectorySequenceBuilder(toCommonPathCenter.end())
-                .forward(10)
                 .splineTo(new Vector2d(20, 5), Math.toRadians(180))
                 .splineTo(new Vector2d(-52, 7.25), Math.toRadians(180))
                 .build();
