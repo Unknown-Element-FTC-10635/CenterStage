@@ -136,8 +136,8 @@ public class MeepMeepTesting {
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
                 // Add both of our declared bot entities
-                  .addEntity(blueBotPos1)
-               //  .addEntity(blueBotPos2)
+                //  .addEntity(blueBotPos1)
+                 .addEntity(blueBotPos2)
                //  .addEntity(blueBotPos3)
             //   .addEntity(redBotPos1)
             //     .addEntity(redBotPos2)

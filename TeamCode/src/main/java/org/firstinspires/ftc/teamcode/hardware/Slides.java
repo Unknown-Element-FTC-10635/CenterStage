@@ -33,8 +33,8 @@ public class Slides {
         }
     }
 
-    private static final double lP = 0.09, lI = 0.0, lD = 0.005;
-    private static final double rP = 0.07, rI = 0.0, rD = 0.005;
+    private static final double lP = 0.06, lI = 0.0, lD = 0.00025;
+    private static final double rP = 0.04, rI = 0.0, rD = 0.00025;
 
     private final PID leftPIDController, rightPIDController;
     private final DcMotorEx leftExtension, rightExtension;
