@@ -17,7 +17,7 @@ import java.util.Vector;
 
 public class MeepMeepTesting {
     public static void main(String[] args) {
-        MeepMeep meepMeep = new MeepMeep(780);
+        MeepMeep meepMeep = new MeepMeep(700);
 
         // Declare our first bot
         RoadRunnerBotEntity blueBotPos1 = new DefaultBotBuilder(meepMeep)
@@ -26,13 +26,19 @@ public class MeepMeepTesting {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(9, 62, Math.toRadians(270)))
-                                .lineTo(new Vector2d(14, 53))
-                                .lineToLinearHeading(new Pose2d(12, 32, Math.toRadians(180)))
-                                .waitSeconds(2)
                                 .setReversed(true)
-                                .splineTo(new Vector2d(50, 41.5), Math.toRadians(0))
-                                .forward(15)
-                                .lineTo(new Vector2d(45,60))
+                                .lineToLinearHeading(new Pose2d(50, 41.5, Math.toRadians(180)))
+                                .forward(5)
+                                .setReversed(true)
+                                .lineToLinearHeading(new Pose2d(35, 32,  Math.toRadians(180)))
+                                .forward(3)
+                                .back(5)
+                                .lineTo(new Vector2d(30, 5))
+                                .setReversed(false)
+                                .splineTo(new Vector2d(-60, 10.5), Math.toRadians(180))
+                                .lineTo(new Vector2d(26, 7))
+                                .splineTo(new Vector2d(46, 33), Math.toRadians(0))
+                                .back(6)
                                 .build()
                 );
 
@@ -41,12 +47,19 @@ public class MeepMeepTesting {
                 .setConstraints(60,60, Math.toRadians(180), Math.toRadians(105), 15)
                 .followTrajectorySequence(drive ->
                 drive.trajectorySequenceBuilder(new Pose2d(9, 62, Math.toRadians(270)))
-                        .lineTo(new Vector2d(14, 53))
-                        .lineTo(new Vector2d(12, 35))
-                        .waitSeconds(2)
-                        .lineToLinearHeading(new Pose2d(50, 32, Math.toRadians(180)))
-                        .forward(15)
-                        .lineTo(new Vector2d(45,60))
+                        .setReversed(true)
+                        .lineToLinearHeading(new Pose2d(50, 34, Math.toRadians(180)))
+                        .forward(5)
+                        .setReversed(true)
+                        .lineToLinearHeading(new Pose2d(27, 25,  Math.toRadians(180)))
+                        .forward(3)
+                        .back(5)
+                        .lineTo(new Vector2d(30, 5))
+                        .setReversed(false)
+                        .splineTo(new Vector2d(-60, 10.5), Math.toRadians(180))
+                        .lineTo(new Vector2d(26, 7))
+                        .splineTo(new Vector2d(46, 33), Math.toRadians(0))
+                        .back(6)
                         .build()
         );
 //
@@ -136,12 +149,12 @@ public class MeepMeepTesting {
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
                 // Add both of our declared bot entities
-                //  .addEntity(blueBotPos1)
+//                  .addEntity(blueBotPos1)
                  .addEntity(blueBotPos2)
-               //  .addEntity(blueBotPos3)
-            //   .addEntity(redBotPos1)
-            //     .addEntity(redBotPos2)
-                //.addEntity(redBotPos3)
+//                 .addEntity(blueBotPos3)
+//               .addEntity(redBotPos1)
+//                 .addEntity(redBotPos2)
+//                .addEntity(redBotPos3)
                 .start();
     }
 }

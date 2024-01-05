@@ -96,9 +96,9 @@ public class BlueLeft22 extends OpMode {
 
         switch (spikePosition) {
             case LEFT:
-                preloadDelivery = preloadDeliveryLeft;
-                preloadDeliveryBackdrop = preloadDeliveryBackdropLeft;
-                toCommonPath = toCommonPathLeft;
+                preloadDelivery = preloadDeliveryRight;
+                preloadDeliveryBackdrop = preloadDeliveryBackdropRight;
+                toCommonPath = toCommonPathRight;
                 break;
             case CENTER:
                 preloadDelivery = preloadDeliveryCenter;
@@ -106,9 +106,9 @@ public class BlueLeft22 extends OpMode {
                 toCommonPath = toCommonPathCenter;
                 break;
             case RIGHT:
-                preloadDelivery = preloadDeliveryRight;
-                preloadDeliveryBackdrop = preloadDeliveryBackdropRight;
-                toCommonPath = toCommonPathRight;
+                preloadDelivery = preloadDeliveryLeft;
+                preloadDeliveryBackdrop = preloadDeliveryBackdropLeft;
+                toCommonPath = toCommonPathLeft;
                 break;
         }
     }
@@ -377,33 +377,33 @@ public class BlueLeft22 extends OpMode {
     private void buildPaths() {
         preloadDeliveryLeft = driveTrain.trajectorySequenceBuilder(startPose)
                 .lineTo(new Vector2d(14, 53))
-                .lineToLinearHeading(new Pose2d(12, 32, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(5, 32, Math.toRadians(180)))
                 .build();
 
         preloadDeliveryCenter = driveTrain.trajectorySequenceBuilder(startPose)
-                .lineTo(new Vector2d(14, 30))
+                .lineTo(new Vector2d(14, 31))
                 .build();
 
         preloadDeliveryRight = driveTrain.trajectorySequenceBuilder(startPose)
                 .lineTo(new Vector2d(14, 53))
-                .splineTo(new Vector2d(25, 38.5), Math.toRadians(230))
+                .splineTo(new Vector2d(29,36), Math.toRadians(230))
                 .build();
 
         preloadDeliveryBackdropLeft = driveTrain.trajectorySequenceBuilder(preloadDeliveryLeft.end())
                 .setReversed(true)
-                .splineTo(new Vector2d(50, 41.5), Math.toRadians(0))
+                .splineTo(new Vector2d(56, 27), Math.toRadians(0))
                 .build();
 
         preloadDeliveryBackdropCenter = driveTrain.trajectorySequenceBuilder(preloadDeliveryCenter.end())
                 .back(6)
                 .setReversed(true)
-                .lineToLinearHeading(new Pose2d(50, 32, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(50, 30, Math.toRadians(180)))
                 .back(7)
                 .build();
 
         preloadDeliveryBackdropRight = driveTrain.trajectorySequenceBuilder(preloadDeliveryRight.end())
                 .setReversed(true)
-                .splineTo(new Vector2d(50, 30), Math.toRadians(0))
+                .splineTo(new Vector2d(57, 40), Math.toRadians(0))
                 .build();
 
         toCommonPathLeft = driveTrain.trajectorySequenceBuilder(preloadDeliveryBackdropLeft.end())
@@ -420,7 +420,7 @@ public class BlueLeft22 extends OpMode {
 
         toStack = driveTrain.trajectorySequenceBuilder(toCommonPathCenter.end())
                 .splineTo(new Vector2d(20, 5), Math.toRadians(180))
-                .splineTo(new Vector2d(-59, 8), Math.toRadians(180))
+                .splineTo(new Vector2d(-61, 9), Math.toRadians(180))
                 .build();
 
         backToKnownPosition = driveTrain.trajectorySequenceBuilder(new Pose2d(-60, 9, Math.toRadians(180)))
@@ -431,7 +431,7 @@ public class BlueLeft22 extends OpMode {
         stackDeliveryBackdrop = driveTrain.trajectorySequenceBuilder(backToKnownPosition.end())
                 .setReversed(true)
                 .lineTo(new Vector2d(25, 7))
-                .splineTo(new Vector2d(46, 32), Math.toRadians(0))
+                .splineTo(new Vector2d(50, 32), Math.toRadians(0))
                 .back(7)
                 .build();
     }
