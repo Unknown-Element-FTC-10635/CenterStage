@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.vision.PropProcessor;
 
 import java.util.Timer;
 
-@Autonomous(name = "RED (Right) - 2+0")
+@Autonomous(name = "RED (Right) - 2+0", group = "red")
 public class RedRight20 extends LinearOpMode {
     private LimitSwitch slideLimit;
     private SampleMecanumDrive driveTrain;

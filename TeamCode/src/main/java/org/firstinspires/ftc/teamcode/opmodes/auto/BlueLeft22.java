@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySe
 import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
 import org.firstinspires.ftc.teamcode.vision.PropProcessor;
 
-@Autonomous(name = "BLUE (Left) - 2+2")
+@Autonomous(name = "BLUE (Left) - 2+2", group = "blue")
 public class BlueLeft22 extends OpMode {
     public enum AutoStates {
         START,

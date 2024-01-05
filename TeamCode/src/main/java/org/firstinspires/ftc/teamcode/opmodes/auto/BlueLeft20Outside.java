@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.vision.PropProcessor;
 
 import java.util.Timer;
 
-@Autonomous(name = "BLUE (Left) Outside - 2+0")
+@Autonomous(name = "BLUE (Left) Outside - 2+0", group = "blue")
 public class BlueLeft20Outside extends LinearOpMode {
     private LimitSwitch slideLimit;
     private SampleMecanumDrive driveTrain;
