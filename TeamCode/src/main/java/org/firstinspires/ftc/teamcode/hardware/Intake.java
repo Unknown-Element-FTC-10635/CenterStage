@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.utils.hardware.MotorBuilder;
 
 public class Intake {
    public enum IntakeState {
-        START_POSITION(0.0),
+        START_POSITION(0.1),
         STACK_HIGH(0.18),
         STACK_MID(0.27),
         GROUND(0.39);

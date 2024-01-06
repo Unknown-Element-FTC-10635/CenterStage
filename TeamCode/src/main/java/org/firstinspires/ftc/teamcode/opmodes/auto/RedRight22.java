@@ -249,8 +249,9 @@ public class RedRight22 extends OpMode {
 
                         break;
                     case 4:
+                        intake.setServoPosition(Intake.IntakeState.START_POSITION);
+
                         driveTrain.followTrajectorySequenceAsync(backToKnownPosition);
-                        intake.on();
 
                         subTransition = 0;
                         targetState = AutoStates.SCORE_STACK_PIXELS;
@@ -263,6 +264,8 @@ public class RedRight22 extends OpMode {
                     case 0:
                         driveTrain.followTrajectorySequenceAsync(stackDeliveryBackdrop);
                         delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_PICKUP);
+                        intake.setServoPosition(Intake.IntakeState.STACK_MID);
+                        intake.on();
                         timer.reset();
 
                         subTransition++;
@@ -377,7 +380,7 @@ public class RedRight22 extends OpMode {
     private void buildPaths() {
         preloadDeliveryLeft = driveTrain.trajectorySequenceBuilder(startPose)
                 .lineTo(new Vector2d(14, -53))
-                .splineTo(new Vector2d(29,-36), Math.toRadians(230))
+                .splineTo(new Vector2d(29,-36), Math.toRadians(140))
                 .build();
 
         preloadDeliveryCenter = driveTrain.trajectorySequenceBuilder(startPose)
@@ -403,7 +406,7 @@ public class RedRight22 extends OpMode {
 
         preloadDeliveryBackdropRight = driveTrain.trajectorySequenceBuilder(preloadDeliveryLeft.end())
                 .setReversed(true)
-                .splineTo(new Vector2d(56, -27), Math.toRadians(0))
+                .splineTo(new Vector2d(56, -28), Math.toRadians(0))
                 .build();
 
         toCommonPathLeft = driveTrain.trajectorySequenceBuilder(preloadDeliveryBackdropLeft.end())
