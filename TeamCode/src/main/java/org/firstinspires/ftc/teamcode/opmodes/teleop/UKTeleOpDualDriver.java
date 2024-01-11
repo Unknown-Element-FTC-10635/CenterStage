@@ -181,6 +181,10 @@ public class UKTeleOpDualDriver extends OpMode {
                         break;
                 }
 
+                if (controller2.risingEdgeOf(GamepadEx.Buttons.TRIANGLE)) {
+                    robotState = RobotState.DRIVE_INTAKE_TRANSITION;
+                }
+
                 break;
             // Mostly just a transition state, don't think anything special needs to be here
             case DRIVE:
