@@ -217,7 +217,7 @@ public class UKTeleOp extends OpMode {
                         break;
                     case 1:
                         // Wait until the slides are at that position
-                        if (slides.atTargetPosition() || transitionTimer.milliseconds() > 2000) {
+                        if (slides.atTargetPosition() || transitionTimer.milliseconds() > 750) {
                             driveDeliveryTransition++;
                         }
 
