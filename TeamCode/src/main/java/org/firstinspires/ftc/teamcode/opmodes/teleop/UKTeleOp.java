@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
-import static org.firstinspires.ftc.teamcode.opmodes.teleop.UKTeleOp.RobotState.ENDGAME;
-import static org.firstinspires.ftc.teamcode.opmodes.teleop.UKTeleOp.RobotState.INTAKE_DRIVE_TRANSITION;
-
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -17,22 +14,11 @@ import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.hardware.Intake;
 import org.firstinspires.ftc.teamcode.hardware.LimitSwitch;
 import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
+import org.firstinspires.ftc.teamcode.utils.RobotState;
 import org.firstinspires.ftc.teamcode.utils.hardware.GamepadEx;
 
 @TeleOp
 public class UKTeleOp extends OpMode {
-    public enum RobotState {
-        DRIVE_INTAKE_TRANSITION,
-        INTAKE,
-        INTAKE_DRIVE_TRANSITION,
-        DRIVE,
-        DRIVE_SCORE_TRANSITION,
-        SCORE,
-        SCORE_DRIVE_TRANSITION,
-        ENDGAME,
-        TRANSITION_ENDGAME
-    }
-
     private GamepadEx controller1, controller2;
     private BreakBeam leftBeam, rightBeam;
     private LimitSwitch slideLimit;
@@ -323,7 +309,7 @@ public class UKTeleOp extends OpMode {
                 hang.setHangState(Hang.HangState.UP);
 
                 if (transitionTimer.milliseconds() > 250) {
-                    robotState = ENDGAME;
+                    robotState = RobotState.ENDGAME;
                 }
 
                 break;
