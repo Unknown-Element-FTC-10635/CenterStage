@@ -132,21 +132,6 @@ public class UKTeleOp extends OpMode {
                     }
                 }
 
-                if (!gamepad1.isRumbling()) {
-                    if (!fullRumble && leftBeam.broken() && rightBeam.broken()) {
-                        gamepad1.rumble(350);
-                        fullRumble = true;
-                        leftRumble = true;
-                        rightRumble = true;
-                    } else if (!leftRumble && leftBeam.broken()) {
-                        //gamepad1.rumble(1, 0, 200);
-                        leftRumble = true;
-                    } else if (!rightRumble && rightBeam.broken()) {
-                        //gamepad1.rumble(0, 1, 150);
-                        rightRumble = true;
-                    }
-                }
-
                 break;
             //  Intake -> Drive
             case INTAKE_DRIVE_TRANSITION:
@@ -376,8 +361,8 @@ public class UKTeleOp extends OpMode {
         delivery.update();
         slideLimit.update();
         slides.update();
-        leftBeam.update();
-        rightBeam.update();
+        //leftBeam.update();
+        //rightBeam.update();
     }
 
     private void write() {
@@ -396,8 +381,6 @@ public class UKTeleOp extends OpMode {
         telemetry.addData("Slide Right Error", slides.getRightError());
         telemetry.addData("Slide at Target Position", slides.atTargetPosition());
         telemetry.addData("Backboard Level", targetBackboardLevel);
-        telemetry.addData("Left Beam Broken", leftBeam.broken());
-        telemetry.addData("Right Beam Broken", rightBeam.broken());
         telemetry.addData("Robot", robotState);
 
         telemetry.addData("Loop time", matchTimer.milliseconds());
