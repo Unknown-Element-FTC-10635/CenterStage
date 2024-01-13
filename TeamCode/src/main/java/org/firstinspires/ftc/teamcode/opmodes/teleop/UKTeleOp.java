@@ -133,7 +133,7 @@ public class UKTeleOp extends OpMode {
                         break;
                     case 1:
                         // Wait until we know the claw is parallel to the ground
-                        if (transitionTimer.milliseconds() > 900) {
+                        if (transitionTimer.milliseconds() > 325) {
                             driveDeliveryTransition++;
                         }
 
@@ -146,9 +146,8 @@ public class UKTeleOp extends OpMode {
                         driveDeliveryTransition++;
                         break;
                     case 3:
-                    case 7:
                         // Wait <milliseconds> so the physical servo has time to actually move
-                        if (transitionTimer.milliseconds() > 500) {
+                        if (transitionTimer.milliseconds() > 725) {
                             driveDeliveryTransition++;
                         }
 
@@ -162,7 +161,7 @@ public class UKTeleOp extends OpMode {
                         driveDeliveryTransition++;
                         break;
                     case 5:
-                        if (transitionTimer.milliseconds() > 1250) {
+                        if (transitionTimer.milliseconds() > 1000) {
                             driveDeliveryTransition++;
                         }
 
@@ -175,6 +174,13 @@ public class UKTeleOp extends OpMode {
                         break;
                         // A pause to prevent spamming immediately from intake -> score, which
                         // smashes the pixels against the edge of the intake
+                    case 7:
+                        // Wait <milliseconds> so the physical servo has time to actually move
+                        if (transitionTimer.milliseconds() > 500) {
+                            driveDeliveryTransition++;
+                        }
+
+                        break;
                     case 8:
                         // Advance
                         robotState = RobotState.DRIVE;
