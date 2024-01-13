@@ -7,7 +7,7 @@ public class Delivery {
     public enum DeliveryState {
         INTAKE_PICKUP(0.175, 0.175, 0.32),
         INTAKE_HOLD(0.5, 0.5, 0.32),
-        TRANSITION_2(0.68, 0.68, 0.875),
+        TRANSITION_2(0.725, 0.725, 0.875),
         SCORE(0.95, 0.95, 0.875),
         SCORE_AUTO(1.0, 1.0, 0.875),
         UNKNOWN(0.6, 0.6, 0.875);
