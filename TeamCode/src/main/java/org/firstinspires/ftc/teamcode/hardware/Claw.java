@@ -8,7 +8,7 @@ public class Claw {
     public enum ClawState {
         OPEN_INTAKE(0.34),
         OPEN_SCORE(0.29),
-        CLOSED(0.22),
+        CLOSED(0.15),
         SINGLE_CLOSED(0.25),
         UNKNOWN(0.0);
 
