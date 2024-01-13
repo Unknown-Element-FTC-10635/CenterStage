@@ -18,7 +18,7 @@ import org.opencv.imgproc.Imgproc;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 
-public class PropProcessor implements VisionProcessor, CameraStreamSource {
+public class PropProcessor extends SimpleProcessor {
     private final Logger logger = Logger.getLogger(this.getClass().getName());
 
     public enum Spikes {
@@ -44,8 +44,6 @@ public class PropProcessor implements VisionProcessor, CameraStreamSource {
     private int largestSpikeIndex = 3;
 
     private final Mat processMat = new Mat();
-    private final AtomicReference<Bitmap> lastFrame =
-            new AtomicReference<>(Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565));
 
     private final Scalar rectColor;
 
@@ -66,7 +64,6 @@ public class PropProcessor implements VisionProcessor, CameraStreamSource {
     @Override
     public void init(int width, int height, CameraCalibration calibration) {
         logger.info("starting!");
-        lastFrame.set(Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565));
     }
 
     @Override
@@ -82,16 +79,8 @@ public class PropProcessor implements VisionProcessor, CameraStreamSource {
         Imgproc.rectangle(frame, middleSpike, rectColor, 5);
         Imgproc.rectangle(frame, rightSpike, rectColor, 5);
 
-        Bitmap b = Bitmap.createBitmap(processMat.width(), processMat.height(), Bitmap.Config.RGB_565);
-        Utils.matToBitmap(frame, b);
-        lastFrame.set(b);
-
+        super.processFrame(frame, captureTimeNanos);
         return frame;
-    }
-
-    @Override
-    public void onDrawFrame(Canvas canvas, int onscreenWidth, int onscreenHeight, float scaleBmpPxToCanvasPx, float scaleCanvasDensity, Object userContext) {
-
     }
 
     public Spikes getSpikePosition() {
@@ -112,10 +101,5 @@ public class PropProcessor implements VisionProcessor, CameraStreamSource {
 
     public double[] getValues(){
         return spikeLocations;
-    }
-
-    @Override
-    public void getFrameBitmap(Continuation<? extends Consumer<Bitmap>> continuation) {
-        continuation.dispatch(bitmapConsumer -> bitmapConsumer.accept(lastFrame.get()));
     }
 }

@@ -60,7 +60,8 @@ public class BlueLeft20Outside extends LinearOpMode {
         telemetry.addLine("Initializing robot");
         telemetry.update();
 
-        webcam = new Webcam(hardwareMap, true);
+        PropProcessor processor = new PropProcessor(true);
+        webcam = new Webcam(hardwareMap, processor, "webcam");
         claw.setClawState(Claw.ClawState.SINGLE_CLOSED);
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -132,7 +133,7 @@ public class BlueLeft20Outside extends LinearOpMode {
 
         waitForStart();
 
-        PropProcessor.Spikes spikePosition = webcam.propProcessor.getSpikePosition();
+        PropProcessor.Spikes spikePosition = processor.getSpikePosition();
         webcam.stopWebcam();
 
         telemetry.addData("Going to", spikePosition);

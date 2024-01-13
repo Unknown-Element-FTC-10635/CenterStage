@@ -60,7 +60,8 @@ public class RedRight20 extends LinearOpMode {
         telemetry.addLine("Initializing robot");
         telemetry.update();
 
-        webcam = new Webcam(hardwareMap, false);
+        PropProcessor processor = new PropProcessor(false);
+        webcam = new Webcam(hardwareMap, processor, "webcam");
         claw.setClawState(Claw.ClawState.SINGLE_CLOSED);
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -131,7 +132,7 @@ public class RedRight20 extends LinearOpMode {
 
         waitForStart();
 
-        PropProcessor.Spikes spikePosition = webcam.propProcessor.getSpikePosition();
+        PropProcessor.Spikes spikePosition = processor.getSpikePosition();
         intake.setServoPosition(Intake.IntakeState.STACK_HIGH);
         webcam.stopWebcam();
 

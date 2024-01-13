@@ -40,6 +40,7 @@ public class BlueLeft22 extends OpMode {
     private Slides slides;
     private Claw claw;
 
+    private PropProcessor processor;
     private Webcam webcam;
 
     private ElapsedTime timer;
@@ -65,7 +66,8 @@ public class BlueLeft22 extends OpMode {
         slides = new Slides(hardwareMap);
         claw = new Claw(hardwareMap);
 
-        webcam = new Webcam(hardwareMap, true);
+        processor = new PropProcessor(true);
+        webcam = new Webcam(hardwareMap, processor, "webcam");
         claw.setClawState(Claw.ClawState.SINGLE_CLOSED);
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -83,7 +85,7 @@ public class BlueLeft22 extends OpMode {
     public void init_loop() {
         super.init_loop();
 
-        telemetry.addData("Prop Location", webcam.propProcessor.getSpikePosition());
+        telemetry.addData("Prop Location", processor.getSpikePosition());
         telemetry.update();
     }
 
@@ -91,7 +93,7 @@ public class BlueLeft22 extends OpMode {
     public void start() {
         super.start();
 
-        PropProcessor.Spikes spikePosition = webcam.propProcessor.getSpikePosition();
+        PropProcessor.Spikes spikePosition = processor.getSpikePosition();
         webcam.stopWebcam();
 
         switch (spikePosition) {
