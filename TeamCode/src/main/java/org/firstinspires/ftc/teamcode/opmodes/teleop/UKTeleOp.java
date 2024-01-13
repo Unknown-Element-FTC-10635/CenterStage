@@ -264,7 +264,7 @@ public class UKTeleOp extends OpMode {
             // For scoring on the backboard
             case SCORE:
                 if (controller1.risingEdgeOf(GamepadEx.Buttons.BUMPER_RIGHT)) {
-                    if (targetBackboardLevel < 3) {
+                    if (targetBackboardLevel < 4) {
                         targetBackboardLevel++;
                         slides.setHeight(Slides.SlidesHeights.levelFromInt(targetBackboardLevel));
                     }

@@ -15,7 +15,8 @@ public class Slides {
         SECOND_LEVEL(250),
         FOURTH_LEVEL(350),
         SIXTH_LEVEL(450),
-        EIGTH_LEVEL(550);
+        EIGTH_LEVEL(550),
+        TENTH_LEVEL(650);
 
         public final double targetPosition;
 
@@ -28,6 +29,7 @@ public class Slides {
                 case 1:     return FOURTH_LEVEL;
                 case 2:     return SIXTH_LEVEL;
                 case 3:     return EIGTH_LEVEL;
+                case 4:     return TENTH_LEVEL;
                 default:    return SECOND_LEVEL;
             }
         }
