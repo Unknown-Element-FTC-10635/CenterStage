@@ -7,7 +7,6 @@ import org.firstinspires.ftc.robotcore.external.function.Consumer;
 import org.firstinspires.ftc.robotcore.external.function.Continuation;
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
-import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
@@ -28,14 +27,6 @@ public class PropProcessor implements VisionProcessor, CameraStreamSource {
         CENTER,
         UNKNOWN
     }
-
-    private static final Scalar LOWER_BLUE = new Scalar(90, 60, 50);
-    private static final Scalar UPPER_BLUE = new Scalar(130, 255, 255);
-
-    private static final Scalar LOWER_RED = new Scalar(0, 60, 60);
-    private static final Scalar UPPER_RED = new Scalar(25, 255, 255);
-    private static final Scalar SECONDARY_LOWER_RED = new Scalar(155, 60, 60);
-    private static final Scalar SECONDARY_UPPER_RED = new Scalar(180, 255, 255);
 
     private static final Rect BLUE_LEFT_SPIKE = new Rect(50, 400, 200, 200);
     private static final Rect BLUE_MIDDLE_SPIKE = new Rect(500, 375, 200, 200);
