@@ -6,17 +6,16 @@ import org.firstinspires.ftc.teamcode.hardware.Webcam;
 import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
 import org.firstinspires.ftc.teamcode.utils.hardware.GamepadEx;
 import org.firstinspires.ftc.teamcode.vision.IntakeProcessor;
-import org.firstinspires.ftc.teamcode.vision.PropProcessor;
 import org.firstinspires.ftc.vision.VisionProcessor;
 
 @TeleOp()
 public class WebcamTesting extends LinearOpMode {
-    @Overrid
+    @Override
     public void runOpMode() throws InterruptedException {
         CurrentOpmode.setCurrentOpmode(CurrentOpmode.OpMode.TELEOP);
 
-        PropProcessor processor = new PropProcessor(false);
-        Webcam webcam = new Webcam(hardwareMap, processor, "webcam");
+        IntakeProcessor processor = new IntakeProcessor();
+        Webcam webcam = new Webcam(hardwareMap, processor, "intake webcam");
 
         telemetry.addLine("Ready to start");
         telemetry.update();
@@ -25,7 +24,10 @@ public class WebcamTesting extends LinearOpMode {
 
         while (opModeIsActive()) {
             telemetry.addData("Camera FPS", webcam.getFPS());
-            telemetry.addData("Spike Position", processor.getSpikePosition());
+            telemetry.addData("Left Pixel", processor.getLeftPixel());
+            telemetry.addData("Left Mean", processor.getLeftMean());
+            telemetry.addData("Right Pixel", processor.getRightColor());
+            telemetry.addData("Right Mean", processor.getRightMean());
             telemetry.update();
         }
     }

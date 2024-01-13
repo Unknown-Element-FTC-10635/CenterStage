@@ -13,9 +13,11 @@ import org.firstinspires.ftc.teamcode.hardware.Slides;
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.hardware.Intake;
 import org.firstinspires.ftc.teamcode.hardware.LimitSwitch;
+import org.firstinspires.ftc.teamcode.hardware.Webcam;
 import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
 import org.firstinspires.ftc.teamcode.utils.RobotState;
 import org.firstinspires.ftc.teamcode.utils.hardware.GamepadEx;
+import org.firstinspires.ftc.teamcode.vision.IntakeProcessor;
 
 @TeleOp
 public class UKTeleOp extends OpMode {
@@ -25,10 +27,13 @@ public class UKTeleOp extends OpMode {
     private DriveTrain driveTrain;
     private Airplane airplane;
     private Delivery delivery;
+    private Webcam webcam;
     private Intake intake;
     private Slides slides;
     private Claw claw;
     private Hang hang;
+
+    private IntakeProcessor processor;
 
     private RobotState robotState;
     private boolean toBackboard;
@@ -38,6 +43,7 @@ public class UKTeleOp extends OpMode {
     private boolean leftRumble, rightRumble, fullRumble;
     private int targetBackboardLevel = 0;
     private boolean stackIntakeToggle;
+    private IntakeProcessor.PixelColors leftIntake, rightIntake;
 
     @Override
     public void init() {
@@ -52,6 +58,8 @@ public class UKTeleOp extends OpMode {
         driveTrain = new DriveTrain(hardwareMap, controller1);
         airplane = new Airplane(hardwareMap);
         delivery = new Delivery(hardwareMap);
+        processor = new IntakeProcessor();
+        webcam = new Webcam(hardwareMap, processor, "intake webcam");
         intake = new Intake(hardwareMap);
         slides = new Slides(hardwareMap);
         claw = new Claw(hardwareMap);
@@ -93,6 +101,7 @@ public class UKTeleOp extends OpMode {
                 intake.setServoPosition(Intake.IntakeState.GROUND);
                 intake.on();
 
+                fullRumble = false;
                 toBackboard = true;
                 robotState = RobotState.INTAKE;
                 break;
@@ -116,6 +125,12 @@ public class UKTeleOp extends OpMode {
                     } else {
                         intake.setServoPosition(Intake.IntakeState.GROUND);
                     }
+                }
+
+                if (leftIntake != IntakeProcessor.PixelColors.NONE && rightIntake != IntakeProcessor.PixelColors.NONE) {
+                    gamepad1.rumble(250);
+                    driveDeliveryTransition = 0;
+                    robotState = RobotState.INTAKE_DRIVE_TRANSITION;
                 }
 
                 break;
@@ -224,6 +239,7 @@ public class UKTeleOp extends OpMode {
                         transitionTimer.reset();
 
                         driveDeliveryTransition++;
+                        delivery.setDeliveryState(Delivery.DeliveryState.SCORE);
                         break;
                     case 1:
                         // Wait until the slides are at that position
@@ -234,9 +250,13 @@ public class UKTeleOp extends OpMode {
                         break;
                     case 2:
                         // Advance
-                        delivery.setDeliveryState(Delivery.DeliveryState.SCORE);
                         robotState = RobotState.SCORE;
                         break;
+                }
+
+                if (controller1.risingEdgeOf(GamepadEx.Buttons.CROSS)) {
+                    driveDeliveryTransition = 0;
+                    robotState = RobotState.SCORE;
                 }
 
                 toBackboard = false;
@@ -326,7 +346,7 @@ public class UKTeleOp extends OpMode {
             case ENDGAME:
                 hang.motor(gamepad1.left_trigger - gamepad1.right_trigger);
 
-                if(controller1.risingEdgeOf(GamepadEx.Buttons.CIRCLE)){
+                if(controller1.risingEdgeOf(GamepadEx.Buttons.DPAD_DOWN)){
                     hang.setHangState(Hang.HangState.DOWN);
                 }
 
@@ -359,6 +379,9 @@ public class UKTeleOp extends OpMode {
         slides.update();
         //leftBeam.update();
         //rightBeam.update();
+
+        leftIntake = processor.getLeftPixel();
+        rightIntake = processor.getRightColor();
     }
 
     private void write() {
@@ -377,6 +400,8 @@ public class UKTeleOp extends OpMode {
         telemetry.addData("Slide Right Error", slides.getRightError());
         telemetry.addData("Slide at Target Position", slides.atTargetPosition());
         telemetry.addData("Backboard Level", targetBackboardLevel);
+        telemetry.addData("Left Intake Pixel", leftIntake);
+        telemetry.addData("Right Intake Pixel", rightIntake);
         telemetry.addData("Robot", robotState);
 
         telemetry.addData("Loop time", matchTimer.milliseconds());
