@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.hardware.Airplane;
+import org.firstinspires.ftc.teamcode.hardware.Blinkin;
 import org.firstinspires.ftc.teamcode.hardware.BreakBeam;
 import org.firstinspires.ftc.teamcode.hardware.Claw;
 import org.firstinspires.ftc.teamcode.hardware.Delivery;
@@ -15,6 +17,7 @@ import org.firstinspires.ftc.teamcode.hardware.Intake;
 import org.firstinspires.ftc.teamcode.hardware.LimitSwitch;
 import org.firstinspires.ftc.teamcode.hardware.Webcam;
 import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
+import org.firstinspires.ftc.teamcode.utils.PixelColors;
 import org.firstinspires.ftc.teamcode.utils.RobotState;
 import org.firstinspires.ftc.teamcode.utils.hardware.GamepadEx;
 import org.firstinspires.ftc.teamcode.vision.IntakeProcessor;
@@ -27,6 +30,7 @@ public class UKTeleOp extends OpMode {
     private DriveTrain driveTrain;
     private Airplane airplane;
     private Delivery delivery;
+    private Blinkin blinkin;
     private Webcam webcam;
     private Intake intake;
     private Slides slides;
@@ -40,10 +44,9 @@ public class UKTeleOp extends OpMode {
     private int driveDeliveryTransition;
 
     private ElapsedTime transitionTimer, matchTimer;
-    private boolean leftRumble, rightRumble, fullRumble;
     private int targetBackboardLevel = 0;
     private boolean stackIntakeToggle;
-    private IntakeProcessor.PixelColors leftIntake, rightIntake;
+    private PixelColors leftIntake, rightIntake;
 
     @Override
     public void init() {
@@ -58,6 +61,7 @@ public class UKTeleOp extends OpMode {
         driveTrain = new DriveTrain(hardwareMap, controller1);
         airplane = new Airplane(hardwareMap);
         delivery = new Delivery(hardwareMap);
+        blinkin = new Blinkin(hardwareMap);
         processor = new IntakeProcessor();
         webcam = new Webcam(hardwareMap, processor, "intake webcam");
         intake = new Intake(hardwareMap);
@@ -101,7 +105,6 @@ public class UKTeleOp extends OpMode {
                 intake.setServoPosition(Intake.IntakeState.GROUND);
                 intake.on();
 
-                fullRumble = false;
                 toBackboard = true;
                 robotState = RobotState.INTAKE;
                 break;
@@ -127,10 +130,17 @@ public class UKTeleOp extends OpMode {
                     }
                 }
 
-                if (leftIntake != IntakeProcessor.PixelColors.NONE && rightIntake != IntakeProcessor.PixelColors.NONE) {
+                if (leftIntake != PixelColors.NONE && rightIntake != PixelColors.NONE) {
                     gamepad1.rumble(250);
                     driveDeliveryTransition = 0;
                     robotState = RobotState.INTAKE_DRIVE_TRANSITION;
+                    blinkin.setTwoPixel(leftIntake, rightIntake);
+                } else if (leftIntake != PixelColors.NONE) {
+                    blinkin.setOnePixel(leftIntake);
+                } else if (rightIntake != PixelColors.NONE) {
+                    blinkin.setOnePixel(rightIntake);
+                } else if (blinkin.getCurrentState() != Blinkin.CurrentState.NONE) {
+                    blinkin.clear();
                 }
 
                 break;
@@ -300,8 +310,9 @@ public class UKTeleOp extends OpMode {
                         break;
                     case 2:
                         delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
-                        transitionTimer.reset();
+                        blinkin.clear();
 
+                        transitionTimer.reset();
                         driveDeliveryTransition++;
                         break;
                     case 3:
@@ -331,7 +342,6 @@ public class UKTeleOp extends OpMode {
                         break;
                 }
 
-
                 break;
             case TRANSITION_ENDGAME:
                 slides.setHeight(Slides.SlidesHeights.BASE);
@@ -346,7 +356,7 @@ public class UKTeleOp extends OpMode {
             case ENDGAME:
                 hang.motor(gamepad1.left_trigger - gamepad1.right_trigger);
 
-                if(controller1.risingEdgeOf(GamepadEx.Buttons.DPAD_DOWN)){
+                if (controller1.risingEdgeOf(GamepadEx.Buttons.DPAD_DOWN)){
                     hang.setHangState(Hang.HangState.DOWN);
                 }
 

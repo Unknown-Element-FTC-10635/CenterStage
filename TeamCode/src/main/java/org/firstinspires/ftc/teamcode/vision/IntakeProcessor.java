@@ -1,14 +1,7 @@
 package org.firstinspires.ftc.teamcode.vision;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-
-import org.firstinspires.ftc.robotcore.external.function.Consumer;
-import org.firstinspires.ftc.robotcore.external.function.Continuation;
-import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
-import org.firstinspires.ftc.vision.VisionProcessor;
-import org.opencv.android.Utils;
+import org.firstinspires.ftc.teamcode.utils.PixelColors;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
@@ -16,20 +9,9 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 
 public class IntakeProcessor extends SimpleProcessor {
-    public enum PixelColors {
-        WHITE,
-        YELLOW,
-        GREEN,
-        PURPLE,
-        NONE
-    }
-
     private final Logger logger = Logger.getLogger(this.getClass().getName());
 
     private static final Rect LEFT_INTAKE = new Rect(390, 390, 90, 60);
