@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.hardware.Airplane;
+import org.firstinspires.ftc.teamcode.hardware.Blinkin;
 import org.firstinspires.ftc.teamcode.hardware.BreakBeam;
 import org.firstinspires.ftc.teamcode.hardware.Claw;
 import org.firstinspires.ftc.teamcode.hardware.Delivery;
@@ -13,9 +14,12 @@ import org.firstinspires.ftc.teamcode.hardware.Hang;
 import org.firstinspires.ftc.teamcode.hardware.Intake;
 import org.firstinspires.ftc.teamcode.hardware.LimitSwitch;
 import org.firstinspires.ftc.teamcode.hardware.Slides;
+import org.firstinspires.ftc.teamcode.hardware.Webcam;
 import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
+import org.firstinspires.ftc.teamcode.utils.PixelColors;
 import org.firstinspires.ftc.teamcode.utils.RobotState;
 import org.firstinspires.ftc.teamcode.utils.hardware.GamepadEx;
+import org.firstinspires.ftc.teamcode.vision.IntakeProcessor;
 
 @TeleOp(name = "UKTeleOp - TWO DRIVERS")
 public class UKTeleOpDualDriver extends OpMode {
@@ -25,19 +29,23 @@ public class UKTeleOpDualDriver extends OpMode {
     private DriveTrain driveTrain;
     private Airplane airplane;
     private Delivery delivery;
+    private Blinkin blinkin;
     private Intake intake;
     private Slides slides;
     private Claw claw;
     private Hang hang;
+
+    private IntakeProcessor processor;
+    private Webcam webcam;
 
     private RobotState robotState;
     private boolean toBackboard;
     private int driveDeliveryTransition;
 
     private ElapsedTime transitionTimer, matchTimer;
-    private boolean leftRumble, rightRumble, fullRumble;
     private int targetBackboardLevel = 0;
     private boolean stackIntakeToggle;
+    private PixelColors leftIntake, rightIntake;
 
     @Override
     public void init() {
@@ -52,10 +60,15 @@ public class UKTeleOpDualDriver extends OpMode {
         driveTrain = new DriveTrain(hardwareMap, controller1);
         airplane = new Airplane(hardwareMap);
         delivery = new Delivery(hardwareMap);
+        blinkin = new Blinkin(hardwareMap);
         intake = new Intake(hardwareMap);
         slides = new Slides(hardwareMap);
         claw = new Claw(hardwareMap);
         hang = new Hang(hardwareMap);
+
+        processor = new IntakeProcessor();
+        webcam = new Webcam(hardwareMap, processor, "intake webcam");
+
         transitionTimer = new ElapsedTime();
         transitionTimer.startTime();
 
@@ -116,6 +129,19 @@ public class UKTeleOpDualDriver extends OpMode {
                     } else {
                         intake.setServoPosition(Intake.IntakeState.GROUND);
                     }
+                }
+
+                if (leftIntake != PixelColors.NONE && rightIntake != PixelColors.NONE) {
+                    gamepad1.rumble(250);
+                    driveDeliveryTransition = 0;
+                    robotState = RobotState.INTAKE_DRIVE_TRANSITION;
+                    blinkin.setTwoPixel(leftIntake, rightIntake);
+                } else if (leftIntake != PixelColors.NONE) {
+                    blinkin.setOnePixel(leftIntake);
+                } else if (rightIntake != PixelColors.NONE) {
+                    blinkin.setOnePixel(rightIntake);
+                } else if (blinkin.getCurrentState() != Blinkin.CurrentState.NONE) {
+                    blinkin.clear();
                 }
 
                 break;
@@ -280,8 +306,9 @@ public class UKTeleOpDualDriver extends OpMode {
                         break;
                     case 2:
                         delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
-                        transitionTimer.reset();
+                        blinkin.clear();
 
+                        transitionTimer.reset();
                         driveDeliveryTransition++;
                         break;
                     case 3:
@@ -359,6 +386,9 @@ public class UKTeleOpDualDriver extends OpMode {
         slides.update();
         //leftBeam.update();
         //rightBeam.update();
+
+        leftIntake = processor.getLeftPixel();
+        rightIntake = processor.getRightColor();
     }
 
     private void write() {
