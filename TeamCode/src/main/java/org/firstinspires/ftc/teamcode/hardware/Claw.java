@@ -6,10 +6,10 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 public class Claw {
     public enum ClawState {
-        OPEN_INTAKE(0.34),
-        OPEN_SCORE(0.29),
-        CLOSED(0.15),
-        SINGLE_CLOSED(0.25),
+        OPEN_INTAKE(0.31),
+        OPEN_SCORE(0.36),
+        CLOSED(0.47),
+        SINGLE_CLOSED(0.42),
         UNKNOWN(0.0);
 
         public final double position;

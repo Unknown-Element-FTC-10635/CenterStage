@@ -106,6 +106,7 @@ public class UKTeleOpDualDriver extends OpMode {
                 intake.setServoPosition(Intake.IntakeState.GROUND);
                 intake.on();
 
+                transitionTimer.reset();
                 toBackboard = true;
                 robotState = RobotState.INTAKE;
                 break;
@@ -134,8 +135,10 @@ public class UKTeleOpDualDriver extends OpMode {
                 if (leftIntake != PixelColors.NONE && rightIntake != PixelColors.NONE) {
                     gamepad1.rumble(250);
                     driveDeliveryTransition = 0;
-                    robotState = RobotState.INTAKE_DRIVE_TRANSITION;
-                    blinkin.setTwoPixel(leftIntake, rightIntake);
+                    if (transitionTimer.milliseconds() > 500) {
+                        robotState = RobotState.INTAKE_DRIVE_TRANSITION;
+                        blinkin.setTwoPixel(leftIntake, rightIntake);
+                    }
                 } else if (leftIntake != PixelColors.NONE) {
                     blinkin.setOnePixel(leftIntake);
                 } else if (rightIntake != PixelColors.NONE) {
@@ -159,7 +162,7 @@ public class UKTeleOpDualDriver extends OpMode {
                         break;
                     case 1:
                         // Wait until we know the claw is parallel to the ground
-                        if (transitionTimer.milliseconds() > 325) {
+                        if (transitionTimer.milliseconds() > 650) {
                             driveDeliveryTransition++;
                         }
 
@@ -173,7 +176,7 @@ public class UKTeleOpDualDriver extends OpMode {
                         break;
                     case 3:
                         // Wait <milliseconds> so the physical servo has time to actually move
-                        if (transitionTimer.milliseconds() > 725) {
+                        if (transitionTimer.milliseconds() > 750) {
                             driveDeliveryTransition++;
                         }
 
@@ -381,14 +384,19 @@ public class UKTeleOpDualDriver extends OpMode {
         controller1.update();
         controller2.update();
 
-        delivery.update();
         slideLimit.update();
         slides.update();
         //leftBeam.update();
         //rightBeam.update();
 
-        leftIntake = processor.getLeftPixel();
-        rightIntake = processor.getRightColor();
+        if (robotState == RobotState.DRIVE_INTAKE_TRANSITION || robotState == RobotState.INTAKE) {
+            leftIntake = processor.getLeftPixel();
+            rightIntake = processor.getRightColor();
+        }
+
+        if (robotState == RobotState.SCORE) {
+            delivery.update();
+        }
     }
 
     private void write() {

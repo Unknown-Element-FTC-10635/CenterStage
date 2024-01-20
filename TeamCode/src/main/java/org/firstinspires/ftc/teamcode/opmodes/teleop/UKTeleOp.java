@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
-import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -10,11 +9,11 @@ import org.firstinspires.ftc.teamcode.hardware.Blinkin;
 import org.firstinspires.ftc.teamcode.hardware.BreakBeam;
 import org.firstinspires.ftc.teamcode.hardware.Claw;
 import org.firstinspires.ftc.teamcode.hardware.Delivery;
-import org.firstinspires.ftc.teamcode.hardware.Hang;
-import org.firstinspires.ftc.teamcode.hardware.Slides;
 import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
+import org.firstinspires.ftc.teamcode.hardware.Hang;
 import org.firstinspires.ftc.teamcode.hardware.Intake;
 import org.firstinspires.ftc.teamcode.hardware.LimitSwitch;
+import org.firstinspires.ftc.teamcode.hardware.Slides;
 import org.firstinspires.ftc.teamcode.hardware.Webcam;
 import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
 import org.firstinspires.ftc.teamcode.utils.PixelColors;
@@ -105,6 +104,7 @@ public class UKTeleOp extends OpMode {
                 intake.setServoPosition(Intake.IntakeState.GROUND);
                 intake.on();
 
+                transitionTimer.reset();
                 toBackboard = true;
                 robotState = RobotState.INTAKE;
                 break;
@@ -132,8 +132,10 @@ public class UKTeleOp extends OpMode {
 
                 if (leftIntake != PixelColors.NONE && rightIntake != PixelColors.NONE) {
                     gamepad1.rumble(250);
-                    driveDeliveryTransition = 0;
-                    robotState = RobotState.INTAKE_DRIVE_TRANSITION;
+                    if (transitionTimer.milliseconds() > 500) {
+                        driveDeliveryTransition = 0;
+                        robotState = RobotState.INTAKE_DRIVE_TRANSITION;
+                    }
                     blinkin.setTwoPixel(leftIntake, rightIntake);
                 } else if (leftIntake != PixelColors.NONE) {
                     blinkin.setOnePixel(leftIntake);
@@ -158,7 +160,7 @@ public class UKTeleOp extends OpMode {
                         break;
                     case 1:
                         // Wait until we know the claw is parallel to the ground
-                        if (transitionTimer.milliseconds() > 325) {
+                        if (transitionTimer.milliseconds() > 650) {
                             driveDeliveryTransition++;
                         }
 
@@ -172,7 +174,7 @@ public class UKTeleOp extends OpMode {
                         break;
                     case 3:
                         // Wait <milliseconds> so the physical servo has time to actually move
-                        if (transitionTimer.milliseconds() > 725) {
+                        if (transitionTimer.milliseconds() > 750) {
                             driveDeliveryTransition++;
                         }
 
@@ -270,6 +272,7 @@ public class UKTeleOp extends OpMode {
                 }
 
                 toBackboard = false;
+
                 break;
             // For scoring on the backboard
             case SCORE:
@@ -384,14 +387,17 @@ public class UKTeleOp extends OpMode {
         controller1.update();
         controller2.update();
 
-        delivery.update();
         slideLimit.update();
         slides.update();
-        //leftBeam.update();
-        //rightBeam.update();
 
-        leftIntake = processor.getLeftPixel();
-        rightIntake = processor.getRightColor();
+        if (robotState == RobotState.DRIVE_INTAKE_TRANSITION || robotState == RobotState.INTAKE) {
+            leftIntake = processor.getLeftPixel();
+            rightIntake = processor.getRightColor();
+        }
+
+        if (robotState == RobotState.SCORE) {
+            delivery.update();
+        }
     }
 
     private void write() {
