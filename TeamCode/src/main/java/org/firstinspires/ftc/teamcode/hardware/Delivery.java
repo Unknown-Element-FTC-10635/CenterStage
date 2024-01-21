@@ -5,11 +5,12 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Delivery {
     public enum DeliveryState {
-        INTAKE_PICKUP   (0.09,  0.34,   0.675,  0.675),
-        INTAKE_HOLD     (0.5,   0.34,   0.675,  0.675),
-        TRANSITION_2    (0.71,  0.88,   0.675,  0.675),
-        SCORE           (0.8,   0.88,   0.43,   0.43),
-        SCORE_AUTO      (0.85,  0.88,   0.43,   0.43),
+        INTAKE_PICKUP   (0.14,  0.36,   0.69,   0.69),
+        INTAKE_HOLD     (0.525, 0.36,   0.69,   0.69),
+        TRANSITION_1    (0.63,  0.9,    0.69,   0.69),
+        TRANSITION_2    (0.82,  0.9,    0.69,   0.69),
+        SCORE           (0.86,  0.9,    0.43,   0.43),
+        SCORE_AUTO      (0.85,  0.9,    0.43,   0.43),
         UNKNOWN         (0,     0,      0,      0);
 
         public final double pitchPositionRight;
@@ -33,6 +34,7 @@ public class Delivery {
 
     public Delivery(HardwareMap hardwareMap) {
         pitchServoRight = hardwareMap.get(Servo.class, "pitch right");
+        pitchServoRight.setDirection(Servo.Direction.REVERSE);
         rollServo = hardwareMap.get(Servo.class, "roll");
         slideServoLeft = hardwareMap.get(Servo.class, "slide left");
         slideServoLeft.setDirection(Servo.Direction.REVERSE);
@@ -44,18 +46,16 @@ public class Delivery {
     public void setDeliveryState(DeliveryState deliveryState) {
         this.deliveryState = deliveryState;
         pitchServoRight.setPosition(deliveryState.pitchPositionRight);
-        pitchServoRight.setDirection(Servo.Direction.REVERSE);
         rollServo.setPosition(deliveryState.rollPosition);
         slideServoLeft.setPosition(deliveryState.slidePositionLeft);
         slideServoRight.setPosition(deliveryState.slidePositionRight);
     }
 
-    public DeliveryState getDeliveryState() {
-        return deliveryState;
+    public void update() {
     }
 
-    public void update() {
-
+    public DeliveryState getDeliveryState() {
+        return deliveryState;
     }
 
     public double getRollPosition() {

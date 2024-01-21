@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.utils.hardware.MotorBuilder;
 public class Hang {
     public enum HangState{
         UP(0.325, 0.325),
-        DOWN(.9, .9);
+        DOWN(.85, .85);
 
         public final double rightServoPosition;
         public final double leftServoPosition;

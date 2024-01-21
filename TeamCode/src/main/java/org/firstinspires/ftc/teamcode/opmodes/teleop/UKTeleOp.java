@@ -122,12 +122,9 @@ public class UKTeleOp extends OpMode {
                 }
 
                 if (controller1.risingEdgeOf(GamepadEx.Buttons.SQUARE)) {
-                    stackIntakeToggle = !stackIntakeToggle;
-                    if (stackIntakeToggle) {
-                        intake.setServoPosition(Intake.IntakeState.STACK_HIGH);
-                    } else {
-                        intake.setServoPosition(Intake.IntakeState.GROUND);
-                    }
+                    intake.setServoPosition(Intake.IntakeState.STACK_HIGH);
+                } else if (controller1.fallingEdgeOf(GamepadEx.Buttons.SQUARE)) {
+                    intake.setServoPosition(Intake.IntakeState.GROUND);
                 }
 
                 if (leftIntake != PixelColors.NONE && rightIntake != PixelColors.NONE) {
@@ -160,7 +157,7 @@ public class UKTeleOp extends OpMode {
                         break;
                     case 1:
                         // Wait until we know the claw is parallel to the ground
-                        if (transitionTimer.milliseconds() > 650) {
+                        if (transitionTimer.milliseconds() > 600) {
                             driveDeliveryTransition++;
                         }
 
@@ -174,7 +171,7 @@ public class UKTeleOp extends OpMode {
                         break;
                     case 3:
                         // Wait <milliseconds> so the physical servo has time to actually move
-                        if (transitionTimer.milliseconds() > 750) {
+                        if (transitionTimer.milliseconds() > 725) {
                             driveDeliveryTransition++;
                         }
 
@@ -188,19 +185,17 @@ public class UKTeleOp extends OpMode {
                         driveDeliveryTransition++;
                         break;
                     case 5:
-                        if (transitionTimer.milliseconds() > 1000) {
+                        if (transitionTimer.milliseconds() > 700) {
                             driveDeliveryTransition++;
                         }
 
                         break;
                     case 6:
                         // Move to safe transition point that works for both intake and score
-                        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
+                        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_1);
                         driveDeliveryTransition++;
                         transitionTimer.reset();
                         break;
-                        // A pause to prevent spamming immediately from intake -> score, which
-                        // smashes the pixels against the edge of the intake
                     case 7:
                         // Wait <milliseconds> so the physical servo has time to actually move
                         if (transitionTimer.milliseconds() > 500) {
@@ -209,13 +204,25 @@ public class UKTeleOp extends OpMode {
 
                         break;
                     case 8:
+                        // Move to safe transition point that works for both intake and score
+                        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
+                        driveDeliveryTransition++;
+                        transitionTimer.reset();
+                        break;
+                    case 9:
                         // Advance
                         robotState = RobotState.DRIVE;
                         break;
                 }
 
-                if (controller2.risingEdgeOf(GamepadEx.Buttons.TRIANGLE)) {
+                if (controller1.risingEdgeOf(GamepadEx.Buttons.TRIANGLE)) {
                     robotState = RobotState.DRIVE_INTAKE_TRANSITION;
+                }
+
+                if (controller1.risingEdgeOf(GamepadEx.Buttons.BUMPER_RIGHT)) {
+                    intake.reverse();
+                } else if (controller1.fallingEdgeOf(GamepadEx.Buttons.BUMPER_RIGHT)) {
+                    intake.off();
                 }
 
                 break;
@@ -241,6 +248,12 @@ public class UKTeleOp extends OpMode {
                     }
                 }
 
+                if (controller1.risingEdgeOf(GamepadEx.Buttons.BUMPER_RIGHT)) {
+                    intake.reverse();
+                } else if (controller1.fallingEdgeOf(GamepadEx.Buttons.BUMPER_RIGHT)) {
+                    intake.off();
+                }
+
                 break;
             // Drive -> Score
             case DRIVE_SCORE_TRANSITION:
@@ -261,6 +274,7 @@ public class UKTeleOp extends OpMode {
 
                         break;
                     case 2:
+                        blinkin.strobe();
                         // Advance
                         robotState = RobotState.SCORE;
                         break;
@@ -312,7 +326,7 @@ public class UKTeleOp extends OpMode {
 
                         break;
                     case 2:
-                        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
+                        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_1);
                         blinkin.clear();
 
                         transitionTimer.reset();
@@ -327,7 +341,7 @@ public class UKTeleOp extends OpMode {
                     case 4:
                         // Move to transition point between intake and score
                         slides.setHeight(Slides.SlidesHeights.BASE);
-                        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
+                        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_1);
                         transitionTimer.reset();
 
                         driveDeliveryTransition++;
@@ -350,6 +364,7 @@ public class UKTeleOp extends OpMode {
                 slides.setHeight(Slides.SlidesHeights.BASE);
                 intake.off();
                 hang.setHangState(Hang.HangState.UP);
+                blinkin.setEndgame();
 
                 if (transitionTimer.milliseconds() > 250) {
                     robotState = RobotState.ENDGAME;

@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.hardware.Airplane;
 import org.firstinspires.ftc.teamcode.hardware.Claw;
 import org.firstinspires.ftc.teamcode.hardware.Delivery;
-import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.hardware.Intake;
 import org.firstinspires.ftc.teamcode.hardware.LimitSwitch;
 import org.firstinspires.ftc.teamcode.hardware.Slides;
@@ -19,8 +18,6 @@ import org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.vision.PropProcessor;
-
-import java.util.Timer;
 
 @Autonomous(name = "BLUE (Left) Outside - 2+0", group = "blue")
 public class BlueLeft20Outside extends LinearOpMode {
@@ -166,7 +163,7 @@ public class BlueLeft20Outside extends LinearOpMode {
         while (!(timer.milliseconds() > 800)) { }
         intake.off();
 
-        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
+        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_1);
         driveTrain.followTrajectorySequence(preloadDeliveryBackdrop);
 
         slides.setHeight(Slides.SlidesHeights.SECOND_LEVEL);
@@ -202,7 +199,7 @@ public class BlueLeft20Outside extends LinearOpMode {
             slides.update();
         }
 
-        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
+        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_1);
         driveTrain.followTrajectorySequence(park);
     }
 }

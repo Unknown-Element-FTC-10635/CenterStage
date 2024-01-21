@@ -9,6 +9,7 @@ public class Blinkin {
     public enum CurrentState {
         TWO_PIXELS,
         ONE_PIXELS,
+        ENDGAME,
         NONE
     }
 
@@ -27,6 +28,16 @@ public class Blinkin {
 
     public void setTwoPixel(PixelColors intakeLeft, PixelColors intakeRight) {
         blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+        currentState = CurrentState.TWO_PIXELS;
+    }
+
+    public void setEndgame() {
+        blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.CONFETTI);
+        currentState = CurrentState.ENDGAME;
+    }
+
+    public void strobe() {
+        blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BEATS_PER_MINUTE_OCEAN_PALETTE);
         currentState = CurrentState.TWO_PIXELS;
     }
 

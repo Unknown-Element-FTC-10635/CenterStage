@@ -145,7 +145,7 @@ public class RedRight22 extends OpMode {
                     case 2:
                         intake.off();
                         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-                        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
+                        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_1);
                         driveTrain.followTrajectorySequenceAsync(preloadDeliveryBackdrop);
 
                         subTransition = 0;
@@ -191,7 +191,7 @@ public class RedRight22 extends OpMode {
 
                         break;
                     case 5:
-                        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
+                        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_1);
 
                         subTransition++;
                         break;
@@ -307,7 +307,7 @@ public class RedRight22 extends OpMode {
                         break;
                     case 6:
                         // Move to safe transition point that works for both intake and score
-                        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
+                        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_1);
                         subTransition++;
                         timer.reset();
                         break;
@@ -338,7 +338,7 @@ public class RedRight22 extends OpMode {
                         subTransition++;
                         break;
                     case 12:
-                        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
+                        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_1);
 
                         subTransition++;
                     case 14:
