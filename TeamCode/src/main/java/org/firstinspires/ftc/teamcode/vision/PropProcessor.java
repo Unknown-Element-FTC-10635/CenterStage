@@ -1,21 +1,13 @@
 package org.firstinspires.ftc.teamcode.vision;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-
-import org.firstinspires.ftc.robotcore.external.function.Consumer;
-import org.firstinspires.ftc.robotcore.external.function.Continuation;
-import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
-import org.firstinspires.ftc.vision.VisionProcessor;
-import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
-import java.util.concurrent.atomic.AtomicReference;
+
 import java.util.logging.Logger;
 
 public class PropProcessor extends SimpleProcessor {
@@ -28,13 +20,13 @@ public class PropProcessor extends SimpleProcessor {
         UNKNOWN
     }
 
-    private static final Rect BLUE_LEFT_SPIKE = new Rect(50, 400, 200, 200);
-    private static final Rect BLUE_MIDDLE_SPIKE = new Rect(500, 375, 200, 200);
-    private static final Rect BLUE_RIGHT_SPIKE = new Rect(900, 440, 200, 200);
+    private static final Rect BLUE_LEFT_SPIKE = new Rect(140, 440, 200, 200);
+    private static final Rect BLUE_MIDDLE_SPIKE = new Rect(570, 380, 200, 200);
+    private static final Rect BLUE_RIGHT_SPIKE = new Rect(1050, 450, 200, 200);
 
-    private static final Rect RED_LEFT_SPIKE = new Rect(225, 430, 200, 200);
-    private static final Rect RED_MIDDLE_SPIKE = new Rect(630, 375, 200, 200);
-    private static final Rect RED_RIGHT_SPIKE = new Rect(1080, 440, 200, 200);
+    private static final Rect RED_LEFT_SPIKE = new Rect(100, 445, 200, 200);
+    private static final Rect RED_MIDDLE_SPIKE = new Rect(560, 375, 200, 200);
+    private static final Rect RED_RIGHT_SPIKE = new Rect(1010, 440, 200, 200);
 
     private final Rect leftSpike, middleSpike, rightSpike;
 
