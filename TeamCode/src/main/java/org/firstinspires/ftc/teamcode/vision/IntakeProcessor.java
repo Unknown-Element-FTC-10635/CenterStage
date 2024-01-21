@@ -78,9 +78,9 @@ public class IntakeProcessor extends SimpleProcessor {
 
         if (val[0] >= 190 && val[1] >= 190 && val[2] >= 190) {
             return PixelColors.WHITE;
-        } else if (val[1] >= 175 && val[0] < val[1] && val[2] < val[1]) {
+        } else if (val[1] >= 140 && val[0] < val[1] && val[2] < val[1]) {
             return PixelColors.GREEN;
-        } else if (val[2] >= 175 && val[0] < val[2] && val[1] < val[2]) {
+        } else if (val[2] >= 150 && val[0] < val[2] && val[1] < val[2]) {
             return PixelColors.PURPLE;
         } else if (val[0] >= 175 && val[1] < val[0] && val[2] < val[0]) {
             return PixelColors.YELLOW;
