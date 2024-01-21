@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.vision.PropProcessor;
 
-@Autonomous(name = "RED (Right) Outside - 2+0", group = "red")
+@Autonomous(name = "RED (Backboard) Outside - 2+0", group = "red")
 public class RedRight20Outside extends LinearOpMode {
     private LimitSwitch slideLimit;
     private SampleMecanumDrive driveTrain;
@@ -68,59 +68,53 @@ public class RedRight20Outside extends LinearOpMode {
         driveTrain.setPoseEstimate(startPose);
 
         TrajectorySequence preloadDeliveryLeft = driveTrain.trajectorySequenceBuilder(startPose)
-                .lineTo(new Vector2d(14, -53))
-                .lineToLinearHeading(new Pose2d(16, -26, Math.toRadians(180)))
+                .lineTo(new Vector2d(15, -52))
+                .lineToLinearHeading(new Pose2d(2, -31, Math.toRadians(180)))
                 .build();
 
         TrajectorySequence preloadDeliveryMiddle = driveTrain.trajectorySequenceBuilder(startPose)
-                .lineTo(new Vector2d(14, -53))
-                .lineTo(new Vector2d(12, -35))
+                .lineTo(new Vector2d(15, -30))
                 .build();
 
         TrajectorySequence preloadDeliveryRight = driveTrain.trajectorySequenceBuilder(startPose)
                 .lineTo(new Vector2d(14, -53))
-                .lineTo(new Vector2d(25, -40))
+                .splineTo(new Vector2d(29,-36), Math.toRadians(140))
                 .build();
 
         TrajectorySequence preloadBackboardLeftDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryLeft.end())
-                .back(10)
                 .setReversed(true)
-                .lineTo(new Vector2d(50, -27))
-                .back(9)
+                .splineTo(new Vector2d(50, -28), Math.toRadians(0))
+                .back(2)
                 .build();
 
         TrajectorySequence preloadBackboardMiddleDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryMiddle.end())
                 .back(6)
-                .strafeLeft(3)
                 .setReversed(true)
                 .lineToLinearHeading(new Pose2d(50, -32, Math.toRadians(180)))
-                .back(9)
+                .back(10)
                 .build();
 
         TrajectorySequence preloadBackboardRightDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryRight.end())
-                .back(10)
-                .turn(Math.toRadians(90))
                 .setReversed(true)
-                .lineTo(new Vector2d(50, -38))
-                .back(7)
+                .splineTo(new Vector2d(57, -40), Math.toRadians(0))
                 .build();
 
         TrajectorySequence parkLeft = driveTrain.trajectorySequenceBuilder(preloadBackboardLeftDelivery.end())
-                .forward(5)
-                .lineTo(new Vector2d(47, -53))
+                .forward(15)
+                .strafeLeft(40)
                 .back(15)
                 .build();
 
         TrajectorySequence parkMiddle = driveTrain.trajectorySequenceBuilder(preloadBackboardMiddleDelivery.end())
-                .forward(5)
-                .lineTo(new Vector2d(47, -53))
+                .forward(15)
+                .strafeLeft(30)
                 .back(15)
                 .build();
 
         TrajectorySequence parkRight = driveTrain.trajectorySequenceBuilder(preloadBackboardRightDelivery.end())
-                .forward(10)
-                .lineTo(new Vector2d(47, -53))
-                .back(10)
+                .forward(15)
+                .strafeLeft(25)
+                .back(15)
                 .build();
 
         telemetry.addLine("Ready to start");
@@ -153,48 +147,30 @@ public class RedRight20Outside extends LinearOpMode {
                 break;
         }
 
-        delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_HOLD);
+        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_1);
+        intake.setServoPosition(Intake.IntakeState.STACK_HIGH);
         driveTrain.followTrajectorySequence(preloadDelivery);
 
         intake.reverse(0.5);
         timer.reset();
-        while (!(timer.milliseconds() > 1000)) { }
+        while (timer.milliseconds() < 800) { }
         intake.off();
 
-        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_1);
+        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
         driveTrain.followTrajectorySequence(preloadDeliveryBackdrop);
 
-        slides.setHeight(Slides.SlidesHeights.SECOND_LEVEL);
-        delivery.setDeliveryState(Delivery.DeliveryState.SCORE_AUTO);
         timer.reset();
-        while (!(slides.atTargetPosition() || timer.milliseconds() > 1000)) {
-            slides.update();
+        while (timer.milliseconds() < 250) {
         }
 
+        delivery.setDeliveryState(Delivery.DeliveryState.SCORE_PRELOAD);
         timer.reset();
-        while (!(timer.milliseconds() > 500)) {
-            slides.update();
+        while (timer.milliseconds() < 250) {
         }
 
-        claw.setClawState(Claw.ClawState.OPEN_INTAKE);
-        claw.depowerServo();
-
+        claw.setClawState(Claw.ClawState.OPEN_AUTO);
         timer.reset();
-        while (!(timer.milliseconds() > 1000)) {
-            slides.update();
-        }
-
-        delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_HOLD);
-        timer.reset();
-        while (!(timer.milliseconds() > 1000)) {
-            slides.update();
-        }
-
-        claw.repowerServo();
-        slides.setHeight(Slides.SlidesHeights.BASE);
-        timer.reset();
-        while (!(slides.atTargetPosition() || slideLimit.isPressed() || timer.milliseconds() > 1000)) {
-            slides.update();
+        while (timer.milliseconds() < 250) {
         }
 
         delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_1);

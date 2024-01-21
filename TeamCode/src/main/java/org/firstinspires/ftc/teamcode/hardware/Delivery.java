@@ -10,7 +10,7 @@ public class Delivery {
         TRANSITION_1    (0.63,  0.9,    0.69,   0.69),
         TRANSITION_2    (0.82,  0.9,    0.69,   0.69),
         SCORE           (0.86,  0.9,    0.43,   0.43),
-        SCORE_AUTO      (0.85,  0.9,    0.43,   0.43),
+        SCORE_PRELOAD   (0.98,  0.9,    0.69,   0.69),
         UNKNOWN         (0,     0,      0,      0);
 
         public final double pitchPositionRight;
