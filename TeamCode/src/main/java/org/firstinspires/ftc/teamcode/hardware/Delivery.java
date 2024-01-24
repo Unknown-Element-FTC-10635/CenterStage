@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Delivery {
     public enum DeliveryState {
         INTAKE_PICKUP   (0.14,  0.36,   0.69,   0.69),
-        INTAKE_HOLD     (0.525, 0.36,   0.69,   0.69),
+        INTAKE_HOLD     (0.55, 0.36,   0.69,   0.69),
         TRANSITION_1    (0.63,  0.9,    0.69,   0.69),
         TRANSITION_2    (0.82,  0.9,    0.69,   0.69),
         SCORE           (0.86,  0.9,    0.43,   0.43),

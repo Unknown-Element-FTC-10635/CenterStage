@@ -13,6 +13,7 @@ public class Intake {
    public enum IntakeState {
         START_POSITION(0.1),
         STACK_HIGH(0.18),
+        STACK_AUTO(0.22),
         STACK_MID(0.27),
         GROUND(0.39);
 
