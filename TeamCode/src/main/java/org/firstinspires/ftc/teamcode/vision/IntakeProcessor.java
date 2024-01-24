@@ -22,6 +22,7 @@ public class IntakeProcessor extends SimpleProcessor {
     private final Mat processMat = new Mat();
 
     private Scalar leftMean, rightMean;
+    private PixelColors left, right;
 
     public IntakeProcessor() {
     }
@@ -47,19 +48,33 @@ public class IntakeProcessor extends SimpleProcessor {
     }
 
     public PixelColors getLeftPixel() {
-        if (leftMean != null) {
-            return getPixel(leftMean.val);
-        }
-
-        return PixelColors.NONE;
+        return left;
     }
 
     public PixelColors getRightColor() {
-        if (rightMean != null) {
-            return getPixel(rightMean.val);
+        return right;
+    }
+
+    public boolean hasTwoPixel() {
+        return left != PixelColors.NONE && right != PixelColors.NONE;
+    }
+
+    public boolean hasOnePixel() {
+        return left != PixelColors.NONE || right != PixelColors.NONE;
+    }
+
+    public void update() {
+        if (leftMean != null) {
+            left = getPixel(leftMean.val);
+        } else {
+            left = PixelColors.NONE;
         }
 
-        return PixelColors.NONE;
+        if (rightMean != null) {
+            right = getPixel(rightMean.val);
+        } else {
+            right = PixelColors.NONE;
+        }
     }
 
     public Scalar getLeftMean() {
@@ -74,7 +89,6 @@ public class IntakeProcessor extends SimpleProcessor {
         if (val.length != 4) {
             return PixelColors.NONE;
         }
-
 
         if (val[0] >= 190 && val[1] >= 190 && val[2] >= 190) {
             return PixelColors.WHITE;

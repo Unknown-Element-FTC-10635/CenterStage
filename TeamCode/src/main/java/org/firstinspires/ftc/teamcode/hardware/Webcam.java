@@ -31,7 +31,8 @@ public class Webcam {
     }
 
     public void stopWebcam() {
-        //visionPortal.stopStreaming();
+        FtcDashboard.getInstance().stopCameraStream();
+        visionPortal.stopStreaming();
     }
 
     public float getFPS() {

@@ -22,12 +22,16 @@ public class WebcamTesting extends LinearOpMode {
 
         waitForStart();
 
+        webcam.stopWebcam();
+
         while (opModeIsActive()) {
+            /*
             telemetry.addData("Camera FPS", webcam.getFPS());
             telemetry.addData("Left Pixel", processor.getLeftPixel());
             telemetry.addData("Left Mean", processor.getLeftMean());
             telemetry.addData("Right Pixel", processor.getRightColor());
             telemetry.addData("Right Mean", processor.getRightMean());
+            */
             telemetry.update();
         }
     }

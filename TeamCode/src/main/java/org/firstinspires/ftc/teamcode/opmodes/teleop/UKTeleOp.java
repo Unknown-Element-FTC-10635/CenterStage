@@ -45,7 +45,6 @@ public class UKTeleOp extends OpMode {
     private ElapsedTime transitionTimer, matchTimer;
     private int targetBackboardLevel = 0;
     private boolean stackIntakeToggle;
-    private PixelColors leftIntake, rightIntake;
 
     @Override
     public void init() {
@@ -127,17 +126,16 @@ public class UKTeleOp extends OpMode {
                     intake.setServoPosition(Intake.IntakeState.GROUND);
                 }
 
-                if (leftIntake != PixelColors.NONE && rightIntake != PixelColors.NONE) {
+                if (processor.hasTwoPixel()) {
                     gamepad1.rumble(250);
                     if (transitionTimer.milliseconds() > 500) {
                         driveDeliveryTransition = 0;
                         robotState = RobotState.INTAKE_DRIVE_TRANSITION;
                     }
-                    blinkin.setTwoPixel(leftIntake, rightIntake);
-                } else if (leftIntake != PixelColors.NONE) {
-                    blinkin.setOnePixel(leftIntake);
-                } else if (rightIntake != PixelColors.NONE) {
-                    blinkin.setOnePixel(rightIntake);
+
+                    blinkin.setTwoPixel(PixelColors.NONE, PixelColors.NONE);
+                } else if (processor.hasOnePixel()) {
+                    blinkin.setOnePixel(PixelColors.NONE);
                 } else if (blinkin.getCurrentState() != Blinkin.CurrentState.NONE) {
                     blinkin.clear();
                 }
@@ -406,8 +404,7 @@ public class UKTeleOp extends OpMode {
         slides.update();
 
         if (robotState == RobotState.DRIVE_INTAKE_TRANSITION || robotState == RobotState.INTAKE) {
-            leftIntake = processor.getLeftPixel();
-            rightIntake = processor.getRightColor();
+            processor.update();
         }
 
         if (robotState == RobotState.SCORE) {
@@ -431,8 +428,8 @@ public class UKTeleOp extends OpMode {
         telemetry.addData("Slide Right Error", slides.getRightError());
         telemetry.addData("Slide at Target Position", slides.atTargetPosition());
         telemetry.addData("Backboard Level", targetBackboardLevel);
-        telemetry.addData("Left Intake Pixel", leftIntake);
-        telemetry.addData("Right Intake Pixel", rightIntake);
+        telemetry.addData("Left Intake Pixel", processor.getLeftPixel());
+        telemetry.addData("Right Intake Pixel", processor.getRightColor());
         telemetry.addData("Robot", robotState);
 
         telemetry.addData("Loop time", matchTimer.milliseconds());
