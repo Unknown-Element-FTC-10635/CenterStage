@@ -86,11 +86,11 @@ public class UKTeleOp extends OpMode {
     public void loop() {
         update();
 
-        if (controller1.leftTriggerPressedLiterallyAtAllRisingEdge()) {
+        if (controller1.leftTriggerRisingEdge()) {
             driveTrain.toggleSpeedMultiplier();
         }
 
-        if (controller1.leftTriggerPressedLiterallyAtAllFallingEdge()) {
+        if (controller1.leftTriggerFallingEdge()) {
             driveTrain.toggleSpeedMultiplier();
         }
 
@@ -386,6 +386,15 @@ public class UKTeleOp extends OpMode {
         if (controller1.risingEdgeOf(GamepadEx.Buttons.DPAD_UP)) {
             robotState = RobotState.TRANSITION_ENDGAME;
             transitionTimer.reset();
+        }
+
+        if (controller2.risingEdgeOf(GamepadEx.Buttons.TRIANGLE)) {
+            slides.setPidEnabled(false);
+            slides.manual(-0.2);
+        } else if (controller2.fallingEdgeOf(GamepadEx.Buttons.TRIANGLE)) {
+            slides.manual(0);
+            slides.resetEncoders();
+            slides.setPidEnabled(true);
         }
 
         if (slideLimit.isRisingEdge()) {

@@ -95,13 +95,22 @@ public class GamepadEx {
         return currentGamepad.right_stick_y;
     }
 
-    public boolean leftTriggerPressedLiterallyAtAllRisingEdge() {
+    public boolean leftTriggerRisingEdge() {
         return (currentGamepad.left_trigger > 0.1) && !(previousGamepad.left_trigger > 0.1);
     }
 
-    public boolean leftTriggerPressedLiterallyAtAllFallingEdge() {
+    public boolean leftTriggerFallingEdge() {
         return !(currentGamepad.left_trigger > 0.1) && (previousGamepad.left_trigger > 0.1);
     }
+
+    public boolean rightTriggerRisingEdge() {
+        return (currentGamepad.right_trigger > 0.1) && !(previousGamepad.right_trigger > 0.1);
+    }
+
+    public boolean rightTriggerFallingEdge() {
+        return !(currentGamepad.right_trigger > 0.1) && (previousGamepad.right_trigger > 0.1);
+    }
+
 
     public void update() {
         previousGamepad.copy(currentGamepad);
