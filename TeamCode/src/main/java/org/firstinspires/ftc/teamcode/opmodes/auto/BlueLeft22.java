@@ -51,6 +51,7 @@ public class BlueLeft22 extends OpMode {
     private Webcam webcam;
 
     private ElapsedTime timer;
+    private ElapsedTime parkTimer;
 
     private TrajectorySequence  preloadDeliveryLeft, preloadDeliveryBackdropLeft, preloadDeliveryCenter,
                                 preloadDeliveryBackdropCenter, preloadDeliveryRight, preloadDeliveryBackdropRight,
@@ -86,6 +87,8 @@ public class BlueLeft22 extends OpMode {
 
         timer = new ElapsedTime();
         timer.startTime();
+
+        parkTimer = new ElapsedTime();
 
         currentState = AutoStates.START;
     }
@@ -411,6 +414,7 @@ public class BlueLeft22 extends OpMode {
             case PARK:
                 switch (subTransition) {
                     case 0:
+                        parkTimer.startTime();
                         intake.off();
                         driveTrain.followTrajectorySequenceAsync(park);
 
@@ -437,7 +441,7 @@ public class BlueLeft22 extends OpMode {
                 break;
         }
 
-        if ((currentState == AutoStates.PICKUP_STACK_PIXELS || currentState == AutoStates.RETRY_STACK || targetState == AutoStates.PARK) && intakeProcessor.hasTwoPixel()) {
+        if ((currentState == AutoStates.PICKUP_STACK_PIXELS || currentState == AutoStates.RETRY_STACK || (targetState == AutoStates.PARK && parkTimer.milliseconds() < 2000)) && intakeProcessor.hasTwoPixel()) {
             subTransition = 0;
             driveTrain.followTrajectorySequenceAsync(backToKnownPosition);
             targetState = AutoStates.SCORE_STACK_PIXELS;
