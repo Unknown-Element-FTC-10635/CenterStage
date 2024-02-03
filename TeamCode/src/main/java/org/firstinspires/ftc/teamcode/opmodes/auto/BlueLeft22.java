@@ -504,7 +504,7 @@ public class BlueLeft22 extends OpMode {
 
         preloadDeliveryBackdropRight = driveTrain.trajectorySequenceBuilder(preloadDeliveryRight.end())
                 .setReversed(true)
-                .splineTo(new Vector2d(49, 24), Math.toRadians(0))
+                .splineTo(new Vector2d(49, 25), Math.toRadians(0))
                 .back(2)
                 .build();
 
@@ -522,7 +522,7 @@ public class BlueLeft22 extends OpMode {
 
         toStack = driveTrain.trajectorySequenceBuilder(toCommonPathCenter.end())
                 .splineTo(new Vector2d(20, 5), Math.toRadians(180))
-                .splineTo(new Vector2d(-61, 13), Math.toRadians(180))
+                .splineTo(new Vector2d(-61, 11), Math.toRadians(180))
                 .build();
 
         backToKnownPosition = driveTrain.trajectorySequenceBuilder(new Pose2d(-60, 9, Math.toRadians(180)))
