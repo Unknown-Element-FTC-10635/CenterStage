@@ -485,7 +485,7 @@ public class RedRight22 extends OpMode {
                 .build();
 
         preloadDeliveryCenter = driveTrain.trajectorySequenceBuilder(startPose)
-                .lineTo(new Vector2d(15, -30))
+                .lineTo(new Vector2d(17, -30))
                 .build();
 
         preloadDeliveryRight = driveTrain.trajectorySequenceBuilder(startPose)
@@ -493,7 +493,7 @@ public class RedRight22 extends OpMode {
                 .splineTo(new Vector2d(29,-36), Math.toRadians(140))
                 .build();
 
-        preloadDeliveryBackdropLeft = driveTrain.trajectorySequenceBuilder(preloadDeliveryRight.end())
+        preloadDeliveryBackdropLeft = driveTrain.trajectorySequenceBuilder(preloadDeliveryLeft.end())
                 .setReversed(true)
                 .splineTo(new Vector2d(50, -28), Math.toRadians(0))
                 .back(3)
@@ -506,7 +506,7 @@ public class RedRight22 extends OpMode {
                 .back(10)
                 .build();
 
-        preloadDeliveryBackdropRight = driveTrain.trajectorySequenceBuilder(preloadDeliveryLeft.end())
+        preloadDeliveryBackdropRight = driveTrain.trajectorySequenceBuilder(preloadDeliveryRight.end())
                 .setReversed(true)
                 .splineTo(new Vector2d(57, -40), Math.toRadians(0))
                 .build();
