@@ -245,7 +245,7 @@ public class BlueLeft22 extends OpMode {
 
                         if (intakeProcessor.hasTwoPixel()) {
                             driveTrain.followTrajectorySequenceAsync(backToKnownPosition);
-                            targetState = AutoStates.SCORE_STACK_PIXELS;t s
+                            targetState = AutoStates.SCORE_STACK_PIXELS;
                             currentState = AutoStates.WAIT_ARRIVAL;
                         } else if (tries < 2) {
                             currentState = AutoStates.RETRY_STACK;
