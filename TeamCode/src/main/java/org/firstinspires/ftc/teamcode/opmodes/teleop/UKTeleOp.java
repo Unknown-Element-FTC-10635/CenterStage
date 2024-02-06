@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.hardware.Airplane;
+import org.firstinspires.ftc.teamcode.hardware.BackboardDetector;
 import org.firstinspires.ftc.teamcode.hardware.Blinkin;
 import org.firstinspires.ftc.teamcode.hardware.BreakBeam;
 import org.firstinspires.ftc.teamcode.hardware.Claw;
@@ -35,6 +36,7 @@ public class UKTeleOp extends OpMode {
     private Slides slides;
     private Claw claw;
     private Hang hang;
+    private BackboardDetector backboardDetector;
 
     private IntakeProcessor processor;
 
@@ -44,7 +46,7 @@ public class UKTeleOp extends OpMode {
 
     private ElapsedTime transitionTimer, matchTimer;
     private int targetBackboardLevel = 0;
-    private boolean cameraDisabled;
+    private boolean cameraDisabled, backboardDropoffToggle;
 
     @Override
     public void init() {
@@ -66,6 +68,8 @@ public class UKTeleOp extends OpMode {
         slides = new Slides(hardwareMap);
         claw = new Claw(hardwareMap);
         hang = new Hang(hardwareMap);
+        backboardDetector = new BackboardDetector(hardwareMap);
+
         transitionTimer = new ElapsedTime();
         transitionTimer.startTime();
 
@@ -262,7 +266,6 @@ public class UKTeleOp extends OpMode {
                         transitionTimer.reset();
 
                         driveDeliveryTransition++;
-                        delivery.setDeliveryState(Delivery.DeliveryState.SCORE);
                         break;
                     case 1:
                         // Wait until the slides are at that position
@@ -273,6 +276,9 @@ public class UKTeleOp extends OpMode {
                         break;
                     case 2:
                         blinkin.strobe();
+                        delivery.setDeliveryState(Delivery.DeliveryState.SCORE);
+                        backboardDetector.clear();
+
                         // Advance
                         robotState = RobotState.SCORE;
                         break;
@@ -305,6 +311,13 @@ public class UKTeleOp extends OpMode {
                 if (controller1.risingEdgeOf(GamepadEx.Buttons.CROSS)) {
                     driveDeliveryTransition = 0;
                     robotState = RobotState.SCORE_DRIVE_TRANSITION;
+                }
+
+                if (!backboardDropoffToggle && backboardDetector.isReady() && backboardDetector.getAngle() < 15) {
+                    if (backboardDetector.getAverageDistance() < 9.75) {
+                        driveDeliveryTransition = 0;
+                        robotState = RobotState.SCORE_DRIVE_TRANSITION;
+                    }
                 }
 
                 break;
@@ -401,6 +414,10 @@ public class UKTeleOp extends OpMode {
             cameraDisabled = !cameraDisabled;
         }
 
+        if (controller1.risingEdgeOf(GamepadEx.Buttons.CIRCLE)) {
+            backboardDropoffToggle = !backboardDropoffToggle;
+        }
+
         if (slideLimit.isRisingEdge()) {
             slides.resetEncoders();
         }
@@ -422,6 +439,7 @@ public class UKTeleOp extends OpMode {
 
         if (robotState == RobotState.SCORE) {
             delivery.update();
+            backboardDetector.update();
         }
     }
 
@@ -444,6 +462,11 @@ public class UKTeleOp extends OpMode {
         telemetry.addData("Left Intake Pixel", processor.getLeftPixel());
         telemetry.addData("Right Intake Pixel", processor.getRightColor());
         telemetry.addData("Camera enabled", !cameraDisabled);
+        telemetry.addData("Angle of Robot", backboardDetector.getAngle());
+        telemetry.addData("Distance of robot", backboardDetector.getAverageDistance());
+        telemetry.addData("Left distance", backboardDetector.getLeft());
+        telemetry.addData("Right distance", backboardDetector.getRight());
+        telemetry.addData("Auto-dropoff ready", backboardDetector.isReady());
         telemetry.addData("Robot", robotState);
 
         telemetry.addData("Loop time", matchTimer.milliseconds());
