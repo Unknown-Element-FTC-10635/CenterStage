@@ -15,7 +15,7 @@ public class Intake {
         STACK_HIGH(0.18),
         STACK_AUTO(0.22),
         STACK_MID(0.27),
-        GROUND(0.41);
+        GROUND(0.435);
 
         public final double position;
 
@@ -24,7 +24,8 @@ public class Intake {
         }
     }
 
-    private static final double ON_POWER = 1.0;
+    private static final double ON_POWER = 0.85;
+    private static final double REVERSE_POWER = -0.75;
 
     private final DcMotorEx intake;
     private final ServoImplEx servo;
@@ -49,7 +50,7 @@ public class Intake {
     }
 
     public void reverse() {
-        intake.setPower(-ON_POWER);
+        intake.setPower(REVERSE_POWER);
     }
 
     public void reverse(double power) {

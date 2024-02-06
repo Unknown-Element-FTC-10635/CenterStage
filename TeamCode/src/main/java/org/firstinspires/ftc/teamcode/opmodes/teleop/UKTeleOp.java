@@ -44,7 +44,7 @@ public class UKTeleOp extends OpMode {
 
     private ElapsedTime transitionTimer, matchTimer;
     private int targetBackboardLevel = 0;
-    private boolean stackIntakeToggle;
+    private boolean cameraDisabled;
 
     @Override
     public void init() {
@@ -126,7 +126,7 @@ public class UKTeleOp extends OpMode {
                     intake.setServoPosition(Intake.IntakeState.GROUND);
                 }
 
-                if (processor.hasTwoPixel()) {
+                if (!cameraDisabled && processor.hasTwoPixel()) {
                     gamepad1.rumble(250);
                     if (transitionTimer.milliseconds() > 500) {
                         driveDeliveryTransition = 0;
@@ -134,7 +134,7 @@ public class UKTeleOp extends OpMode {
                     }
 
                     blinkin.setTwoPixel(PixelColors.NONE, PixelColors.NONE);
-                } else if (processor.hasOnePixel()) {
+                } else if (!cameraDisabled && processor.hasOnePixel()) {
                     blinkin.setOnePixel(PixelColors.NONE);
                 } else if (blinkin.getCurrentState() != Blinkin.CurrentState.NONE) {
                     blinkin.clear();
@@ -397,6 +397,10 @@ public class UKTeleOp extends OpMode {
             slides.setPidEnabled(true);
         }
 
+        if (controller2.risingEdgeOf(GamepadEx.Buttons.CROSS)) {
+            cameraDisabled = !cameraDisabled;
+        }
+
         if (slideLimit.isRisingEdge()) {
             slides.resetEncoders();
         }
@@ -412,7 +416,7 @@ public class UKTeleOp extends OpMode {
         slideLimit.update();
         slides.update();
 
-        if (robotState == RobotState.DRIVE_INTAKE_TRANSITION || robotState == RobotState.INTAKE) {
+        if (!cameraDisabled && (robotState == RobotState.DRIVE_INTAKE_TRANSITION || robotState == RobotState.INTAKE)) {
             processor.update();
         }
 
@@ -439,6 +443,7 @@ public class UKTeleOp extends OpMode {
         telemetry.addData("Backboard Level", targetBackboardLevel);
         telemetry.addData("Left Intake Pixel", processor.getLeftPixel());
         telemetry.addData("Right Intake Pixel", processor.getRightColor());
+        telemetry.addData("Camera enabled", !cameraDisabled);
         telemetry.addData("Robot", robotState);
 
         telemetry.addData("Loop time", matchTimer.milliseconds());
