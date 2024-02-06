@@ -159,7 +159,7 @@ public class UKTeleOp extends OpMode {
                         break;
                     case 1:
                         // Wait until we know the claw is parallel to the ground
-                        if (transitionTimer.milliseconds() > 600) {
+                        if (transitionTimer.milliseconds() > 650) {
                             driveDeliveryTransition++;
                         }
 
@@ -314,7 +314,7 @@ public class UKTeleOp extends OpMode {
                 }
 
                 if (!backboardDropoffToggle && backboardDetector.isReady() && backboardDetector.getAngle() < 15) {
-                    if (backboardDetector.getAverageDistance() < 9.75) {
+                    if (backboardDetector.getAverageDistance() < 10) {
                         driveDeliveryTransition = 0;
                         robotState = RobotState.SCORE_DRIVE_TRANSITION;
                     }
@@ -344,7 +344,7 @@ public class UKTeleOp extends OpMode {
                         driveDeliveryTransition++;
                         break;
                     case 3:
-                        if (transitionTimer.milliseconds() > 500) {
+                        if (transitionTimer.milliseconds() > 1000) {
                             driveDeliveryTransition++;
                         }
 

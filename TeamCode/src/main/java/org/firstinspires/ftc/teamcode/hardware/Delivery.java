@@ -5,12 +5,12 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Delivery {
     public enum DeliveryState {
-        INTAKE_PICKUP   (0.14,  0.36,   0.72,   0.72),
-        INTAKE_HOLD     (0.55,  0.36,   0.72,   0.72),
-        TRANSITION_1    (0.63,  0.9,    0.72,   0.72),
-        TRANSITION_2    (0.82,  0.9,    0.72,   0.72),
+        INTAKE_PICKUP   (0.10,  0.34,   0.75,   0.75),
+        INTAKE_HOLD     (0.55,  0.34,   0.75,   0.75),
+        TRANSITION_1    (0.63,  0.9,    0.75,   0.75),
+        TRANSITION_2    (0.82,  0.9,    0.75,   0.75),
         SCORE           (0.86,  0.9,    0.39,   0.39),
-        SCORE_PRELOAD   (0.98,  0.9,    0.72,   0.72),
+        SCORE_PRELOAD   (0.98,  0.9,    0.75,   0.75),
         UNKNOWN         (0,     0,      0,      0);
 
         public final double pitchPositionRight;

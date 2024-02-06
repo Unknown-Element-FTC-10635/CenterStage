@@ -24,8 +24,8 @@ public class Intake {
         }
     }
 
-    private static final double ON_POWER = 0.85;
-    private static final double REVERSE_POWER = -0.75;
+    private static final double ON_POWER = 0.75;
+    private static final double REVERSE_POWER = -0.6;
 
     private final DcMotorEx intake;
     private final ServoImplEx servo;
