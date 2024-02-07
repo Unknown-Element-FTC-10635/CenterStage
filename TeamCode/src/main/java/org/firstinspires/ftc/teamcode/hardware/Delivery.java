@@ -9,7 +9,7 @@ public class Delivery {
         INTAKE_HOLD     (0.55,  0.34,   0.75,   0.75),
         TRANSITION_1    (0.63,  0.9,    0.75,   0.75),
         TRANSITION_2    (0.82,  0.9,    0.75,   0.75),
-        SCORE           (0.86,  0.9,    0.39,   0.39),
+        SCORE           (0.85,  0.9,    0.39,   0.39),
         SCORE_PRELOAD   (0.98,  0.9,    0.75,   0.75),
         UNKNOWN         (0,     0,      0,      0);
 

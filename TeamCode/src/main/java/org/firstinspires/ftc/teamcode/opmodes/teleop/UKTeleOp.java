@@ -132,7 +132,7 @@ public class UKTeleOp extends OpMode {
 
                 if (!cameraDisabled && processor.hasTwoPixel()) {
                     gamepad1.rumble(250);
-                    if (transitionTimer.milliseconds() > 500) {
+                    if (transitionTimer.milliseconds() > 750) {
                         driveDeliveryTransition = 0;
                         robotState = RobotState.INTAKE_DRIVE_TRANSITION;
                     }
@@ -159,7 +159,7 @@ public class UKTeleOp extends OpMode {
                         break;
                     case 1:
                         // Wait until we know the claw is parallel to the ground
-                        if (transitionTimer.milliseconds() > 650) {
+                        if (transitionTimer.milliseconds() > 750) {
                             driveDeliveryTransition++;
                         }
 
@@ -410,11 +410,17 @@ public class UKTeleOp extends OpMode {
             slides.setPidEnabled(true);
         }
 
-        if (controller2.risingEdgeOf(GamepadEx.Buttons.CROSS)) {
+        if (controller1.risingEdgeOf(GamepadEx.Buttons.CIRCLE)) {
+            if (targetBackboardLevel < 4) {
+                targetBackboardLevel++;
+            }
+        }
+
+        if (controller2.risingEdgeOf(GamepadEx.Buttons.SQUARE)) {
             cameraDisabled = !cameraDisabled;
         }
 
-        if (controller1.risingEdgeOf(GamepadEx.Buttons.CIRCLE)) {
+        if (controller2.risingEdgeOf(GamepadEx.Buttons.CIRCLE)) {
             backboardDropoffToggle = !backboardDropoffToggle;
         }
 
