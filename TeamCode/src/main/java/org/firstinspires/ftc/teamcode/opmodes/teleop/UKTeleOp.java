@@ -401,6 +401,12 @@ public class UKTeleOp extends OpMode {
             transitionTimer.reset();
         }
 
+        if (controller1.risingEdgeOf(GamepadEx.Buttons.CIRCLE)) {
+            if (targetBackboardLevel < 4) {
+                targetBackboardLevel++;
+            }
+        }
+
         if (controller2.risingEdgeOf(GamepadEx.Buttons.TRIANGLE)) {
             slides.setPidEnabled(false);
             slides.manual(-0.2);
@@ -410,10 +416,8 @@ public class UKTeleOp extends OpMode {
             slides.setPidEnabled(true);
         }
 
-        if (controller1.risingEdgeOf(GamepadEx.Buttons.CIRCLE)) {
-            if (targetBackboardLevel < 4) {
-                targetBackboardLevel++;
-            }
+        if (slideLimit.isRisingEdge()) {
+            slides.resetEncoders();
         }
 
         if (controller2.risingEdgeOf(GamepadEx.Buttons.SQUARE)) {
@@ -422,10 +426,6 @@ public class UKTeleOp extends OpMode {
 
         if (controller2.risingEdgeOf(GamepadEx.Buttons.CIRCLE)) {
             backboardDropoffToggle = !backboardDropoffToggle;
-        }
-
-        if (slideLimit.isRisingEdge()) {
-            slides.resetEncoders();
         }
 
         write();
