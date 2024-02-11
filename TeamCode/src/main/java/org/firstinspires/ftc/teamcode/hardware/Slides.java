@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.utils.hardware.MotorBuilder;
 public class Slides {
     public enum SlidesHeights {
         BASE(1),
-        AUTO(150),
+        AUTO(165),
         SECOND_LEVEL(250),
         FOURTH_LEVEL(350),
         SIXTH_LEVEL(450),
