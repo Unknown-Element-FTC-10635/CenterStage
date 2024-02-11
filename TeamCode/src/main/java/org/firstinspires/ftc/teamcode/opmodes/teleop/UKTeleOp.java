@@ -276,7 +276,11 @@ public class UKTeleOp extends OpMode {
                         break;
                     case 2:
                         blinkin.strobe();
-                        delivery.setDeliveryState(Delivery.DeliveryState.SCORE);
+                        if (targetBackboardLevel < 2) {
+                            delivery.setDeliveryState(Delivery.DeliveryState.SCORE);
+                        } else {
+                            delivery.setDeliveryState(Delivery.DeliveryState.SCORE_NO_OUT);
+                        }
                         backboardDetector.clear();
 
                         // Advance
@@ -297,6 +301,11 @@ public class UKTeleOp extends OpMode {
                 if (controller1.risingEdgeOf(GamepadEx.Buttons.BUMPER_RIGHT)) {
                     if (targetBackboardLevel < 4) {
                         targetBackboardLevel++;
+
+                        if (targetBackboardLevel > 1) {
+                            delivery.setDeliveryState(Delivery.DeliveryState.SCORE_NO_OUT);
+                        }
+
                         slides.setHeight(Slides.SlidesHeights.levelFromInt(targetBackboardLevel));
                     }
                 }
@@ -304,6 +313,11 @@ public class UKTeleOp extends OpMode {
                 if (controller1.risingEdgeOf(GamepadEx.Buttons.BUMPER_LEFT)) {
                     if (targetBackboardLevel > 0) {
                         targetBackboardLevel--;
+
+                        if (targetBackboardLevel < 2) {
+                            delivery.setDeliveryState(Delivery.DeliveryState.SCORE);
+                        }
+
                         slides.setHeight(Slides.SlidesHeights.levelFromInt(targetBackboardLevel));
                     }
                 }
