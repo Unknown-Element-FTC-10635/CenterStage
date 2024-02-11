@@ -1,13 +1,18 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.utils.controller.PID;
 import org.firstinspires.ftc.teamcode.utils.hardware.MotorBuilder;
 
+@Config
 public class Slides {
     public enum SlidesHeights {
         BASE(1),
@@ -35,8 +40,8 @@ public class Slides {
         }
     }
 
-    private static final double lP = 0.06, lI = 0.0, lD = 0.00025;
-    private static final double rP = 0.04, rI = 0.0, rD = 0.00025;
+    public static double lP = 0.036, lI = 0.0, lD = 0.1;
+    public static double rP = 0.03, rI = 0.0, rD = 0.01;
 
     private final PID leftPIDController, rightPIDController;
     private final DcMotorEx leftExtension, rightExtension;
@@ -68,6 +73,11 @@ public class Slides {
         rightPIDController.setSetPoint(targetLevel.targetPosition);
     }
 
+    public void setHeight(double manual) {
+        leftPIDController.setSetPoint(manual);
+        rightPIDController.setSetPoint(manual + 50);
+    }
+
     public boolean atTargetPosition() {
         leftError = (1.0 - (leftExtension.getCurrentPosition() / currentTarget.targetPosition));
         rightError = (1.0 - (rightExtension.getCurrentPosition() / currentTarget.targetPosition));
@@ -76,8 +86,8 @@ public class Slides {
 
     public void update() {
         if (pidEnabled) {
-            double leftNewPower = leftPIDController.update(leftExtension.getCurrentPosition()) * calculateMultiplier(leftExtension.getCurrentPosition());
-            double rightNewPower = rightPIDController.update(rightExtension.getCurrentPosition()) * calculateMultiplier(rightExtension.getCurrentPosition());
+            double leftNewPower = leftPIDController.update(leftExtension.getCurrentPosition());
+            double rightNewPower = rightPIDController.update(rightExtension.getCurrentPosition());
 
             leftExtension.setPower(leftNewPower);
             rightExtension.setPower(rightNewPower);

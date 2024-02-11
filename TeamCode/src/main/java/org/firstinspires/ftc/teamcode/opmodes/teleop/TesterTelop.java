@@ -1,43 +1,44 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.hardware.Blinkin;
+import org.firstinspires.ftc.teamcode.hardware.Delivery;
+import org.firstinspires.ftc.teamcode.hardware.Slides;
 import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
-import org.firstinspires.ftc.teamcode.utils.PixelColors;
-import org.firstinspires.ftc.teamcode.utils.hardware.GamepadEx;
-import org.firstinspires.ftc.teamcode.vision.IntakeProcessor;
 
+@Config
 @TeleOp()
 public class TesterTelop extends LinearOpMode {
+    public static double target = 0;
+
     @Override
     public void runOpMode() throws InterruptedException {
         CurrentOpmode.setCurrentOpmode(CurrentOpmode.OpMode.TELEOP);
 
-        GamepadEx controller = new GamepadEx(gamepad1);
-        Blinkin blinkin = new Blinkin(hardwareMap);
-        blinkin.setOnePixel(PixelColors.GREEN);
+        Slides slides = new Slides(hardwareMap);
+        Delivery delivery = new Delivery(hardwareMap);
 
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         telemetry.addLine("Ready to start");
         telemetry.update();
+
+        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
 
         waitForStart();
 
         while (opModeIsActive()) {
-            controller.update();
+            slides.setHeight(target);
 
-            if (controller.risingEdgeOf(GamepadEx.Buttons.SQUARE)) {
-                blinkin.setOnePixel(PixelColors.GREEN);
-            }
+            slides.update();
 
-            if (controller.risingEdgeOf(GamepadEx.Buttons.CROSS)) {
-                blinkin.setTwoPixel(PixelColors.GREEN, PixelColors.WHITE);
-            }
-
-            if (controller.risingEdgeOf(GamepadEx.Buttons.CIRCLE)) {
-                blinkin.clear();
-            }
+            telemetry.addData("Left", slides.getCurrentLeftPosition());
+            telemetry.addData("right", slides.getCurrentRightPosition());
+            telemetry.addData("target", target);
+            telemetry.update();
         }
     }
 }
