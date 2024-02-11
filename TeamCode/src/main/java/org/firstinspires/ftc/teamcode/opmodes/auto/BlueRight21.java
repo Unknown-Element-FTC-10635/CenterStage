@@ -52,8 +52,8 @@ public class BlueRight21 extends OpMode {
     private ElapsedTime timer;
     private ElapsedTime parkTimer;
 
-    private TrajectorySequence  preloadDeliveryLeft, preloadDeliveryRight, preloadDeliveryCenter,
-            toStackLeft, toStackRight, toStackCenter;
+    private TrajectorySequence  preloadDeliveryLeft, preloadDeliveryRight, preloadDeliveryCenter, stackDeliveryBackdropRight,
+            stackDeliveryBackdropLeft, stackDeliveryBackdropCenter, toStackLeft, toStackRight, toStackCenter;
     private TrajectorySequence  preloadDelivery, toStack, backToKnownPosition, stackDeliveryBackdrop, park;
     private Pose2d startPose;
     private AutoStates currentState, targetState;
@@ -113,14 +113,17 @@ public class BlueRight21 extends OpMode {
             case LEFT:
                 preloadDelivery = preloadDeliveryLeft;
                 toStack = toStackLeft;
+                stackDeliveryBackdrop = stackDeliveryBackdropLeft;
                 break;
             case CENTER:
                 preloadDelivery = preloadDeliveryCenter;
                 toStack = toStackCenter;
+                stackDeliveryBackdrop = stackDeliveryBackdropCenter;
                 break;
             case RIGHT:
                 preloadDelivery = preloadDeliveryRight;
                 toStack = toStackRight;
+                stackDeliveryBackdrop = stackDeliveryBackdropRight;
                 break;
         }
     }
@@ -141,13 +144,13 @@ public class BlueRight21 extends OpMode {
             case SCORE_PURPLE_PRELOAD:
                 switch (subTransition) {
                     case 0:
-                        intake.reverse(0.5);
+                        intake.reverse(.35);
                         timer.reset();
 
                         subTransition++;
                         break;
                     case 1:
-                        if (timerAt(400)) {
+                        if (timerAt(600)) {
                             subTransition++;
                         }
 
@@ -171,7 +174,7 @@ public class BlueRight21 extends OpMode {
                         driveTrain.setMotorPowers(0.25, 0.25, 0.25, 0.25);
                         delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_HOLD);
                         claw.setClawState(Claw.ClawState.OPEN_INTAKE);
-                        intake.on(0.8);
+                        intake.on(.6);
                         intake.setServoPosition(Intake.IntakeState.STACK_AUTO);
 
                         timer.reset();
@@ -211,7 +214,7 @@ public class BlueRight21 extends OpMode {
                 switch (subTransition) {
                     case 0:
                         tries++;
-                        intake.reverse(0.25);
+                        intake.reverse();
                         driveTrain.setMotorPowers(-0.75, 0.75, -0.75, 0.75);
 
                         timer.reset();
@@ -226,9 +229,10 @@ public class BlueRight21 extends OpMode {
                         break;
                     case 2:
                         driveTrain.setMotorPowers(-0.2, -0.2, -0.2, -0.2);
-                        intake.on();
+                        intake.on(.6);
                         timer.reset();
                         subTransition++;
+                        intake.setServoPosition(Intake.IntakeState.STACK_MID);
                         break;
                     case 4:
                         timer.reset();
@@ -243,21 +247,28 @@ public class BlueRight21 extends OpMode {
                 }
                 break;
             case DRIVE_THROUGH_BARRIER:
-                switch (subTransition){
+                switch (subTransition) {
                     case 0:
                         timer.reset();
                         intake.reverse();
                         subTransition++;
                         break;
                     case 1:
-                        if (timerAt(250)) {
-                            intake.off();
+                    case 3:
+                        if (timerAt(200)) {
                             subTransition++;
                         }
                         break;
                     case 2:
                         parkTimer.startTime();
                         driveTrain.followTrajectorySequenceAsync(backToKnownPosition);
+                        intake.reverse(.25);
+                        timer.reset();
+
+                        subTransition++;
+                        break;
+                    case 4:
+                        intake.on();
                         subTransition = 0;
 
                         targetState = AutoStates.SCORE_STACK_PIXELS;
@@ -444,6 +455,31 @@ public class BlueRight21 extends OpMode {
     }
 
     private void buildPaths() {
+        preloadDeliveryCenter = driveTrain.trajectorySequenceBuilder(startPose)
+                .splineTo(new Vector2d(-34, 26), Math.toRadians(260))
+                .back(13)
+                .build();
+
+        toStackCenter = driveTrain.trajectorySequenceBuilder(preloadDeliveryCenter.end())
+                .setReversed(true)
+                .lineTo(new Vector2d(-36, 59))
+                .setReversed(false)
+                .splineTo(new Vector2d(-58, 39), Math.toRadians(180))
+                .build();
+        backToKnownPosition = driveTrain.trajectorySequenceBuilder(toStackCenter.end())
+                .setReversed(true)
+                .back(20)
+                .lineToConstantHeading(new Vector2d(-30, 60))
+                .back(53)
+                .build();
+
+
+        stackDeliveryBackdropCenter = driveTrain.trajectorySequenceBuilder(backToKnownPosition.end())
+                .setReversed(true)
+                .splineTo(new Vector2d(47, 36.5), Math.toRadians(0))
+                .back(5)
+                .build();
+
         preloadDeliveryRight = driveTrain.trajectorySequenceBuilder(startPose)
                 .splineTo(new Vector2d(-45, 33), Math.toRadians(260))
                 .back(8)
@@ -455,21 +491,38 @@ public class BlueRight21 extends OpMode {
                 .splineTo(new Vector2d(-58, 39), Math.toRadians(180))
                 .build();
 
-        backToKnownPosition = driveTrain.trajectorySequenceBuilder(toStackRight.end())
+        stackDeliveryBackdropRight = driveTrain.trajectorySequenceBuilder(backToKnownPosition.end())
                 .setReversed(true)
-                .splineTo(new Vector2d(-32, 56), Math.toRadians(0))
-                .back(45)
-                .build();
-
-        stackDeliveryBackdrop = driveTrain.trajectorySequenceBuilder(backToKnownPosition.end())
-                .setReversed(true)
-                .splineTo(new Vector2d(48, 26), Math.toRadians(0))
+                .splineTo(new Vector2d(48, 29.5), Math.toRadians(0))
                 .back(5)
                 .build();
 
-        park = driveTrain.trajectorySequenceBuilder(stackDeliveryBackdrop.end())
+
+        //Left Paths
+        preloadDeliveryLeft = driveTrain.trajectorySequenceBuilder(startPose)
+                .splineTo(new Vector2d(-30, 38), Math.toRadians(340))
+                .build();
+
+        toStackLeft = driveTrain.trajectorySequenceBuilder(preloadDeliveryLeft.end())
+                .setReversed(true)
+                .splineTo(new Vector2d(-43, 47), Math.toRadians(45))
+                .setReversed(false)
+                .splineTo(new Vector2d(-58, 39), Math.toRadians(180))
+                .build();
+
+        stackDeliveryBackdropLeft = driveTrain.trajectorySequenceBuilder(backToKnownPosition.end())
+                .setReversed(true)
+                .splineTo(new Vector2d(48, 44), Math.toRadians(0))
+                .back(5)
+                .build();
+
+
+
+
+        park = driveTrain.trajectorySequenceBuilder(stackDeliveryBackdropCenter.end())
                 .forward(10)
-                .strafeRight(30)
+                .strafeRight(24)
+                .back(10)
                 .build();
     }
 }
