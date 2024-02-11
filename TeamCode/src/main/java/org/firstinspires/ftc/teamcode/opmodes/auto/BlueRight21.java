@@ -456,15 +456,15 @@ public class BlueRight21 extends OpMode {
 
     private void buildPaths() {
         preloadDeliveryCenter = driveTrain.trajectorySequenceBuilder(startPose)
-                .splineTo(new Vector2d(-34, 26), Math.toRadians(260))
-                .back(13)
+                .splineTo(new Vector2d(-34, 25), Math.toRadians(260))
+                .back(15)
                 .build();
 
         toStackCenter = driveTrain.trajectorySequenceBuilder(preloadDeliveryCenter.end())
                 .setReversed(true)
                 .lineTo(new Vector2d(-36, 59))
                 .setReversed(false)
-                .splineTo(new Vector2d(-58, 39), Math.toRadians(180))
+                .splineTo(new Vector2d(-58, 40), Math.toRadians(180))
                 .build();
         backToKnownPosition = driveTrain.trajectorySequenceBuilder(toStackCenter.end())
                 .setReversed(true)
@@ -476,12 +476,12 @@ public class BlueRight21 extends OpMode {
 
         stackDeliveryBackdropCenter = driveTrain.trajectorySequenceBuilder(backToKnownPosition.end())
                 .setReversed(true)
-                .splineTo(new Vector2d(47, 36.5), Math.toRadians(0))
+                .splineTo(new Vector2d(49, 37.5), Math.toRadians(0))
                 .back(5)
                 .build();
 
         preloadDeliveryRight = driveTrain.trajectorySequenceBuilder(startPose)
-                .splineTo(new Vector2d(-45, 33), Math.toRadians(260))
+                .splineTo(new Vector2d(-45, 30), Math.toRadians(260))
                 .back(8)
                 .build();
 
@@ -493,7 +493,7 @@ public class BlueRight21 extends OpMode {
 
         stackDeliveryBackdropRight = driveTrain.trajectorySequenceBuilder(backToKnownPosition.end())
                 .setReversed(true)
-                .splineTo(new Vector2d(48, 29.5), Math.toRadians(0))
+                .splineTo(new Vector2d(49, 29.5), Math.toRadians(0))
                 .back(5)
                 .build();
 
