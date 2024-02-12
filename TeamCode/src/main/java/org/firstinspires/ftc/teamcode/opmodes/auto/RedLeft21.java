@@ -217,12 +217,17 @@ public class RedLeft21 extends OpMode {
                     case 0:
                         tries++;
                         intake.reverse();
-                        driveTrain.setMotorPowers(0.75, -0.75, 0.75, -0.75);
+                        driveTrain.setMotorPowers(-0.75, 0.75, -0.75, 0.75);
 
                         timer.reset();
                         subTransition++;
                         break;
                     case 1:
+                        if (timerAt(250)) {
+                            subTransition++;
+                        }
+
+                        break;
                     case 3:
                         if (timerAt(300)) {
                             subTransition++;
@@ -390,10 +395,15 @@ public class RedLeft21 extends OpMode {
                         // Move to transition point between intake and score
                         slides.setHeight(Slides.SlidesHeights.BASE);
                         delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_1);
+                        subTransition++;
+                        break;
+                    case 17:
+                        if (slides.atTargetPosition() || slideLimit.isPressed() || timerAt(500)) {
+                            subTransition = 0;
+                            currentState = AutoStates.WAIT_ARRIVAL;
+                            targetState = AutoStates.PARK;
+                        }
 
-                        subTransition = 0;
-                        currentState = AutoStates.WAIT_ARRIVAL;
-                        targetState = AutoStates.PARK;
                         break;
                 }
 
@@ -457,9 +467,20 @@ public class RedLeft21 extends OpMode {
     }
 
     private void buildPaths() {
+        preloadDeliveryLeft = driveTrain.trajectorySequenceBuilder(startPose)
+                .splineTo(new Vector2d(-46, -31), Math.toRadians(100))
+                .back(8)
+                .build();
+
         preloadDeliveryCenter = driveTrain.trajectorySequenceBuilder(startPose)
                 .splineTo(new Vector2d(-34, -28), Math.toRadians(80))
                 .back(10)
+                .build();
+
+        toStackLeft = driveTrain.trajectorySequenceBuilder(preloadDeliveryLeft.end())
+                .back(15)
+                .setReversed(false)
+                .splineTo(new Vector2d(-58, -36.5), Math.toRadians(180))
                 .build();
 
         toStackCenter = driveTrain.trajectorySequenceBuilder(preloadDeliveryCenter.end())
@@ -467,17 +488,17 @@ public class RedLeft21 extends OpMode {
                 .setReversed(false)
                 .splineTo(new Vector2d(-58, -39), Math.toRadians(0))
                 .build();
-        backToKnownPosition = driveTrain.trajectorySequenceBuilder(toStackCenter.end())
-                .setReversed(true)
-                .back(20)
-                .lineToConstantHeading(new Vector2d(-300, -60))
-                .back(53)
-                .build();
 
+        backToKnownPosition = driveTrain.trajectorySequenceBuilder(toStackLeft.end())
+                .setReversed(true)
+                .lineTo(new Vector2d(-49, -45))
+                .lineTo(new Vector2d(-28, -62))
+                .lineToConstantHeading(new Vector2d(11, -60))
+                .build();
 
         stackDeliveryBackdropCenter = driveTrain.trajectorySequenceBuilder(backToKnownPosition.end())
                 .setReversed(true)
-                .splineTo(new Vector2d(47, -33), Math.toRadians(180))
+                .splineTo(new Vector2d(-47, -33), Math.toRadians(180))
                 .back(5)
                 .build();
 
@@ -489,7 +510,7 @@ public class RedLeft21 extends OpMode {
         toStackRight = driveTrain.trajectorySequenceBuilder(preloadDeliveryRight.end())
                 .back(20)
                 .setReversed(false)
-                .splineTo(new Vector2d(-58, -39), Math.toRadians(0))
+                .splineTo(new Vector2d(-58, -40), Math.toRadians(0))
                 .build();
 
         stackDeliveryBackdropRight = driveTrain.trajectorySequenceBuilder(backToKnownPosition.end())
@@ -498,28 +519,15 @@ public class RedLeft21 extends OpMode {
                 .back(5)
                 .build();
 
-
-        //Left Paths
-        preloadDeliveryLeft = driveTrain.trajectorySequenceBuilder(startPose)
-                .splineTo(new Vector2d(-43, -33), Math.toRadians(100))
-                .back(8)
-                .build();
-
-        toStackLeft = driveTrain.trajectorySequenceBuilder(preloadDeliveryLeft.end())
-                .back(10)
-                .setReversed(false)
-                .splineTo(new Vector2d(-58, -39), Math.toRadians(180))
-                .build();
-
         stackDeliveryBackdropLeft = driveTrain.trajectorySequenceBuilder(backToKnownPosition.end())
                 .setReversed(true)
-                .splineTo(new Vector2d(48, -26), Math.toRadians(180))
-                .back(5)
+                .splineTo(new Vector2d(47, -31), Math.toRadians(0))
+                .back(6)
                 .build();
 
-        park = driveTrain.trajectorySequenceBuilder(stackDeliveryBackdropCenter.end())
+        park = driveTrain.trajectorySequenceBuilder(stackDeliveryBackdropLeft.end())
                 .forward(10)
-                .strafeRight(24)
+                .strafeLeft(28)
                 .back(10)
                 .build();
     }
