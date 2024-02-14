@@ -78,7 +78,7 @@ public class RedLeft21 extends OpMode {
         slides = new Slides(hardwareMap);
         claw = new Claw(hardwareMap);
 
-        processor = new PropProcessor(true);
+        processor = new PropProcessor(false);
         webcam = new Webcam(hardwareMap, processor, "webcam");
         claw.setClawState(Claw.ClawState.SINGLE_CLOSED);
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -474,19 +474,30 @@ public class RedLeft21 extends OpMode {
 
         preloadDeliveryCenter = driveTrain.trajectorySequenceBuilder(startPose)
                 .splineTo(new Vector2d(-34, -28), Math.toRadians(80))
-                .back(10)
+                .back(9)
+                .build();
+
+        preloadDeliveryRight = driveTrain.trajectorySequenceBuilder(startPose)
+                .splineTo(new Vector2d(-45, -33), Math.toRadians(80))
+                .back(8)
                 .build();
 
         toStackLeft = driveTrain.trajectorySequenceBuilder(preloadDeliveryLeft.end())
                 .back(15)
                 .setReversed(false)
-                .splineTo(new Vector2d(-58, -36.5), Math.toRadians(180))
+                .splineTo(new Vector2d(-58, -36), Math.toRadians(180))
                 .build();
 
         toStackCenter = driveTrain.trajectorySequenceBuilder(preloadDeliveryCenter.end())
                 .back(20)
                 .setReversed(false)
-                .splineTo(new Vector2d(-58, -39), Math.toRadians(0))
+                .splineTo(new Vector2d(-58, -36.5), Math.toRadians(185))
+                .build();
+
+        toStackRight = driveTrain.trajectorySequenceBuilder(preloadDeliveryRight.end())
+                .back(20)
+                .setReversed(false)
+                .splineTo(new Vector2d(-58, -36.5), Math.toRadians(180))
                 .build();
 
         backToKnownPosition = driveTrain.trajectorySequenceBuilder(toStackLeft.end())
@@ -496,33 +507,22 @@ public class RedLeft21 extends OpMode {
                 .lineToConstantHeading(new Vector2d(11, -60))
                 .build();
 
-        stackDeliveryBackdropCenter = driveTrain.trajectorySequenceBuilder(backToKnownPosition.end())
-                .setReversed(true)
-                .splineTo(new Vector2d(-47, -33), Math.toRadians(180))
-                .back(5)
-                .build();
-
-        preloadDeliveryRight = driveTrain.trajectorySequenceBuilder(startPose)
-                .splineTo(new Vector2d(-45, -33), Math.toRadians(80))
-                .back(8)
-                .build();
-
-        toStackRight = driveTrain.trajectorySequenceBuilder(preloadDeliveryRight.end())
-                .back(20)
-                .setReversed(false)
-                .splineTo(new Vector2d(-58, -40), Math.toRadians(0))
-                .build();
-
-        stackDeliveryBackdropRight = driveTrain.trajectorySequenceBuilder(backToKnownPosition.end())
-                .setReversed(true)
-                .splineTo(new Vector2d(47.5, -29), Math.toRadians(180))
-                .back(5)
-                .build();
-
         stackDeliveryBackdropLeft = driveTrain.trajectorySequenceBuilder(backToKnownPosition.end())
                 .setReversed(true)
                 .splineTo(new Vector2d(47, -31), Math.toRadians(0))
                 .back(6)
+                .build();
+
+        stackDeliveryBackdropCenter = driveTrain.trajectorySequenceBuilder(backToKnownPosition.end())
+                .setReversed(true)
+                .splineTo(new Vector2d(47, -33), Math.toRadians(0))
+                .back(5)
+                .build();
+
+        stackDeliveryBackdropRight = driveTrain.trajectorySequenceBuilder(backToKnownPosition.end())
+                .setReversed(true)
+                .splineTo(new Vector2d(47.5, -29), Math.toRadians(0))
+                .back(5)
                 .build();
 
         park = driveTrain.trajectorySequenceBuilder(stackDeliveryBackdropLeft.end())
