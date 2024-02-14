@@ -24,9 +24,9 @@ public class PropProcessor extends SimpleProcessor {
     private static final Rect BLUE_MIDDLE_SPIKE = new Rect(540, 380, 200, 200);
     private static final Rect BLUE_RIGHT_SPIKE = new Rect(900, 450, 200, 200);
 
-    private static final Rect RED_LEFT_SPIKE = new Rect(100, 445, 200, 200);
-    private static final Rect RED_MIDDLE_SPIKE = new Rect(560, 375, 200, 200);
-    private static final Rect RED_RIGHT_SPIKE = new Rect(1010, 440, 200, 200);
+    private static final Rect RED_LEFT_SPIKE = new Rect(135, 480, 200, 200);
+    private static final Rect RED_MIDDLE_SPIKE = new Rect(600, 445, 200, 200);
+    private static final Rect RED_RIGHT_SPIKE = new Rect(1035, 475, 200, 200);
 
     private final Rect leftSpike, middleSpike, rightSpike;
 
