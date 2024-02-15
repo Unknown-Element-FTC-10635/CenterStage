@@ -73,7 +73,7 @@ public class RedRight20 extends LinearOpMode {
                 .build();
 
         TrajectorySequence preloadDeliveryMiddle = driveTrain.trajectorySequenceBuilder(startPose)
-                .lineTo(new Vector2d(15, -30))
+                .lineTo(new Vector2d(13, -31))
                 .build();
 
         TrajectorySequence preloadDeliveryRight = driveTrain.trajectorySequenceBuilder(startPose)
@@ -88,10 +88,10 @@ public class RedRight20 extends LinearOpMode {
                 .build();
 
         TrajectorySequence preloadBackboardMiddleDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryMiddle.end())
-                .back(6)
+                .back(7)
                 .setReversed(true)
-                .lineToLinearHeading(new Pose2d(50, -32, Math.toRadians(180)))
-                .back(10)
+                .lineToLinearHeading(new Pose2d(47, -34, Math.toRadians(180)))
+                .back(5)
                 .build();
 
         TrajectorySequence preloadBackboardRightDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryRight.end())
@@ -101,19 +101,19 @@ public class RedRight20 extends LinearOpMode {
 
         TrajectorySequence parkLeft = driveTrain.trajectorySequenceBuilder(preloadBackboardLeftDelivery.end())
                 .forward(15)
-                .strafeRight(20)
+                .strafeRight(15)
                 .back(15)
                 .build();
 
         TrajectorySequence parkMiddle = driveTrain.trajectorySequenceBuilder(preloadBackboardMiddleDelivery.end())
                 .forward(15)
-                .strafeRight(25)
-                .back(15)
+                .strafeRight(21)
+                .back(20)
                 .build();
 
         TrajectorySequence parkRight = driveTrain.trajectorySequenceBuilder(preloadBackboardRightDelivery.end())
                 .forward(15)
-                .strafeRight(35)
+                .strafeRight(25)
                 .back(15)
                 .build();
 
@@ -153,27 +153,37 @@ public class RedRight20 extends LinearOpMode {
 
         intake.reverse(0.5);
         timer.reset();
-        while (timer.milliseconds() < 800) { }
+        while (timer.milliseconds() < 400) { }
         intake.off();
 
-        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
+        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_1);
         driveTrain.followTrajectorySequence(preloadDeliveryBackdrop);
 
+        slides.setHeight(Slides.SlidesHeights.PRELOAD);
         timer.reset();
-        while (timer.milliseconds() < 250) {
+        while (slides.atTargetPosition() || timer.milliseconds() < 300) {
+            slides.update();
         }
 
         delivery.setDeliveryState(Delivery.DeliveryState.SCORE_PRELOAD);
         timer.reset();
-        while (timer.milliseconds() < 250) {
+        while (timer.milliseconds() < 500) {
+            slides.update();
         }
 
         claw.setClawState(Claw.ClawState.OPEN_AUTO);
         timer.reset();
         while (timer.milliseconds() < 250) {
+            slides.update();
         }
 
         delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_1);
         driveTrain.followTrajectorySequence(park);
+
+        slides.setHeight(Slides.SlidesHeights.BASE);
+        timer.reset();
+        while (!slides.atTargetPosition() || timer.milliseconds() < 150) {
+            slides.update();
+        }
     }
 }
