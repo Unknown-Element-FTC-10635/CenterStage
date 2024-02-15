@@ -68,54 +68,56 @@ public class RedRight20Outside extends LinearOpMode {
         driveTrain.setPoseEstimate(startPose);
 
         TrajectorySequence preloadDeliveryLeft = driveTrain.trajectorySequenceBuilder(startPose)
-                .lineTo(new Vector2d(15, -52))
-                .lineToLinearHeading(new Pose2d(2, -31, Math.toRadians(180)))
+                .lineTo(new Vector2d(17, -50))
+                .lineToLinearHeading(new Pose2d(1, -33, Math.toRadians(180)))
                 .build();
 
         TrajectorySequence preloadDeliveryMiddle = driveTrain.trajectorySequenceBuilder(startPose)
-                .lineTo(new Vector2d(15, -30))
+                .lineTo(new Vector2d(13, -31))
                 .build();
 
         TrajectorySequence preloadDeliveryRight = driveTrain.trajectorySequenceBuilder(startPose)
                 .lineTo(new Vector2d(14, -53))
-                .splineTo(new Vector2d(29,-36), Math.toRadians(140))
+                .lineToLinearHeading(new Pose2d(26,-36, Math.toRadians(100)))
                 .build();
 
         TrajectorySequence preloadBackboardLeftDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryLeft.end())
                 .setReversed(true)
-                .splineTo(new Vector2d(50, -28), Math.toRadians(0))
-                .back(2)
+                .lineToLinearHeading(new Pose2d(47, -30, Math.toRadians(180)))
+                .back(6)
                 .build();
 
         TrajectorySequence preloadBackboardMiddleDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryMiddle.end())
-                .back(6)
+                .back(7)
                 .setReversed(true)
-                .lineToLinearHeading(new Pose2d(50, -32, Math.toRadians(180)))
-                .back(10)
+                .lineToLinearHeading(new Pose2d(47, -34, Math.toRadians(180)))
+                .back(6)
                 .build();
 
         TrajectorySequence preloadBackboardRightDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryRight.end())
                 .setReversed(true)
-                .splineTo(new Vector2d(57, -40), Math.toRadians(0))
+                .lineToLinearHeading(new Pose2d(47, -41, Math.toRadians(180)))
+                .back(8)
                 .build();
 
         TrajectorySequence parkLeft = driveTrain.trajectorySequenceBuilder(preloadBackboardLeftDelivery.end())
                 .forward(15)
-                .strafeLeft(40)
-                .back(15)
+                .strafeLeft(30)
+                .back(20)
                 .build();
 
         TrajectorySequence parkMiddle = driveTrain.trajectorySequenceBuilder(preloadBackboardMiddleDelivery.end())
                 .forward(15)
-                .strafeLeft(30)
-                .back(15)
+                .strafeLeft(28)
+                .back(20)
                 .build();
 
         TrajectorySequence parkRight = driveTrain.trajectorySequenceBuilder(preloadBackboardRightDelivery.end())
                 .forward(15)
-                .strafeLeft(25)
-                .back(15)
+                .strafeLeft(16)
+                .back(20)
                 .build();
+
 
         telemetry.addLine("Ready to start");
         telemetry.update();
@@ -153,27 +155,37 @@ public class RedRight20Outside extends LinearOpMode {
 
         intake.reverse(0.5);
         timer.reset();
-        while (timer.milliseconds() < 800) { }
+        while (timer.milliseconds() < 400) { }
         intake.off();
 
-        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
+        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_1);
         driveTrain.followTrajectorySequence(preloadDeliveryBackdrop);
 
+        slides.setHeight(Slides.SlidesHeights.PRELOAD);
         timer.reset();
-        while (timer.milliseconds() < 250) {
+        while (slides.atTargetPosition() && timer.milliseconds() < 300) {
+            slides.update();
         }
 
         delivery.setDeliveryState(Delivery.DeliveryState.SCORE_PRELOAD);
         timer.reset();
-        while (timer.milliseconds() < 250) {
+        while (timer.milliseconds() < 500) {
+            slides.update();
         }
 
         claw.setClawState(Claw.ClawState.OPEN_AUTO);
         timer.reset();
         while (timer.milliseconds() < 250) {
+            slides.update();
         }
 
         delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_1);
         driveTrain.followTrajectorySequence(park);
+
+        slides.setHeight(Slides.SlidesHeights.BASE);
+        timer.reset();
+        while (!slides.atTargetPosition() && timer.milliseconds() < 150) {
+            slides.update();
+        }
     }
 }
