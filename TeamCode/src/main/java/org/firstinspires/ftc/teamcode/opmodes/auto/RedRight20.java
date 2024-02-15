@@ -68,8 +68,8 @@ public class RedRight20 extends LinearOpMode {
         driveTrain.setPoseEstimate(startPose);
 
         TrajectorySequence preloadDeliveryLeft = driveTrain.trajectorySequenceBuilder(startPose)
-                .lineTo(new Vector2d(15, -52))
-                .lineToLinearHeading(new Pose2d(2, -31, Math.toRadians(180)))
+                .lineTo(new Vector2d(17, -50))
+                .lineToLinearHeading(new Pose2d(1, -33, Math.toRadians(180)))
                 .build();
 
         TrajectorySequence preloadDeliveryMiddle = driveTrain.trajectorySequenceBuilder(startPose)
@@ -83,8 +83,8 @@ public class RedRight20 extends LinearOpMode {
 
         TrajectorySequence preloadBackboardLeftDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryLeft.end())
                 .setReversed(true)
-                .splineTo(new Vector2d(50, -28), Math.toRadians(0))
-                .back(2)
+                .lineToLinearHeading(new Pose2d(47, -30, Math.toRadians(180)))
+                .back(5)
                 .build();
 
         TrajectorySequence preloadBackboardMiddleDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryMiddle.end())
@@ -101,8 +101,8 @@ public class RedRight20 extends LinearOpMode {
 
         TrajectorySequence parkLeft = driveTrain.trajectorySequenceBuilder(preloadBackboardLeftDelivery.end())
                 .forward(15)
-                .strafeRight(15)
-                .back(15)
+                .strafeRight(16)
+                .back(20)
                 .build();
 
         TrajectorySequence parkMiddle = driveTrain.trajectorySequenceBuilder(preloadBackboardMiddleDelivery.end())
@@ -161,7 +161,7 @@ public class RedRight20 extends LinearOpMode {
 
         slides.setHeight(Slides.SlidesHeights.PRELOAD);
         timer.reset();
-        while (slides.atTargetPosition() || timer.milliseconds() < 300) {
+        while (slides.atTargetPosition() && timer.milliseconds() < 300) {
             slides.update();
         }
 
@@ -182,7 +182,7 @@ public class RedRight20 extends LinearOpMode {
 
         slides.setHeight(Slides.SlidesHeights.BASE);
         timer.reset();
-        while (!slides.atTargetPosition() || timer.milliseconds() < 150) {
+        while (!slides.atTargetPosition() && timer.milliseconds() < 150) {
             slides.update();
         }
     }
