@@ -114,7 +114,7 @@ public class RedRight20Outside extends LinearOpMode {
 
         TrajectorySequence parkRight = driveTrain.trajectorySequenceBuilder(preloadBackboardRightDelivery.end())
                 .forward(15)
-                .strafeLeft(16)
+                .strafeLeft(20)
                 .back(20)
                 .build();
 
