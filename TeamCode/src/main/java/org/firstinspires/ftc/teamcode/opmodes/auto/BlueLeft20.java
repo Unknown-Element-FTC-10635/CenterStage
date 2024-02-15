@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.hardware.Claw;
 import org.firstinspires.ftc.teamcode.hardware.Delivery;
 import org.firstinspires.ftc.teamcode.hardware.Intake;
+import org.firstinspires.ftc.teamcode.hardware.Slides;
 import org.firstinspires.ftc.teamcode.hardware.Webcam;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
@@ -20,6 +21,7 @@ public class BlueLeft20 extends LinearOpMode {
     private SampleMecanumDrive driveTrain;
     private Delivery delivery;
     private Intake intake;
+    private Slides slides;
     private Claw claw;
 
     private Webcam webcam;
@@ -36,6 +38,7 @@ public class BlueLeft20 extends LinearOpMode {
         driveTrain = new SampleMecanumDrive(hardwareMap);
         delivery = new Delivery(hardwareMap);
         intake = new Intake(hardwareMap);
+        slides = new Slides(hardwareMap);
         claw = new Claw(hardwareMap);
 
         telemetry.addLine("Creating timers");
@@ -64,7 +67,7 @@ public class BlueLeft20 extends LinearOpMode {
                 .build();
 
         TrajectorySequence preloadDeliveryMiddle = driveTrain.trajectorySequenceBuilder(startPose)
-                .lineTo(new Vector2d(14, 29))
+                .lineTo(new Vector2d(13, 30))
                 .build();
 
         TrajectorySequence preloadDeliveryRight = driveTrain.trajectorySequenceBuilder(startPose)
@@ -79,10 +82,10 @@ public class BlueLeft20 extends LinearOpMode {
                 .build();
 
         TrajectorySequence preloadBackboardMiddleDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryMiddle.end())
-                .back(6)
-                .setReversed(true)
-                .lineToLinearHeading(new Pose2d(48, 28, Math.toRadians(180)))
                 .back(7)
+                .setReversed(true)
+                .lineToLinearHeading(new Pose2d(48, 33, Math.toRadians(180)))
+                .back(6)
                 .build();
 
         TrajectorySequence preloadBackboardRightDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryRight.end())
@@ -99,8 +102,8 @@ public class BlueLeft20 extends LinearOpMode {
 
         TrajectorySequence parkMiddle = driveTrain.trajectorySequenceBuilder(preloadBackboardMiddleDelivery.end())
                 .forward(15)
-                .strafeLeft(20)
-                .back(15)
+                .strafeLeft(21)
+                .back(20)
                 .build();
 
         TrajectorySequence parkRight = driveTrain.trajectorySequenceBuilder(preloadBackboardRightDelivery.end())
@@ -115,6 +118,7 @@ public class BlueLeft20 extends LinearOpMode {
         waitForStart();
 
         PropProcessor.Spikes spikePosition = processor.getSpikePosition();
+        intake.setServoPosition(Intake.IntakeState.STACK_HIGH);
         webcam.stopWebcam();
 
         telemetry.addData("Going to", spikePosition);
@@ -144,27 +148,37 @@ public class BlueLeft20 extends LinearOpMode {
 
         intake.reverse(0.5);
         timer.reset();
-        while (timer.milliseconds() < 800) { }
+        while (timer.milliseconds() < 400) { }
         intake.off();
 
-        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
+        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_1);
         driveTrain.followTrajectorySequence(preloadDeliveryBackdrop);
 
-        while (timer.milliseconds() < 250) {
+        slides.setHeight(Slides.SlidesHeights.PRELOAD);
+        timer.reset();
+        while (slides.atTargetPosition() && timer.milliseconds() < 300) {
+            slides.update();
         }
 
         delivery.setDeliveryState(Delivery.DeliveryState.SCORE_PRELOAD);
         timer.reset();
-        while (timer.milliseconds() < 250) {
+        while (timer.milliseconds() < 500) {
+            slides.update();
         }
 
         claw.setClawState(Claw.ClawState.OPEN_AUTO);
-
         timer.reset();
         while (timer.milliseconds() < 250) {
+            slides.update();
         }
 
         delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_1);
         driveTrain.followTrajectorySequence(park);
+
+        slides.setHeight(Slides.SlidesHeights.BASE);
+        timer.reset();
+        while (!slides.atTargetPosition() && timer.milliseconds() < 150) {
+            slides.update();
+        }
     }
 }
