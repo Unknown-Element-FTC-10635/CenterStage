@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.utils.PixelColors;
 import org.firstinspires.ftc.teamcode.vision.IntakeProcessor;
 import org.firstinspires.ftc.teamcode.vision.PropProcessor;
 
-@Autonomous(name = "RED (Right) - 2+2", group = "red")
+@Autonomous(name = "RED (Backboard) - 2+2", group = "red")
 public class RedRight22 extends OpMode {
     public enum AutoStates {
         START,
@@ -159,7 +159,7 @@ public class RedRight22 extends OpMode {
                     case 2:
                         intake.off();
                         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-                        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
+                        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_1);
                         driveTrain.followTrajectorySequenceAsync(preloadDeliveryBackdrop);
 
                         subTransition = 0;
@@ -172,13 +172,13 @@ public class RedRight22 extends OpMode {
             case SCORE_YELLOW_PRELOAD:
                 switch (subTransition) {
                     case 0:
-                        delivery.setDeliveryState(Delivery.DeliveryState.SCORE);
+                        delivery.setDeliveryState(Delivery.DeliveryState.SCORE_PRELOAD);
+                        slides.setHeight(Slides.SlidesHeights.PRELOAD);
 
                         timer.reset();
                         subTransition++;
                         break;
                     case 1:
-                    case 3:
                         if (timerAt(250)) {
                             timer.reset();
                             subTransition++;
@@ -191,8 +191,16 @@ public class RedRight22 extends OpMode {
                         subTransition++;
                         timer.reset();
                         break;
+                    case 3:
+                        if (timerAt(350)) {
+                            timer.reset();
+                            subTransition++;
+                        }
+
+                        break;
                     case 4:
-                        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_1);
+                        delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_HOLD);
+                        slides.setHeight(Slides.SlidesHeights.BASE);
                         driveTrain.followTrajectorySequenceAsync(toCommonPath);
 
                         subTransition = 0;
@@ -426,7 +434,7 @@ public class RedRight22 extends OpMode {
 
                         break;
                     case 2:
-                        intake.reverse();
+                        intake.reverse(1.0);
                         break;
                 }
                 break;
@@ -485,7 +493,7 @@ public class RedRight22 extends OpMode {
                 .build();
 
         preloadDeliveryCenter = driveTrain.trajectorySequenceBuilder(startPose)
-                .lineTo(new Vector2d(17, -30))
+                .lineTo(new Vector2d(15, -30))
                 .build();
 
         preloadDeliveryRight = driveTrain.trajectorySequenceBuilder(startPose)
@@ -500,10 +508,10 @@ public class RedRight22 extends OpMode {
                 .build();
 
         preloadDeliveryBackdropCenter = driveTrain.trajectorySequenceBuilder(preloadDeliveryCenter.end())
-                .back(6)
+                .back(7)
                 .setReversed(true)
-                .lineToLinearHeading(new Pose2d(50, -32, Math.toRadians(180)))
-                .back(10)
+                .lineToLinearHeading(new Pose2d(47, -34, Math.toRadians(180)))
+                .back(5)
                 .build();
 
         preloadDeliveryBackdropRight = driveTrain.trajectorySequenceBuilder(preloadDeliveryRight.end())
@@ -524,8 +532,8 @@ public class RedRight22 extends OpMode {
                 .build();
 
         toStack = driveTrain.trajectorySequenceBuilder(toCommonPathCenter.end())
-                .splineTo(new Vector2d(20, -5), Math.toRadians(180))
-                .splineTo(new Vector2d(-58, -11), Math.toRadians(180))
+                .splineTo(new Vector2d(20, -10), Math.toRadians(180))
+                .splineTo(new Vector2d(-61, -4), Math.toRadians(180))
                 .build();
 
         backToKnownPosition = driveTrain.trajectorySequenceBuilder(new Pose2d(-60, 9, Math.toRadians(180)))
@@ -542,7 +550,7 @@ public class RedRight22 extends OpMode {
 
         park = driveTrain.trajectorySequenceBuilder(backToKnownPosition.end())
                 .setReversed(true)
-                .splineTo(new Vector2d(47, -9), Math.toRadians(0))
+                .splineTo(new Vector2d(48, -12), Math.toRadians(0))
                 .turn(Math.toRadians(180))
                 .build();
     }
