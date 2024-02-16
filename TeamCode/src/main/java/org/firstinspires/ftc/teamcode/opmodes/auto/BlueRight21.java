@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.utils.PixelColors;
 import org.firstinspires.ftc.teamcode.vision.IntakeProcessor;
 import org.firstinspires.ftc.teamcode.vision.PropProcessor;
 
-@Autonomous(name = "BLUE (Outside) - 2+1", group = "blue")
+@Autonomous(name = "BLUE (Stack Side) - 2+1", group = "blue")
 public class BlueRight21 extends OpMode {
     public enum AutoStates {
         START,

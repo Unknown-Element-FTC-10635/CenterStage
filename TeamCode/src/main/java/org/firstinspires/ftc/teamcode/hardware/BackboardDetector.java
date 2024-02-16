@@ -43,7 +43,7 @@ public class BackboardDetector {
     }
 
     public boolean withinDropOfDistance(){
-        return (averageDistance < getIdealDistance());
+        return !Double.isNaN(averageDistance) && averageDistance < 10;
     }
 
     public boolean isReady() {

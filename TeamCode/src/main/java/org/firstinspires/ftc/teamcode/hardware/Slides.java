@@ -41,8 +41,8 @@ public class Slides {
         }
     }
 
-    public static double lP = 0.036, lI = 0.0, lD = 0.1;
-    public static double rP = 0.03, rI = 0.0, rD = 0.01;
+    public static double lP = 0.03, lI = 0.0, lD = 0;
+    public static double rP = 0.03, rI = 0.0, rD = 0;
 
     private final PID leftPIDController, rightPIDController;
     private final DcMotorEx leftExtension, rightExtension;
@@ -76,7 +76,7 @@ public class Slides {
 
     public void setHeight(double manual) {
         leftPIDController.setSetPoint(manual);
-        rightPIDController.setSetPoint(manual + 50);
+        rightPIDController.setSetPoint(manual);
     }
 
     public boolean atTargetPosition() {

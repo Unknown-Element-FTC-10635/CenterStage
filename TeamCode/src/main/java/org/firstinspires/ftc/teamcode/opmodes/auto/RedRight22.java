@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.hardware.BackboardDetector;
 import org.firstinspires.ftc.teamcode.hardware.Blinkin;
 import org.firstinspires.ftc.teamcode.hardware.BreakBeam;
 import org.firstinspires.ftc.teamcode.hardware.Claw;
@@ -59,6 +60,7 @@ public class RedRight22 extends OpMode {
     private TrajectorySequence  preloadDelivery, preloadDeliveryBackdrop, toCommonPath, toStack, backToKnownPosition, stackDeliveryBackdrop, park;
     private Pose2d startPose;
     private AutoStates currentState, targetState;
+    private boolean scored;
     private int subTransition;
     private int tries;
 
@@ -172,34 +174,53 @@ public class RedRight22 extends OpMode {
             case SCORE_YELLOW_PRELOAD:
                 switch (subTransition) {
                     case 0:
-                        delivery.setDeliveryState(Delivery.DeliveryState.SCORE_PRELOAD);
                         slides.setHeight(Slides.SlidesHeights.PRELOAD);
 
                         timer.reset();
                         subTransition++;
                         break;
                     case 1:
-                        if (timerAt(250)) {
+                        if (slides.atTargetPosition() || timerAt(250)) {
                             timer.reset();
                             subTransition++;
                         }
 
                         break;
                     case 2:
-                        claw.setClawState(Claw.ClawState.OPEN_AUTO);
+                        delivery.setDeliveryState(Delivery.DeliveryState.SCORE_PRELOAD);
 
-                        subTransition++;
                         timer.reset();
+                        subTransition++;
                         break;
                     case 3:
-                        if (timerAt(350)) {
+                    case 7:
+                        if (timerAt(250)) {
                             timer.reset();
                             subTransition++;
                         }
 
                         break;
                     case 4:
+                        claw.setClawState(Claw.ClawState.OPEN_AUTO);
+
+                        subTransition++;
+                        timer.reset();
+                        break;
+                    case 5:
+                        if (timerAt(350)) {
+                            timer.reset();
+                            subTransition++;
+                        }
+
+                        break;
+                    case 6:
                         delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_HOLD);
+
+                        timer.reset();
+                        subTransition++;
+                        break;
+
+                    case 8:
                         slides.setHeight(Slides.SlidesHeights.BASE);
                         driveTrain.followTrajectorySequenceAsync(toCommonPath);
 
@@ -223,7 +244,9 @@ public class RedRight22 extends OpMode {
                         delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_HOLD);
                         claw.setClawState(Claw.ClawState.OPEN_INTAKE);
                         intake.on(0.8);
-                        intake.setServoPosition(Intake.IntakeState.STACK_HIGH);
+                        if (tries == 0) {
+                            intake.setServoPosition(Intake.IntakeState.GROUND);
+                        }
 
                         timer.reset();
                         subTransition++;
@@ -255,7 +278,7 @@ public class RedRight22 extends OpMode {
                             targetState = AutoStates.SCORE_STACK_PIXELS;
                             currentState = AutoStates.WAIT_ARRIVAL;
                         } else if (tries < 2) {
-                            intake.setServoPosition(Intake.IntakeState.STACK_MID);
+                            intake.setServoPosition(Intake.IntakeState.GROUND);
                             currentState = AutoStates.RETRY_STACK;
                         } else {
                             driveTrain.followTrajectorySequenceAsync(backToKnownPosition);
@@ -270,21 +293,20 @@ public class RedRight22 extends OpMode {
                     case 0:
                         tries++;
                         intake.reverse(0.25);
-                        driveTrain.setMotorPowers(-0.75, 0.75, -0.75, 0.75);
+                        driveTrain.setMotorPowers(-0.65, 0.65, -0.65, 0.65);
                         intake.setServoPosition(Intake.IntakeState.GROUND);
 
                         timer.reset();
                         subTransition++;
                         break;
                     case 1:
-                        if (timerAt(300)) {
+                        if (timerAt(200)) {
                             subTransition++;
                         }
 
                         break;
                     case 2:
                         driveTrain.setMotorPowers(-0.2, -0.2, -0.2, -0.2);
-                        intake.setServoPosition(Intake.IntakeState.STACK_HIGH);
                         intake.on();
                         timer.reset();
                         subTransition++;
@@ -298,11 +320,7 @@ public class RedRight22 extends OpMode {
                     case 4:
                         timer.reset();
                         subTransition = 0;
-                        if (tries == 1) {
-                            intake.setServoPosition(Intake.IntakeState.STACK_AUTO);
-                        } else if (tries == 2) {
-                            intake.setServoPosition(Intake.IntakeState.STACK_MID);
-                        }
+                        intake.setServoPosition(Intake.IntakeState.GROUND);
                         currentState = AutoStates.PICKUP_STACK_PIXELS;
                         break;
                 }
@@ -339,6 +357,7 @@ public class RedRight22 extends OpMode {
 
                         break;
                     case 4:
+                        intake.off();
                         // Move to safe transition point to avoid the cross-beam
                         delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_HOLD);
                         intake.off();
@@ -360,13 +379,14 @@ public class RedRight22 extends OpMode {
                         break;
                     case 7:
                         // Wait <milliseconds> so the physical servo has time to actually move
-                        if (timerAt(500)) {
+                        if (timerAt(700)) {
                             subTransition++;
                         }
 
                         break;
                     case 8:
                         // Move to safe transition point that works for both intake and score
+                        intake.off();
                         delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
                         subTransition++;
                         timer.reset();
@@ -394,6 +414,7 @@ public class RedRight22 extends OpMode {
                         claw.setClawState(Claw.ClawState.OPEN_SCORE);
                         timer.reset();
 
+                        scored = true;
                         subTransition++;
                         break;
                     case 13:
@@ -501,7 +522,7 @@ public class RedRight22 extends OpMode {
                 .build();
 
         preloadDeliveryCenter = driveTrain.trajectorySequenceBuilder(startPose)
-                .lineTo(new Vector2d(16, -30))
+                .lineTo(new Vector2d(16, -31))
                 .build();
 
         preloadDeliveryRight = driveTrain.trajectorySequenceBuilder(startPose)
@@ -518,8 +539,8 @@ public class RedRight22 extends OpMode {
         preloadDeliveryBackdropCenter = driveTrain.trajectorySequenceBuilder(preloadDeliveryCenter.end())
                 .back(7)
                 .setReversed(true)
-                .lineToLinearHeading(new Pose2d(47, -34, Math.toRadians(180)))
-                .back(5)
+                .lineToLinearHeading(new Pose2d(47, -35, Math.toRadians(180)))
+                .back(6)
                 .build();
 
         preloadDeliveryBackdropRight = driveTrain.trajectorySequenceBuilder(preloadDeliveryRight.end())
@@ -541,7 +562,7 @@ public class RedRight22 extends OpMode {
 
         toStack = driveTrain.trajectorySequenceBuilder(toCommonPathCenter.end())
                 .splineTo(new Vector2d(20, -10), Math.toRadians(180))
-                .splineTo(new Vector2d(-60, -2), Math.toRadians(200))
+                .splineTo(new Vector2d(-60, -3), Math.toRadians(195))
                 .build();
 
         backToKnownPosition = driveTrain.trajectorySequenceBuilder(new Pose2d(-60, 9, Math.toRadians(180)))
@@ -551,13 +572,14 @@ public class RedRight22 extends OpMode {
 
         stackDeliveryBackdrop = driveTrain.trajectorySequenceBuilder(backToKnownPosition.end())
                 .setReversed(true)
-                .lineTo(new Vector2d(30, -7))
-                .splineTo(new Vector2d(43, -30), Math.toRadians(0))
-                .back(4)
+                .lineTo(new Vector2d(10, -5))
+                .splineTo(new Vector2d(45, -33), Math.toRadians(0))
+                .back(6)
                 .build();
 
         park = driveTrain.trajectorySequenceBuilder(backToKnownPosition.end())
                 .setReversed(true)
+                .lineTo(new Vector2d(10, -5))
                 .splineTo(new Vector2d(50, -14), Math.toRadians(0))
                 .turn(Math.toRadians(180))
                 .build();

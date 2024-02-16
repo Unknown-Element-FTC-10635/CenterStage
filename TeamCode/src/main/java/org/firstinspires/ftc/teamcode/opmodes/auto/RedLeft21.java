@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.vision.PropProcessor;
 
 import java.util.logging.Logger;
 
-@Autonomous(name = "Red Left (Outside) 2+1", group = "red")
+@Autonomous(name = "RED (Stack Side) - 2+1", group = "red")
 public class RedLeft21 extends OpMode {
     public enum AutoStates {
         START,
