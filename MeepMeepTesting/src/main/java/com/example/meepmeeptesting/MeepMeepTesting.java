@@ -46,31 +46,31 @@ public class MeepMeepTesting {
                 .setColorScheme(new ColorSchemeBlueDark())
                 .setConstraints(60,60, Math.toRadians(180), Math.toRadians(105), 15)
                 .followTrajectorySequence(drive ->
-                drive.trajectorySequenceBuilder(new Pose2d(-36, 62, Math.toRadians(270)))
-                        .splineTo(new Vector2d(-45, 35), Math.toRadians(250))
-                        .back(25)
+                drive.trajectorySequenceBuilder(new Pose2d(-36, -62, Math.toRadians(90)))
+                        .splineTo(new Vector2d(-46, -33), Math.toRadians(100))
+                        .back(8)
+                        .back(10)
                         .setReversed(false)
-                        .splineTo(new Vector2d(-59, 42), Math.toRadians(180))
+                        .splineTo(new Vector2d(-58, -39), Math.toRadians(180))
                         .setReversed(true)
-                        .splineTo(new Vector2d(-30, 60), Math.toRadians(0))
-                        .back(50)
-                        .splineTo(new Vector2d(49, 25), Math.toRadians(0))
+                        .splineTo(new Vector2d(-30, -58), Math.toRadians(180))
+                        .back(53)
+                        .setReversed(true)
+                        .splineTo(new Vector2d(48, -26), Math.toRadians(180))
+                        .back(5)
                         .build()
+
+
         );
 //
         RoadRunnerBotEntity blueBotPos3 = new DefaultBotBuilder(meepMeep)
                 .setColorScheme(new ColorSchemeBlueDark())
                 .setConstraints(60,60, Math.toRadians(180), Math.toRadians(105), 15)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(9, 62, Math.toRadians(270)))
-                                .lineTo(new Vector2d(14, 53))
-                                .splineTo(new Vector2d(25, 38.5), Math.toRadians(230))
-                                .waitSeconds(2)
-                                .setReversed(true)
-                                .splineTo(new Vector2d(50, 30), Math.toRadians(0))
-                                .forward(15)
-                                .lineTo(new Vector2d(45,60))
+                        drive.trajectorySequenceBuilder(new Pose2d(-36, -62, Math.toRadians(90)))
+                                .splineTo(new Vector2d(-30, -38), Math.toRadians(0))
                                 .build()
+
                 );
 
 
@@ -145,7 +145,7 @@ public class MeepMeepTesting {
                 .setBackgroundAlpha(0.95f)
                 // Add both of our declared bot entities
 //                  .addEntity(blueBotPos1)
-                 .addEntity(blueBotPos2)
+                 .addEntity(blueBotPos3)
 //                 .addEntity(blueBotPos3)
 //               .addEntity(redBotPos1)
 //                 .addEntity(redBotPos2)

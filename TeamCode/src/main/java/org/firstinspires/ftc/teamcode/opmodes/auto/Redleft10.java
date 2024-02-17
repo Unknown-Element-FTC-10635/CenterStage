@@ -3,11 +3,12 @@ package org.firstinspires.ftc.teamcode.opmodes.auto;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.hardware.Airplane;
+import org.firstinspires.ftc.teamcode.hardware.Blinkin;
+import org.firstinspires.ftc.teamcode.hardware.BreakBeam;
 import org.firstinspires.ftc.teamcode.hardware.Claw;
 import org.firstinspires.ftc.teamcode.hardware.Delivery;
 import org.firstinspires.ftc.teamcode.hardware.Intake;
@@ -16,148 +17,209 @@ import org.firstinspires.ftc.teamcode.hardware.Slides;
 import org.firstinspires.ftc.teamcode.hardware.Webcam;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
+import org.firstinspires.ftc.teamcode.utils.PixelColors;
+import org.firstinspires.ftc.teamcode.vision.IntakeProcessor;
 import org.firstinspires.ftc.teamcode.vision.PropProcessor;
 
-@Autonomous(name = "RED (Backboard) - 2+0", group = "red")
-public class Redleft10 extends LinearOpMode {
-    private LimitSwitch slideLimit;
+@Autonomous(name = "RED (Stack Side) - 1+0", group = "red")
+public class Redleft10 extends OpMode {
+    public enum AutoStates {
+        START,
+        SCORE_PURPLE_PRELOAD,
+        WAIT_ARRIVAL,
+        DONE,
+    }
+
     private SampleMecanumDrive driveTrain;
-    private Airplane airplane;
+    private BreakBeam leftBeam, rightBeam;
+    private LimitSwitch slideLimit;
     private Delivery delivery;
+    private Blinkin blinkin;
     private Intake intake;
     private Slides slides;
     private Claw claw;
 
+    private PropProcessor processor;
+    private IntakeProcessor intakeProcessor;
     private Webcam webcam;
 
-    private TrajectorySequence preloadDelivery, preloadDeliveryBackdrop, park;
-
     private ElapsedTime timer;
+    private ElapsedTime parkTimer;
+
+    private TrajectorySequence  preloadDeliveryLeft, preloadDeliveryRight, preloadDeliveryCenter, backLeft, backRight, backCenter;
+    private TrajectorySequence  preloadDelivery, back;
+    private Pose2d startPose;
+    private AutoStates currentState, targetState;
+    private int subTransition;
+    private int tries;
 
     @Override
-    public void runOpMode() throws InterruptedException {
-        telemetry.addLine("Building hardware");
-        telemetry.update();
+    public void init() {
+        CurrentOpmode.setCurrentOpmode(CurrentOpmode.OpMode.AUTO);
 
         slideLimit = new LimitSwitch(hardwareMap, "slide limit");
+        rightBeam = new BreakBeam(hardwareMap, "right break");
+        leftBeam = new BreakBeam(hardwareMap, "left break");
         driveTrain = new SampleMecanumDrive(hardwareMap);
-        airplane = new Airplane(hardwareMap);
         delivery = new Delivery(hardwareMap);
+        blinkin = new Blinkin(hardwareMap);
         intake = new Intake(hardwareMap);
         slides = new Slides(hardwareMap);
         claw = new Claw(hardwareMap);
 
-        telemetry.addLine("Creating timers");
-        telemetry.update();
-
-        timer = new ElapsedTime();
-        timer.startTime();
-
-        telemetry.addLine("Initializing robot");
-        telemetry.update();
-
-        PropProcessor processor = new PropProcessor(false);
+        processor = new PropProcessor(true);
         webcam = new Webcam(hardwareMap, processor, "webcam");
         claw.setClawState(Claw.ClawState.SINGLE_CLOSED);
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        telemetry.addLine("Building paths");
-        telemetry.update();
-
-        Pose2d startPose = new Pose2d(9, -62, Math.toRadians(90));
+        startPose =  new Pose2d(-36, -62, Math.toRadians(90));
         driveTrain.setPoseEstimate(startPose);
+        buildPaths();
 
-        TrajectorySequence preloadDeliveryLeft = driveTrain.trajectorySequenceBuilder(startPose)
-                .lineTo(new Vector2d(17, -50))
-                .lineToLinearHeading(new Pose2d(1, -33, Math.toRadians(180)))
-                .build();
+        timer = new ElapsedTime();
+        timer.startTime();
 
-        TrajectorySequence preloadDeliveryMiddle = driveTrain.trajectorySequenceBuilder(startPose)
-                .lineTo(new Vector2d(15, -31))
-                .build();
+        parkTimer = new ElapsedTime();
 
-        TrajectorySequence preloadDeliveryRight = driveTrain.trajectorySequenceBuilder(startPose)
-                .lineTo(new Vector2d(14, -53))
-                .lineToLinearHeading(new Pose2d(23,-38, Math.toRadians(100)))
-                .back(7)
+        currentState = AutoStates.START;
+    }
 
-                .build();
+    @Override
+    public void init_loop() {
+        super.init_loop();
 
-        TrajectorySequence preloadBackboardLeftDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryLeft.end())
-                .setReversed(true)
-                .lineToLinearHeading(new Pose2d(47, -27, Math.toRadians(180)))
-                .back(5)
-                .build();
-
-        TrajectorySequence preloadBackboardMiddleDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryMiddle.end())
-                .back(7)
-                .setReversed(true)
-                .lineToLinearHeading(new Pose2d(46, -31, Math.toRadians(180)))
-                .back(6)
-                .build();
-
-        TrajectorySequence preloadBackboardRightDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryRight.end())
-                .setReversed(true)
-                .lineToLinearHeading(new Pose2d(47, -38, Math.toRadians(180)))
-                .back(8)
-                .build();
-
-        TrajectorySequence parkLeft = driveTrain.trajectorySequenceBuilder(preloadBackboardLeftDelivery.end())
-                .forward(15)
-                .strafeRight(16)
-                .back(20)
-                .build();
-
-        TrajectorySequence parkMiddle = driveTrain.trajectorySequenceBuilder(preloadBackboardMiddleDelivery.end())
-                .forward(15)
-                .strafeRight(25)
-                .back(20)
-                .build();
-
-        TrajectorySequence parkRight = driveTrain.trajectorySequenceBuilder(preloadBackboardRightDelivery.end())
-                .forward(15)
-                .strafeRight(30)
-                .back(20)
-                .build();
-
-        telemetry.addLine("Ready to start");
+        telemetry.addData("Prop Location", processor.getSpikePosition());
         telemetry.update();
+    }
 
-        waitForStart();
+    @Override
+    public void start() {
+        super.start();
 
         PropProcessor.Spikes spikePosition = processor.getSpikePosition();
-        intake.setServoPosition(Intake.IntakeState.STACK_HIGH);
         webcam.stopWebcam();
 
-        telemetry.addData("Going to", spikePosition);
-        telemetry.update();
+        intakeProcessor = new IntakeProcessor();
+        webcam = new Webcam(hardwareMap, intakeProcessor, "intake webcam");
 
         switch (spikePosition) {
             case LEFT:
                 preloadDelivery = preloadDeliveryLeft;
-                preloadDeliveryBackdrop = preloadBackboardLeftDelivery;
-                park = parkLeft;
+                back = backLeft;
                 break;
             case CENTER:
-                preloadDelivery = preloadDeliveryMiddle;
-                preloadDeliveryBackdrop = preloadBackboardMiddleDelivery;
-                park = parkMiddle;
+                preloadDelivery = preloadDeliveryCenter;
+                back = backCenter;
                 break;
             case RIGHT:
                 preloadDelivery = preloadDeliveryRight;
-                preloadDeliveryBackdrop = preloadBackboardRightDelivery;
-                park = parkRight;
+                back = backRight;
                 break;
         }
+    }
 
-        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_1);
-        intake.setServoPosition(Intake.IntakeState.STACK_HIGH);
-        driveTrain.followTrajectorySequence(preloadDelivery);
+    @Override
+    public void loop() {
+        update();
 
-        intake.reverse(0.5);
-        timer.reset();
-        while (timer.milliseconds() < 400) { }
-        intake.off();
+        switch (currentState) {
+            case START:
+                delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_HOLD);
+                intake.setServoPosition(Intake.IntakeState.STACK_HIGH);
+                driveTrain.followTrajectorySequenceAsync(preloadDelivery);
+
+                targetState = AutoStates.SCORE_PURPLE_PRELOAD;
+                currentState = AutoStates.WAIT_ARRIVAL;
+                break;
+            case SCORE_PURPLE_PRELOAD:
+                switch (subTransition) {
+                    case 0:
+                        intake.reverse(.35);
+                        timer.reset();
+
+                        subTransition++;
+                        break;
+                    case 1:
+                        if (timerAt(600)) {
+                            subTransition++;
+                        }
+
+                        break;
+                    case 2:
+                        intake.off();
+                        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                        delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_HOLD);
+                        driveTrain.followTrajectorySequenceAsync(back);
+
+                        subTransition = 0;
+                        targetState = AutoStates.DONE;
+                        currentState = AutoStates.WAIT_ARRIVAL;
+                        break;
+                }
+                break;
+            case DONE:
+
+                break;
+
+        }
+
+
+        if (slideLimit.isRisingEdge()) {
+            slides.resetEncoders();
+        }
+    }
+
+    private void update() {
+        driveTrain.update();
+
+        delivery.update();
+        slideLimit.update();
+        slides.update();
+        leftBeam.update();
+        rightBeam.update();
+
+        intakeProcessor.update();
+        if (intakeProcessor.hasTwoPixel()) {
+            blinkin.setTwoPixel(PixelColors.NONE, PixelColors.NONE);
+        } else if (intakeProcessor.hasOnePixel()) {
+            blinkin.setOnePixel(PixelColors.NONE);
+        }
+    }
+
+    private boolean timerAt(double targetMS) {
+        return timer.milliseconds() > targetMS;
+    }
+
+    private void buildPaths() {
+        preloadDeliveryCenter = driveTrain.trajectorySequenceBuilder(startPose)
+                .splineTo(new Vector2d(-34, -25), Math.toRadians(80))
+                .back(15)
+                .build();
+
+
+        preloadDeliveryRight = driveTrain.trajectorySequenceBuilder(startPose)
+                .splineTo(new Vector2d(-45, -30), Math.toRadians(80))
+                .back(8)
+                .build();
+
+        preloadDeliveryLeft = driveTrain.trajectorySequenceBuilder(startPose)
+                .splineTo(new Vector2d(-30, -38), Math.toRadians(340))
+                .build();
+
+        backLeft = driveTrain.trajectorySequenceBuilder(preloadDeliveryLeft.end())
+                .back(10)
+                .build();
+
+        backRight = driveTrain.trajectorySequenceBuilder(preloadDeliveryRight.end())
+                .back(10)
+                .build();
+
+        backCenter = driveTrain.trajectorySequenceBuilder(preloadDeliveryCenter.end())
+                .back(10)
+                .build();
+
+
 
     }
 }

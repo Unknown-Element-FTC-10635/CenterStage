@@ -466,27 +466,27 @@ public class UKTeleOp extends OpMode {
     private void write() {
         driveTrain.writeTeleOp();
 
-        telemetry.addData("Speed", driveTrain.getSpeedMultiplier());
-        telemetry.addData("Delivery", delivery.getDeliveryState());
-        telemetry.addData("Delivery Right Rotation", delivery.getRightRotationPosition());
-        telemetry.addData("Slide Switch", slideLimit.isPressed());
-        telemetry.addData("Transition Timer", transitionTimer.milliseconds());
-        telemetry.addData("Slides Left Position", slides.getCurrentLeftPosition());
-        telemetry.addData("Slides Right Position", slides.getCurrentRightPosition());
-        telemetry.addData("Slide Left Power", slides.getCurrentLeftPower());
-        telemetry.addData("Slide Right Power", slides.getCurrentRightPower());
-        telemetry.addData("Slide Left Error", slides.getLeftError());
-        telemetry.addData("Slide Right Error", slides.getRightError());
-        telemetry.addData("Slide at Target Position", slides.atTargetPosition());
-        telemetry.addData("Backboard Level", targetBackboardLevel);
-        telemetry.addData("Left Intake Pixel", processor.getLeftPixel());
-        telemetry.addData("Right Intake Pixel", processor.getRightColor());
-        telemetry.addData("Camera enabled", !cameraDisabled);
-        telemetry.addData("Angle of Robot", backboardDetector.getAngle());
-        telemetry.addData("Distance of robot", backboardDetector.getAverageDistance());
-        telemetry.addData("Left distance", backboardDetector.getLeft());
-        telemetry.addData("Right distance", backboardDetector.getRight());
-        telemetry.addData("Auto-dropoff ready", backboardDetector.isReady());
+//        telemetry.addData("Speed", driveTrain.getSpeedMultiplier());
+//        telemetry.addData("Delivery", delivery.getDeliveryState());
+//        telemetry.addData("Delivery Right Rotation", delivery.getRightRotationPosition());
+//        telemetry.addData("Slide Switch", slideLimit.isPressed());
+//        telemetry.addData("Transition Timer", transitionTimer.milliseconds());
+//        telemetry.addData("Slides Left Position", slides.getCurrentLeftPosition());
+//        telemetry.addData("Slides Right Position", slides.getCurrentRightPosition());
+//        telemetry.addData("Slide Left Power", slides.getCurrentLeftPower());
+//        telemetry.addData("Slide Right Power", slides.getCurrentRightPower());
+//        telemetry.addData("Slide Left Error", slides.getLeftError());
+//        telemetry.addData("Slide Right Error", slides.getRightError());
+//        telemetry.addData("Slide at Target Position", slides.atTargetPosition());
+//        telemetry.addData("Backboard Level", targetBackboardLevel);
+//        telemetry.addData("Left Intake Pixel", processor.getLeftPixel());
+//        telemetry.addData("Right Intake Pixel", processor.getRightColor());
+//        telemetry.addData("Camera enabled", !cameraDisabled);
+//        telemetry.addData("Angle of Robot", backboardDetector.getAngle());
+//        telemetry.addData("Distance of robot", backboardDetector.getAverageDistance());
+//        telemetry.addData("Left distance", backboardDetector.getLeft());
+//        telemetry.addData("Right distance", backboardDetector.getRight());
+//        telemetry.addData("Auto-dropoff ready", backboardDetector.isReady());
         telemetry.addData("Robot", robotState);
 
         telemetry.addData("Loop time", matchTimer.milliseconds());
