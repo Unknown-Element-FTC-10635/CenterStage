@@ -63,11 +63,13 @@ public class BlueLeft20 extends LinearOpMode {
 
         TrajectorySequence preloadDeliveryLeft = driveTrain.trajectorySequenceBuilder(startPose)
                 .lineTo(new Vector2d(14, 53))
-                .lineToLinearHeading(new Pose2d(24,35, Math.toRadians(260)))
+                .lineToLinearHeading(new Pose2d(22,36, Math.toRadians(260)))
+                .back(5)
                 .build();
 
         TrajectorySequence preloadDeliveryMiddle = driveTrain.trajectorySequenceBuilder(startPose)
                 .lineTo(new Vector2d(13, 30))
+                .back(7)
                 .build();
 
         TrajectorySequence preloadDeliveryRight = driveTrain.trajectorySequenceBuilder(startPose)
@@ -78,7 +80,7 @@ public class BlueLeft20 extends LinearOpMode {
         TrajectorySequence preloadBackboardLeftDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryLeft.end())
                 .setReversed(true)
                 .lineToLinearHeading(new Pose2d(48, 36, Math.toRadians(180)))
-                .back(6)
+                .back(5)
                 .build();
 
         TrajectorySequence preloadBackboardMiddleDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryMiddle.end())
@@ -90,13 +92,13 @@ public class BlueLeft20 extends LinearOpMode {
 
         TrajectorySequence preloadBackboardRightDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryRight.end())
                 .setReversed(true)
-                .lineToLinearHeading(new Pose2d(48, 29, Math.toRadians(180)))
-                .back(9)
+                .lineToLinearHeading(new Pose2d(48, 22, Math.toRadians(180)))
+                .back(5)
                 .build();
 
         TrajectorySequence parkLeft = driveTrain.trajectorySequenceBuilder(preloadBackboardLeftDelivery.end())
                 .forward(15)
-                .strafeLeft(25)
+                .strafeLeft(30)
                 .back(15)
                 .build();
 
@@ -108,7 +110,7 @@ public class BlueLeft20 extends LinearOpMode {
 
         TrajectorySequence parkRight = driveTrain.trajectorySequenceBuilder(preloadBackboardRightDelivery.end())
                 .forward(15)
-                .strafeLeft(10)
+                .strafeLeft(20)
                 .back(20)
                 .build();
 
@@ -150,6 +152,9 @@ public class BlueLeft20 extends LinearOpMode {
         timer.reset();
         while (timer.milliseconds() < 400) { }
         intake.off();
+
+        timer.reset();
+        while (timer.milliseconds() < 200) { }
 
         delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_1);
         driveTrain.followTrajectorySequence(preloadDeliveryBackdrop);
