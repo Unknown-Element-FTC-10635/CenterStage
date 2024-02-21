@@ -102,6 +102,7 @@ public class UKTeleOp extends OpMode {
             // Drive -> Intake
             case DRIVE_INTAKE_TRANSITION:
                 delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_HOLD);
+                delivery.setPixelOrientation(Delivery.PixelOrientation.NORMAL);
                 slides.setHeight(Slides.SlidesHeights.BASE);
                 claw.setClawState(Claw.ClawState.OPEN_INTAKE);
                 intake.setServoPosition(Intake.IntakeState.GROUND);
@@ -322,6 +323,18 @@ public class UKTeleOp extends OpMode {
                     }
                 }
 
+                if (controller1.risingEdgeOf(GamepadEx.Buttons.DPAD_LEFT)) {
+                    delivery.setPixelOrientation(Delivery.PixelOrientation.LEFT_45);
+                }
+
+                if (controller1.risingEdgeOf(GamepadEx.Buttons.DPAD_RIGHT)) {
+                    delivery.setPixelOrientation(Delivery.PixelOrientation.RIGHT_45);
+                }
+
+                if (controller1.risingEdgeOf(GamepadEx.Buttons.DPAD_DOWN)) {
+                    delivery.setPixelOrientation(Delivery.PixelOrientation.FLIPPED);
+                }
+
                 if (controller1.risingEdgeOf(GamepadEx.Buttons.CROSS)) {
                     driveDeliveryTransition = 0;
                     robotState = RobotState.SCORE_DRIVE_TRANSITION;
@@ -367,6 +380,7 @@ public class UKTeleOp extends OpMode {
                         // Move to transition point between intake and score
                         slides.setHeight(Slides.SlidesHeights.BASE);
                         delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_1);
+                        delivery.setPixelOrientation(Delivery.PixelOrientation.NORMAL);
                         transitionTimer.reset();
 
                         driveDeliveryTransition++;

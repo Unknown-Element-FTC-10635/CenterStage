@@ -27,11 +27,26 @@ public class Delivery {
         }
     }
 
+    public enum PixelOrientation {
+        NORMAL(0.5),
+        FLIPPED(0),
+        LEFT_45(0.25),
+        RIGHT_45(0.75);
+
+        public final double servoOrientation;
+
+        PixelOrientation(double servoOrientation) {
+            this.servoOrientation = servoOrientation;
+        }
+    }
+
     private final Servo pitchServoRight;
     private final Servo rollServo;
     private final Servo slideServoLeft, slideServoRight;
+    private final Servo pixelOrientationServo;
 
     private DeliveryState deliveryState;
+    private PixelOrientation pixelOrientation;
 
     public Delivery(HardwareMap hardwareMap) {
         pitchServoRight = hardwareMap.get(Servo.class, "pitch right");
@@ -40,6 +55,9 @@ public class Delivery {
         slideServoLeft = hardwareMap.get(Servo.class, "slide left");
         slideServoLeft.setDirection(Servo.Direction.REVERSE);
         slideServoRight = hardwareMap.get(Servo.class, "slide right");
+
+        pixelOrientationServo = hardwareMap.get(Servo.class, "pixel");
+        pixelOrientationServo.setPosition(PixelOrientation.NORMAL.servoOrientation);
 
         deliveryState = DeliveryState.UNKNOWN;
     }
@@ -52,11 +70,20 @@ public class Delivery {
         slideServoRight.setPosition(deliveryState.slidePositionRight);
     }
 
+    public void setPixelOrientation(PixelOrientation pixelOrientation) {
+        this.pixelOrientation = pixelOrientation;
+        pixelOrientationServo.setPosition(pixelOrientation.servoOrientation);
+    }
+
     public void update() {
     }
 
     public DeliveryState getDeliveryState() {
         return deliveryState;
+    }
+
+    public PixelOrientation getPixelOrientation() {
+        return pixelOrientation;
     }
 
     public double getRollPosition() {
