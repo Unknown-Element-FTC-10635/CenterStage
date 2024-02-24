@@ -13,7 +13,6 @@ public class DriveTrain {
     private final GamepadEx driveController;
 
     private double speedMultiplier = 0.9;
-    private boolean speedToggle;
 
     public DriveTrain(HardwareMap hardwareMap) {
         this(hardwareMap, null);
@@ -51,19 +50,6 @@ public class DriveTrain {
 
         frontRightMotor.setPower(((forward + strafe) * speedMultiplier) + turn);
         backRightMotor.setPower(((forward - strafe) * speedMultiplier) + turn);
-    }
-
-    public void toggleSpeedMultiplier() {
-        speedToggle = !speedToggle;
-        if (speedToggle) {
-            speedMultiplier = 0.1;
-        } else {
-            speedMultiplier = 1;
-        }
-    }
-
-    public double getSpeedMultiplier() {
-        return speedMultiplier;
     }
 
     public double[] getEncoderValues() {

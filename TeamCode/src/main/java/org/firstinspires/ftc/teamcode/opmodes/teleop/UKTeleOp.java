@@ -91,14 +91,6 @@ public class UKTeleOp extends OpMode {
     public void loop() {
         update();
 
-        if (controller1.leftTriggerRisingEdge()) {
-            driveTrain.toggleSpeedMultiplier();
-        }
-
-        if (controller1.leftTriggerFallingEdge()) {
-            driveTrain.toggleSpeedMultiplier();
-        }
-
         switch (robotState) {
             // Drive -> Intake
             case DRIVE_INTAKE_TRANSITION:
