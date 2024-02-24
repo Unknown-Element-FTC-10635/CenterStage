@@ -323,16 +323,16 @@ public class UKTeleOp extends OpMode {
                     }
                 }
 
-                if (controller1.risingEdgeOf(GamepadEx.Buttons.DPAD_LEFT)) {
+                if (controller1.leftTriggerRisingEdge()) {
                     delivery.setPixelOrientation(Delivery.PixelOrientation.LEFT_45);
+                } else if (controller1.leftTriggerFallingEdge()) {
+                    delivery.setPixelOrientation(Delivery.PixelOrientation.NORMAL);
                 }
 
-                if (controller1.risingEdgeOf(GamepadEx.Buttons.DPAD_RIGHT)) {
+                if (controller1.rightTriggerRisingEdge()) {
                     delivery.setPixelOrientation(Delivery.PixelOrientation.RIGHT_45);
-                }
-
-                if (controller1.risingEdgeOf(GamepadEx.Buttons.DPAD_DOWN)) {
-                    delivery.setPixelOrientation(Delivery.PixelOrientation.FLIPPED);
+                } else if (controller1.rightTriggerFallingEdge()) {
+                    delivery.setPixelOrientation(Delivery.PixelOrientation.NORMAL);
                 }
 
                 if (controller1.risingEdgeOf(GamepadEx.Buttons.CROSS)) {
