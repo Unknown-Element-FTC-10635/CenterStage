@@ -79,6 +79,7 @@ public class UKTeleOp extends OpMode {
         robotState = RobotState.DRIVE;
 
         telemetry.addLine("Ready to start");
+        delivery.setPixelOrientation(Delivery.PixelOrientation.NORMAL);
     }
 
     @Override
