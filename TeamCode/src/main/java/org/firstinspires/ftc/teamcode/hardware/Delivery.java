@@ -28,10 +28,10 @@ public class Delivery {
     }
 
     public enum PixelOrientation {
-        NORMAL(0.5),
-        FLIPPED(0),
+        NORMAL(.55),
+        FLIPPED(.55),
         LEFT_45(0.25),
-        RIGHT_45(0.75);
+        RIGHT_45(0.85);
 
         public final double servoOrientation;
 
