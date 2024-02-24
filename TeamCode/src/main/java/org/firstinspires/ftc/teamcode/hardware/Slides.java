@@ -17,12 +17,12 @@ public class Slides {
     public enum SlidesHeights {
         BASE(1),
         PRELOAD(50),
-        AUTO(165),
-        SECOND_LEVEL(250),
-        FOURTH_LEVEL(350),
-        SIXTH_LEVEL(450),
-        EIGTH_LEVEL(550),
-        TENTH_LEVEL(650);
+        AUTO(100),
+        SECOND_LEVEL(175),
+        FOURTH_LEVEL(250),
+        SIXTH_LEVEL(325),
+        EIGTH_LEVEL(400),
+        TENTH_LEVEL(475);
 
         public final double targetPosition;
 
