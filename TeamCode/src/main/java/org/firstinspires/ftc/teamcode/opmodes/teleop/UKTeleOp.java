@@ -421,6 +421,11 @@ public class UKTeleOp extends OpMode {
                     airplane.launch();
                 }
 
+                if (controller1.risingEdgeOf(GamepadEx.Buttons.OPTION)) {
+                    hang.setHangState(Hang.HangState.DOWN);
+                    robotState = RobotState.DRIVE;
+                }
+
                 break;
         }
 
