@@ -18,11 +18,11 @@ public class Slides {
         BASE(1),
         PRELOAD(50),
         AUTO(100),
-        SECOND_LEVEL(175),
-        FOURTH_LEVEL(250),
-        SIXTH_LEVEL(325),
-        EIGTH_LEVEL(400),
-        TENTH_LEVEL(475);
+        SECOND_LEVEL(160),
+        FOURTH_LEVEL(235),
+        SIXTH_LEVEL(310),
+        EIGTH_LEVEL(385),
+        TENTH_LEVEL(450);
 
         public final double targetPosition;
 
