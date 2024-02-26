@@ -13,7 +13,7 @@ public class Intake {
    public enum IntakeState {
         START_POSITION(0.1),
         STACK_HIGH(0.18),
-        STACK_AUTO(0.18),
+        STACK_AUTO(0.35),
         STACK_MID(0.27),
         GROUND(0.435);
 
@@ -25,7 +25,7 @@ public class Intake {
     }
 
     private static final double ON_POWER = 0.75;
-    private static final double REVERSE_POWER = -0.4;
+    private static final double REVERSE_POWER = -0.6;
 
     private final DcMotorEx intake;
     private final ServoImplEx servo;
