@@ -46,7 +46,7 @@ public class UKTeleOp extends OpMode {
 
     private ElapsedTime transitionTimer, matchTimer;
     private int targetBackboardLevel = 0;
-    private boolean cameraDisabled, backboardDropoffToggle;
+    private boolean cameraDisabled, backboardDropoffToggle, tiltToggle;
 
     @Override
     public void init() {
@@ -296,7 +296,7 @@ public class UKTeleOp extends OpMode {
                     if (targetBackboardLevel < 4) {
                         targetBackboardLevel++;
 
-                        if (targetBackboardLevel > 1) {
+                        if (targetBackboardLevel > 2) {
                             delivery.setDeliveryState(Delivery.DeliveryState.SCORE_NO_OUT);
                         }
 
@@ -317,18 +317,22 @@ public class UKTeleOp extends OpMode {
                 }
 
                 if (controller1.leftTriggerRisingEdge()) {
-                    delivery.setPixelOrientation(Delivery.PixelOrientation.LEFT_45);
-                    backboardDropoffToggle = !backboardDropoffToggle;
-                } else if (controller1.leftTriggerFallingEdge()) {
-                    delivery.setPixelOrientation(Delivery.PixelOrientation.NORMAL);
+                    if (!tiltToggle) {
+                        delivery.setPixelOrientation(Delivery.PixelOrientation.LEFT_45);
+                    } else {
+                        delivery.setPixelOrientation(Delivery.PixelOrientation.NORMAL);
+                    }
+                    tiltToggle = !tiltToggle;
                     backboardDropoffToggle = !backboardDropoffToggle;
                 }
 
                 if (controller1.rightTriggerRisingEdge()) {
-                    delivery.setPixelOrientation(Delivery.PixelOrientation.RIGHT_45);
-                    backboardDropoffToggle = !backboardDropoffToggle;
-                } else if (controller1.rightTriggerFallingEdge()) {
-                    delivery.setPixelOrientation(Delivery.PixelOrientation.NORMAL);
+                    if (!tiltToggle) {
+                        delivery.setPixelOrientation(Delivery.PixelOrientation.RIGHT_45);
+                    } else {
+                        delivery.setPixelOrientation(Delivery.PixelOrientation.NORMAL);
+                    }
+                    tiltToggle = !tiltToggle;
                     backboardDropoffToggle = !backboardDropoffToggle;
                 }
 
@@ -378,6 +382,7 @@ public class UKTeleOp extends OpMode {
                         slides.setHeight(Slides.SlidesHeights.BASE);
                         delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_1);
                         delivery.setPixelOrientation(Delivery.PixelOrientation.NORMAL);
+                        tiltToggle = false;
                         transitionTimer.reset();
 
                         driveDeliveryTransition++;
@@ -455,7 +460,7 @@ public class UKTeleOp extends OpMode {
         }
 
         if (controller2.risingEdgeOf(GamepadEx.Buttons.CIRCLE)) {
-            backboardDropoffToggle = !backboardDropoffToggle;
+            backboardDropoffToggle = true;
         }
 
         write();
