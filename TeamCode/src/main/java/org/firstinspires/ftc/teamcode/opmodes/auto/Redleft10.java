@@ -18,7 +18,6 @@ import org.firstinspires.ftc.teamcode.hardware.Webcam;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
-import org.firstinspires.ftc.teamcode.utils.PixelColors;
 import org.firstinspires.ftc.teamcode.vision.IntakeProcessor;
 import org.firstinspires.ftc.teamcode.vision.PropProcessor;
 
@@ -181,7 +180,7 @@ public class Redleft10 extends OpMode {
 
         intakeProcessor.update();
         if (intakeProcessor.hasTwoPixel() || intakeProcessor.hasOnePixel()) {
-            blinkin.setLEDColors(intakeProcessor.getLeftPixel(), intakeProcessor.getRightColor());
+            blinkin.setLEDColors(intakeProcessor.getLeftPixel(), intakeProcessor.getRightPixel());
         }
     }
 

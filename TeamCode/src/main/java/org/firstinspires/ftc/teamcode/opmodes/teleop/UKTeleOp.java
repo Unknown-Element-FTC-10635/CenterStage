@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.hardware.Airplane;
-import org.firstinspires.ftc.teamcode.hardware.BackboardDetector;
 import org.firstinspires.ftc.teamcode.hardware.Blinkin;
 import org.firstinspires.ftc.teamcode.hardware.BreakBeam;
 import org.firstinspires.ftc.teamcode.hardware.Claw;
@@ -17,7 +16,6 @@ import org.firstinspires.ftc.teamcode.hardware.LimitSwitch;
 import org.firstinspires.ftc.teamcode.hardware.Slides;
 import org.firstinspires.ftc.teamcode.hardware.Webcam;
 import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
-import org.firstinspires.ftc.teamcode.utils.PixelColors;
 import org.firstinspires.ftc.teamcode.utils.RobotState;
 import org.firstinspires.ftc.teamcode.utils.hardware.GamepadEx;
 import org.firstinspires.ftc.teamcode.vision.IntakeProcessor;
@@ -131,9 +129,9 @@ public class UKTeleOp extends OpMode {
                         robotState = RobotState.INTAKE_DRIVE_TRANSITION;
                     }
 
-                    blinkin.setLEDColors(processor.getLeftPixel(), processor.getRightColor());
+                    blinkin.setLEDColors(processor.getLeftPixel(), processor.getRightPixel());
                 } else if (!cameraDisabled && processor.hasOnePixel()) {
-                    blinkin.setLEDColors(processor.getLeftPixel(), processor.getRightColor());
+                    blinkin.setLEDColors(processor.getLeftPixel(), processor.getRightPixel());
                 } else if (blinkin.getCurrentState() != Blinkin.CurrentState.NONE) {
                     blinkin.clear();
                 }
@@ -502,7 +500,7 @@ public class UKTeleOp extends OpMode {
         telemetry.addData("Slide at Target Position", slides.atTargetPosition());
         telemetry.addData("Backboard Level", targetBackboardLevel);
         telemetry.addData("Left Intake Pixel", processor.getLeftPixel());
-        telemetry.addData("Right Intake Pixel", processor.getRightColor());
+        telemetry.addData("Right Intake Pixel", processor.getRightPixel());
         telemetry.addData("Camera enabled", !cameraDisabled);
         /*
         telemetry.addData("Angle of Robot", backboardDetector.getAngle());
