@@ -36,7 +36,7 @@ public class UKTeleOp extends OpMode {
     private Slides slides;
     private Claw claw;
     private Hang hang;
-    private BackboardDetector backboardDetector;
+    //private BackboardDetector backboardDetector;
 
     private IntakeProcessor processor;
 
@@ -68,7 +68,7 @@ public class UKTeleOp extends OpMode {
         slides = new Slides(hardwareMap);
         claw = new Claw(hardwareMap);
         hang = new Hang(hardwareMap);
-        backboardDetector = new BackboardDetector(hardwareMap);
+        //backboardDetector = new BackboardDetector(hardwareMap);
 
         transitionTimer = new ElapsedTime();
         transitionTimer.startTime();
@@ -275,7 +275,7 @@ public class UKTeleOp extends OpMode {
                         } else {
                             delivery.setDeliveryState(Delivery.DeliveryState.SCORE_NO_OUT);
                         }
-                        backboardDetector.clear();
+                        //backboardDetector.clear();
 
                         // Advance
                         robotState = RobotState.SCORE;
@@ -341,12 +341,14 @@ public class UKTeleOp extends OpMode {
                     robotState = RobotState.SCORE_DRIVE_TRANSITION;
                 }
 
+                /*
                 if (!backboardDropoffToggle && backboardDetector.isReady() && backboardDetector.getAngle() < 15) {
                     if (backboardDetector.getAverageDistance() < 10) {
                         driveDeliveryTransition = 0;
                         robotState = RobotState.SCORE_DRIVE_TRANSITION;
                     }
                 }
+                 */
 
                 break;
             // Score -> Drive
@@ -480,34 +482,35 @@ public class UKTeleOp extends OpMode {
 
         if (robotState == RobotState.SCORE) {
             delivery.update();
-            backboardDetector.update();
+            //backboardDetector.update();
         }
     }
 
     private void write() {
         driveTrain.writeTeleOp();
 
-//        telemetry.addData("Speed", driveTrain.getSpeedMultiplier());
-//        telemetry.addData("Delivery", delivery.getDeliveryState());
-//        telemetry.addData("Delivery Right Rotation", delivery.getRightRotationPosition());
-//        telemetry.addData("Slide Switch", slideLimit.isPressed());
-//        telemetry.addData("Transition Timer", transitionTimer.milliseconds());
-//        telemetry.addData("Slides Left Position", slides.getCurrentLeftPosition());
-//        telemetry.addData("Slides Right Position", slides.getCurrentRightPosition());
-//        telemetry.addData("Slide Left Power", slides.getCurrentLeftPower());
-//        telemetry.addData("Slide Right Power", slides.getCurrentRightPower());
-//        telemetry.addData("Slide Left Error", slides.getLeftError());
-//        telemetry.addData("Slide Right Error", slides.getRightError());
-//        telemetry.addData("Slide at Target Position", slides.atTargetPosition());
-//        telemetry.addData("Backboard Level", targetBackboardLevel);
-//        telemetry.addData("Left Intake Pixel", processor.getLeftPixel());
-//        telemetry.addData("Right Intake Pixel", processor.getRightColor());
-//        telemetry.addData("Camera enabled", !cameraDisabled);
-//        telemetry.addData("Angle of Robot", backboardDetector.getAngle());
-//        telemetry.addData("Distance of robot", backboardDetector.getAverageDistance());
-//        telemetry.addData("Left distance", backboardDetector.getLeft());
-//        telemetry.addData("Right distance", backboardDetector.getRight());
-//        telemetry.addData("Auto-dropoff ready", backboardDetector.isReady());
+        telemetry.addData("Delivery", delivery.getDeliveryState());
+        telemetry.addData("Delivery Right Rotation", delivery.getRightRotationPosition());
+        telemetry.addData("Slide Switch", slideLimit.isPressed());
+        telemetry.addData("Transition Timer", transitionTimer.milliseconds());
+        telemetry.addData("Slides Left Position", slides.getCurrentLeftPosition());
+        telemetry.addData("Slides Right Position", slides.getCurrentRightPosition());
+        telemetry.addData("Slide Left Power", slides.getCurrentLeftPower());
+        telemetry.addData("Slide Right Power", slides.getCurrentRightPower());
+        telemetry.addData("Slide Left Error", slides.getLeftError());
+        telemetry.addData("Slide Right Error", slides.getRightError());
+        telemetry.addData("Slide at Target Position", slides.atTargetPosition());
+        telemetry.addData("Backboard Level", targetBackboardLevel);
+        telemetry.addData("Left Intake Pixel", processor.getLeftPixel());
+        telemetry.addData("Right Intake Pixel", processor.getRightColor());
+        telemetry.addData("Camera enabled", !cameraDisabled);
+        /*
+        telemetry.addData("Angle of Robot", backboardDetector.getAngle());
+        telemetry.addData("Distance of robot", backboardDetector.getAverageDistance());
+        telemetry.addData("Left distance", backboardDetector.getLeft());
+        telemetry.addData("Right distance", backboardDetector.getRight());
+        telemetry.addData("Auto-dropoff ready", backboardDetector.isReady());
+         */
         telemetry.addData("Robot", robotState);
 
         telemetry.addData("Loop time", matchTimer.milliseconds());
