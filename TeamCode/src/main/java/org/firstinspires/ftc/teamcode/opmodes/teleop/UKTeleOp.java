@@ -131,9 +131,9 @@ public class UKTeleOp extends OpMode {
                         robotState = RobotState.INTAKE_DRIVE_TRANSITION;
                     }
 
-                    blinkin.setTwoPixel(PixelColors.NONE, PixelColors.NONE);
+                    blinkin.setLEDColors(processor.getLeftPixel(), processor.getRightColor());
                 } else if (!cameraDisabled && processor.hasOnePixel()) {
-                    blinkin.setOnePixel(PixelColors.NONE);
+                    blinkin.setLEDColors(processor.getLeftPixel(), processor.getRightColor());
                 } else if (blinkin.getCurrentState() != Blinkin.CurrentState.NONE) {
                     blinkin.clear();
                 }

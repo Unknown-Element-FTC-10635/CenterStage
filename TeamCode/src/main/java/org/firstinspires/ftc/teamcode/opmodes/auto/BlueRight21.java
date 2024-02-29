@@ -443,10 +443,8 @@ public class BlueRight21 extends OpMode {
         rightBeam.update();
 
         intakeProcessor.update();
-        if (intakeProcessor.hasTwoPixel()) {
-            blinkin.setTwoPixel(PixelColors.NONE, PixelColors.NONE);
-        } else if (intakeProcessor.hasOnePixel()) {
-            blinkin.setOnePixel(PixelColors.NONE);
+        if (intakeProcessor.hasTwoPixel() || intakeProcessor.hasOnePixel()) {
+            blinkin.setLEDColors(intakeProcessor.getLeftPixel(), intakeProcessor.getRightColor());
         }
     }
 
