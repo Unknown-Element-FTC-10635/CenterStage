@@ -13,37 +13,50 @@ public class Blinkin {
         NONE
     }
 
-    private final RevBlinkinLedDriver blinkin;
+    private final RevBlinkinLedDriver leftBlinkin, rightBlinkin;
     private CurrentState currentState;
 
     public Blinkin(HardwareMap hardwareMap) {
-        blinkin = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
-        blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLACK);
+        leftBlinkin = hardwareMap.get(RevBlinkinLedDriver.class, "left blinkin");
+        rightBlinkin = hardwareMap.get(RevBlinkinLedDriver.class, "right blinkin");
+        leftBlinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLACK);
+        rightBlinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLACK);
     }
 
-    public void setOnePixel(PixelColors color) {
-        blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
-        currentState = CurrentState.ONE_PIXELS;
-    }
-
-    public void setTwoPixel(PixelColors intakeLeft, PixelColors intakeRight) {
-        blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+    public void setLEDColors(PixelColors intakeLeft, PixelColors intakeRight) {
+        leftBlinkin.setPattern(convertToBlinkinPattern(intakeLeft));
+        rightBlinkin.setPattern(convertToBlinkinPattern(intakeRight));
         currentState = CurrentState.TWO_PIXELS;
     }
 
     public void setEndgame() {
-        blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.CONFETTI);
+        leftBlinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.CONFETTI);
         currentState = CurrentState.ENDGAME;
     }
 
     public void strobe() {
-        blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BEATS_PER_MINUTE_OCEAN_PALETTE);
+        leftBlinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BEATS_PER_MINUTE_OCEAN_PALETTE);
         currentState = CurrentState.TWO_PIXELS;
     }
 
     public void clear() {
-        blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLACK);
+        leftBlinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLACK);
         currentState = CurrentState.NONE;
+    }
+
+    private RevBlinkinLedDriver.BlinkinPattern convertToBlinkinPattern(PixelColors pixelColor) {
+        switch (pixelColor) {
+            case WHITE:
+                return RevBlinkinLedDriver.BlinkinPattern.WHITE;
+            case YELLOW:
+                return RevBlinkinLedDriver.BlinkinPattern.YELLOW;
+            case GREEN:
+                return RevBlinkinLedDriver.BlinkinPattern.GREEN;
+            case PURPLE:
+                return RevBlinkinLedDriver.BlinkinPattern.VIOLET;
+            default:
+                return RevBlinkinLedDriver.BlinkinPattern.BLACK;
+        }
     }
 
     public CurrentState getCurrentState() {
