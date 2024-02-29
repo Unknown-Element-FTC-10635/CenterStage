@@ -296,7 +296,7 @@ public class UKTeleOp extends OpMode {
                     if (targetBackboardLevel < 4) {
                         targetBackboardLevel++;
 
-                        if (targetBackboardLevel > 2) {
+                        if (targetBackboardLevel > 3) {
                             delivery.setDeliveryState(Delivery.DeliveryState.SCORE_NO_OUT);
                         }
 
@@ -308,7 +308,7 @@ public class UKTeleOp extends OpMode {
                     if (targetBackboardLevel > 0) {
                         targetBackboardLevel--;
 
-                        if (targetBackboardLevel < 2) {
+                        if (targetBackboardLevel < 4) {
                             delivery.setDeliveryState(Delivery.DeliveryState.SCORE);
                         }
 

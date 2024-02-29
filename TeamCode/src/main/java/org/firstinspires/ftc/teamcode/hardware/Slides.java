@@ -18,7 +18,7 @@ public class Slides {
         BASE(1),
         PRELOAD(50),
         AUTO(100),
-        SECOND_LEVEL(140),
+        SECOND_LEVEL(120),
         FOURTH_LEVEL(235),
         SIXTH_LEVEL(310),
         EIGTH_LEVEL(385),
