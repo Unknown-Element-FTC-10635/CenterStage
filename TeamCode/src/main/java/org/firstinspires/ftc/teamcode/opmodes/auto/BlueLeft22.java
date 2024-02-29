@@ -157,6 +157,7 @@ public class BlueLeft22 extends OpMode {
                         }
                         break;
                     case 2:
+                        slides.setHeight(Slides.SlidesHeights.PRELOAD);
                         delivery.setDeliveryState(Delivery.DeliveryState.SCORE_PRELOAD);
                         subTransition = 0;
 
@@ -185,9 +186,10 @@ public class BlueLeft22 extends OpMode {
 
                         break;
                     case 3:
-                        delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_HOLD);
+                        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
                         intake.setServoPosition(Intake.IntakeState.STACK_AUTO);
                         driveTrain.followTrajectorySequenceAsync(preloadDelivery);
+                        slides.setHeight(Slides.SlidesHeights.BASE);
 
                         subTransition = 0;
                         targetState = AutoStates.SCORE_PURPLE_PRELOAD;
@@ -205,7 +207,7 @@ public class BlueLeft22 extends OpMode {
                         subTransition++;
                         break;
                     case 1:
-                        if (timerAt(700)) {
+                        if (timerAt(800)) {
                             subTransition++;
                         }
 
@@ -215,6 +217,7 @@ public class BlueLeft22 extends OpMode {
                         intake.off();
                         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
                         intake.setServoPosition(Intake.IntakeState.GROUND);
+                        delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_HOLD);
 
                         subTransition = 0;
                         targetState = AutoStates.DRIVE_TO_STACK;
@@ -223,6 +226,7 @@ public class BlueLeft22 extends OpMode {
                 }
 
                 break;
+
             case DRIVE_TO_STACK:
                 intake.on();
                 driveTrain.followTrajectorySequence(toStack);
@@ -244,8 +248,14 @@ public class BlueLeft22 extends OpMode {
                         subTransition++;
                         break;
                     case 1:
-                        if (timerAt(550)) {
-                            subTransition++;
+                        if (tries == 0) {
+                            if (timerAt(300)) {
+                                subTransition++;
+                            }
+                        } else {
+                            if (timerAt(750)) {
+                                subTransition++;
+                            }
                         }
 
                         break;
@@ -280,7 +290,7 @@ public class BlueLeft22 extends OpMode {
                         tries++;
                         intake.setServoPosition(Intake.IntakeState.GROUND);
                         intake.reverse(.35);
-                        driveTrain.setMotorPowers(0, 0, 0, 0);
+                        driveTrain.setMotorPowers(-.3, -.3, -.3, -.3);
 
                         timer.reset();
                         subTransition++;
@@ -293,7 +303,7 @@ public class BlueLeft22 extends OpMode {
 
                         break;
                     case 2:
-                        driveTrain.setMotorPowers(0,0,0,0);
+                        driveTrain.setMotorPowers(.3,.3,.3,.3);
                         intake.on();
                         timer.reset();
                         subTransition++;
@@ -524,7 +534,8 @@ public class BlueLeft22 extends OpMode {
 
         preloadDeliveryBackdropCenter = driveTrain.trajectorySequenceBuilder(startPose)
                 .setReversed(true)
-                .lineToLinearHeading(new Pose2d(48.5, 32, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(48, 32.5, Math.toRadians(180)))
+                .back(1)
                 .build();
 
         preloadDeliveryBackdropRight = driveTrain.trajectorySequenceBuilder(startPose)
@@ -554,31 +565,32 @@ public class BlueLeft22 extends OpMode {
 
 
         toStack = driveTrain.trajectorySequenceBuilder(toCommonPathCenter.end())
-                .lineToLinearHeading(new Pose2d(30, 5, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(30, 8, Math.toRadians(180)))
                 .setReversed(false)
-                .splineTo(new Vector2d(-61, 11.5), Math.toRadians(180))
-                .strafeLeft(9)
+                .splineTo(new Vector2d(-61, 9), Math.toRadians(180))
+                .strafeRight(8)
                 .build();
 
         backToKnownPosition = driveTrain.trajectorySequenceBuilder(toStack.end())
                 .setReversed(true)
                 .lineToLinearHeading(new Pose2d(-35, 12, Math.toRadians(180)))
-                .lineToLinearHeading(new Pose2d(30, 5, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(20, 5, Math.toRadians(180)))
                 .build();
 
         stackDeliveryBackdrop = driveTrain.trajectorySequenceBuilder(backToKnownPosition.end())
                 .setReversed(true)
-                .splineTo(new Vector2d(48, 30), Math.toRadians(0))
+                .lineToLinearHeading(new Pose2d(45, 30, Math.toRadians(180)))
+                .back(1)
                 .build();
 
         park = driveTrain.trajectorySequenceBuilder(backToKnownPosition.end())
                 .setReversed(true)
-                .lineTo(new Vector2d(60, 60))
+                .lineToLinearHeading(new Pose2d(53, 7, Math.toRadians(0)))
                 .build();
 
         park2 = driveTrain.trajectorySequenceBuilder(stackDeliveryBackdrop.end())
                 .forward(5)
-                .strafeRight(20)
+                .strafeLeft(20)
                 .build();
     }
 }
