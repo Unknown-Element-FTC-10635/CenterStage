@@ -703,12 +703,12 @@ public class BlueLeft22 extends OpMode {
         toStackCenter = driveTrain.trajectorySequenceBuilder(toCommonPathCenter.end())
                 .lineToLinearHeading(new Pose2d(0, 10, Math.toRadians(180)))
                 .setReversed(false)
-                .lineToLinearHeading(new Pose2d(-63, 10, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-63, 9, Math.toRadians(180)))
                 .build();
         toStackLeft = driveTrain.trajectorySequenceBuilder(toCommonPathCenter.end())
                 .lineToLinearHeading(new Pose2d(0, 10, Math.toRadians(180)))
                 .setReversed(false)
-                .lineToLinearHeading(new Pose2d(-63, 10, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-63, 9, Math.toRadians(180)))
                 .build();
         toStackRight = driveTrain.trajectorySequenceBuilder(toCommonPathRight.end())
                 .lineToLinearHeading(new Pose2d(0, 8, Math.toRadians(180)))
@@ -741,7 +741,7 @@ public class BlueLeft22 extends OpMode {
 
         park = driveTrain.trajectorySequenceBuilder(backToKnownPosition.end())
                 .setReversed(true)
-                .lineToLinearHeading(new Pose2d(53, 8, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(53, 10, Math.toRadians(0)))
                 .build();
 
         park2 = driveTrain.trajectorySequenceBuilder(stackDeliveryBackdrop.end())
