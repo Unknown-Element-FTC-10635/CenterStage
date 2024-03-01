@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.hardware.Blinkin;
 import org.firstinspires.ftc.teamcode.hardware.BreakBeam;
 import org.firstinspires.ftc.teamcode.hardware.Claw;
+import org.firstinspires.ftc.teamcode.hardware.StackColorSensor;
 import org.firstinspires.ftc.teamcode.hardware.Delivery;
 import org.firstinspires.ftc.teamcode.hardware.Intake;
 import org.firstinspires.ftc.teamcode.hardware.LimitSwitch;
@@ -18,7 +19,6 @@ import org.firstinspires.ftc.teamcode.hardware.Webcam;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
-import org.firstinspires.ftc.teamcode.utils.PixelColors;
 import org.firstinspires.ftc.teamcode.vision.IntakeProcessor;
 import org.firstinspires.ftc.teamcode.vision.PropProcessor;
 import org.opencv.core.Mat;
@@ -42,6 +42,7 @@ public class BlueLeft22 extends OpMode {
 
     private SampleMecanumDrive driveTrain;
     private BreakBeam leftBeam, rightBeam;
+    private StackColorSensor colorSensor;
     private LimitSwitch slideLimit;
     private Delivery delivery;
     private Blinkin blinkin;
@@ -70,6 +71,7 @@ public class BlueLeft22 extends OpMode {
     public void init() {
         CurrentOpmode.setCurrentOpmode(CurrentOpmode.OpMode.AUTO);
 
+        colorSensor = new StackColorSensor(hardwareMap, "left color");
         slideLimit = new LimitSwitch(hardwareMap, "slide limit");
         rightBeam = new BreakBeam(hardwareMap, "right break");
         leftBeam = new BreakBeam(hardwareMap, "left break");
@@ -254,6 +256,26 @@ public class BlueLeft22 extends OpMode {
             case PICKUP_STACK_PIXELS:
                 switch (subTransition) {
                     case 0:
+                        intake.setServoPosition(Intake.IntakeState.GROUND);
+                        driveTrain.setMotorPowers(.5, -.5, .5, -.5);
+                        timer.reset();
+                        subTransition++;
+                        break;
+                    case 1:
+                        if (colorSensor.linedUpWithStack()) {
+                            subTransition++;
+                        }
+                        break;
+                    case 2:
+                        driveTrain.setMotorPowers(0.25, 0.25, 0.25, 0.25);
+                        timer.reset();
+                        subTransition++;
+                    case 3:
+                        if (colorSensor.correctDistanceFromStack()) {
+                            subTransition++;
+                        }
+                        break;
+                    case 4:
                         delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_HOLD);
                         claw.setClawState(Claw.ClawState.OPEN_INTAKE);
                         intake.on(0.8);
@@ -261,36 +283,35 @@ public class BlueLeft22 extends OpMode {
                         driveTrain.followTrajectorySequenceAsync(stackStrafe);
                         subTransition++;
                         break;
-                    case 1:
+                    case 5:
                         if (!driveTrain.isBusy()) {
                             subTransition++;
                         }
                         break;
-                    case 2:
+                    case 6:
                         if (tries == 0) {
-                            if (timerAt(300)) {
+                            if (timerAt(1100)) {
                                 subTransition++;
                             }
                         } else {
-                            if (timerAt(850)) {
+                            if (timerAt(1650)) {
                                 subTransition++;
                             }
                         }
                         break;
-                    case 3:
-                        driveTrain.setMotorPowers(0, 0, 0, 0);
+                    case 7:
+                        intake.on();
 
                         subTransition++;
                         timer.reset();
                         break;
-                    case 4:
-                        if (timerAt(800)) {
+                    case 8:
+                        if (timerAt(500)) {
                             subTransition++;
                         }
 
                         break;
-                    case 5:
-                        intake.on();
+                    case 9:
                         subTransition = 0;
 
                         if (tries < 1) {
@@ -591,10 +612,11 @@ public class BlueLeft22 extends OpMode {
         slides.update();
         leftBeam.update();
         rightBeam.update();
+        colorSensor.update();
 
         intakeProcessor.update();
         if (intakeProcessor.hasTwoPixel() || intakeProcessor.hasOnePixel()) {
-            blinkin.setLEDColors(intakeProcessor.getLeftPixel(), intakeProcessor.getRightColor());
+            blinkin.setLEDColors(intakeProcessor.getLeftPixel(), intakeProcessor.getRightPixel());
         }
     }
 
@@ -639,7 +661,6 @@ public class BlueLeft22 extends OpMode {
         toCommonPathLeft = driveTrain.trajectorySequenceBuilder(preloadDeliveryLeft.end())
                 .lineToLinearHeading(new Pose2d(35, 13, Math.toRadians(180)))
                 .build();
-
 
         toStack = driveTrain.trajectorySequenceBuilder(toCommonPathCenter.end())
                 .lineToLinearHeading(new Pose2d(0, 10, Math.toRadians(180)))

@@ -51,7 +51,7 @@ public class IntakeProcessor extends SimpleProcessor {
         return left;
     }
 
-    public PixelColors getRightColor() {
+    public PixelColors getRightPixel() {
         return right;
     }
 
