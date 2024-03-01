@@ -40,7 +40,7 @@ public class StackColorSensor {
         if (blue) {
             return distance < 5;
         } else {
-            return distance < 4;
+            return distance < 7;
         }
     }
 
