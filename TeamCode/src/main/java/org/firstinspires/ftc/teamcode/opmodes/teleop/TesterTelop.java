@@ -5,15 +5,12 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-import org.firstinspires.ftc.teamcode.hardware.Delivery;
-import org.firstinspires.ftc.teamcode.hardware.Slides;
+import org.firstinspires.ftc.teamcode.hardware.StackColorSensor;
 import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
 
 @Config
 @TeleOp()
-@Disabled
 public class TesterTelop extends LinearOpMode {
     public static double target = 0;
 
@@ -21,24 +18,21 @@ public class TesterTelop extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         CurrentOpmode.setCurrentOpmode(CurrentOpmode.OpMode.TELEOP);
 
-        Slides slides = new Slides(hardwareMap);
-        Delivery delivery = new Delivery(hardwareMap);
+        StackColorSensor colorSensor = new StackColorSensor(hardwareMap, "left color");
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         telemetry.addLine("Ready to start");
         telemetry.update();
 
-        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
 
         waitForStart();
 
         while (opModeIsActive()) {
-            slides.setHeight(target);
+            colorSensor.update();
 
-            slides.update();
-
-            telemetry.addData("Left", slides.getCurrentLeftPosition());
-            telemetry.addData("right", slides.getCurrentRightPosition());
+            telemetry.addData("Raw light", colorSensor.getRawLight());
+            telemetry.addData("Distance", colorSensor.getDistance());
+            telemetry.addData("Stack guess", colorSensor.linedUpWithStack());
             telemetry.addData("target", target);
             telemetry.update();
         }

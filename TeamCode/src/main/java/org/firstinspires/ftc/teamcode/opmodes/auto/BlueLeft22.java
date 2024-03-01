@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.hardware.Blinkin;
 import org.firstinspires.ftc.teamcode.hardware.BreakBeam;
 import org.firstinspires.ftc.teamcode.hardware.Claw;
+import org.firstinspires.ftc.teamcode.hardware.StackColorSensor;
 import org.firstinspires.ftc.teamcode.hardware.Delivery;
 import org.firstinspires.ftc.teamcode.hardware.Intake;
 import org.firstinspires.ftc.teamcode.hardware.LimitSwitch;
@@ -20,7 +21,6 @@ import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySe
 import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
 import org.firstinspires.ftc.teamcode.vision.IntakeProcessor;
 import org.firstinspires.ftc.teamcode.vision.PropProcessor;
-import org.opencv.core.Mat;
 
 @Autonomous(name = "BLUE (Backboard) - 2+2", group = "blue")
 public class BlueLeft22 extends OpMode {
@@ -40,6 +40,7 @@ public class BlueLeft22 extends OpMode {
 
     private SampleMecanumDrive driveTrain;
     private BreakBeam leftBeam, rightBeam;
+    private StackColorSensor colorSensor;
     private LimitSwitch slideLimit;
     private Delivery delivery;
     private Blinkin blinkin;
@@ -68,6 +69,7 @@ public class BlueLeft22 extends OpMode {
     public void init() {
         CurrentOpmode.setCurrentOpmode(CurrentOpmode.OpMode.AUTO);
 
+        colorSensor = new StackColorSensor(hardwareMap, "left color");
         slideLimit = new LimitSwitch(hardwareMap, "slide limit");
         rightBeam = new BreakBeam(hardwareMap, "right break");
         leftBeam = new BreakBeam(hardwareMap, "left break");
@@ -252,51 +254,69 @@ public class BlueLeft22 extends OpMode {
             case PICKUP_STACK_PIXELS:
                 switch (subTransition) {
                     case 0:
-                        delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_HOLD);
-                        claw.setClawState(Claw.ClawState.OPEN_INTAKE);
-                        intake.on(0.8);
-                        if (tries == 0) {
-                            intake.setServoPosition(Intake.IntakeState.GROUND);
-                            driveTrain.setMotorPowers(-.4, .4, -.4, .4);
-                        }
-
+                        intake.setServoPosition(Intake.IntakeState.GROUND);
+                        driveTrain.setMotorPowers(.5, -.5, .5, -.5);
                         timer.reset();
                         subTransition++;
                         break;
                     case 1:
-                        if (tries == 0) {
-                            if (timerAt(300)) {
-                                subTransition++;
-                            }
-                        } else {
-                            if (timerAt(850)) {
-                                subTransition++;
-                            }
+                        if (colorSensor.linedUpWithStack()) {
+                            subTransition++;
                         }
-
                         break;
                     case 2:
-                        driveTrain.setMotorPowers(0, 0, 0, 0);
-
-                        subTransition++;
+                        driveTrain.setMotorPowers(0.25, 0.25, 0.25, 0.25);
                         timer.reset();
-                        break;
+                        subTransition++;
                     case 3:
-                        if (timerAt(800)) {
+                        if (colorSensor.correctDistanceFromStack()) {
+                            subTransition++;
+                        }
+                        break;
+                    case 4:
+                        delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_HOLD);
+                        claw.setClawState(Claw.ClawState.OPEN_INTAKE);
+                        intake.on(0.8);
+                        driveTrain.setMotorPowers(.7, -.7, .8, -.7);
+
+                        timer.reset();
+                        subTransition++;
+                        break;
+                    case 5:
+                        if (timerAt(750)) {
                             subTransition++;
                         }
 
                         break;
-                    case 4:
+                    case 6:
+                        driveTrain.setMotorPowers(-.4, .4, -.4, .4);
+
+                        subTransition++;
+                        timer.reset();
+                        break;
+                    case 7:
+                        if (timerAt(400)) {
+                            subTransition++;
+                        }
+
+                        break;
+                    case 8:
+                        driveTrain.setMotorPowers(0, 0, 0, 0);
                         intake.on();
+
+                        subTransition++;
+                        timer.reset();
+                        break;
+                    case 9:
+                        if (timerAt(500)) {
+                            subTransition++;
+                        }
+
+                        break;
+                    case 10:
                         subTransition = 0;
 
-                        if (tries < 1) {
-                            currentState = AutoStates.RETRY_STACK;
-                        } else {
-                            tryToScore = intakeProcessor.hasTwoPixel();
-                            currentState = AutoStates.DRIVE_THROUGH_BARRIER;
-                        }
+                        currentState = AutoStates.RETRY_STACK;
                         break;
                 }
                 break;
@@ -338,10 +358,9 @@ public class BlueLeft22 extends OpMode {
                         driveTrain.setMotorPowers(0, 0, 0, 0);
                         timer.reset();
                         subTransition = 0;
-                        if (tries == 1) {
-                            intake.setServoPosition(Intake.IntakeState.GROUND);
-                        }
-                        currentState = AutoStates.PICKUP_STACK_PIXELS;
+                        intake.setServoPosition(Intake.IntakeState.GROUND);
+                        tryToScore = intakeProcessor.hasTwoPixel();
+                        currentState = AutoStates.DRIVE_THROUGH_BARRIER;
                         break;
                 }
                 break;
@@ -558,6 +577,7 @@ public class BlueLeft22 extends OpMode {
         slides.update();
         leftBeam.update();
         rightBeam.update();
+        colorSensor.update();
 
         intakeProcessor.update();
         if (intakeProcessor.hasTwoPixel() || intakeProcessor.hasOnePixel()) {
@@ -612,8 +632,7 @@ public class BlueLeft22 extends OpMode {
         toStack = driveTrain.trajectorySequenceBuilder(toCommonPathCenter.end())
                 .lineToLinearHeading(new Pose2d(0, 10, Math.toRadians(180)))
                 .setReversed(false)
-                .lineToLinearHeading(new Pose2d(-63, 9, Math.toRadians(180)))
-                .strafeRight(9)
+                .lineToLinearHeading(new Pose2d(-58, 4, Math.toRadians(180)))
                 .build();
 
         backToKnownPosition = driveTrain.trajectorySequenceBuilder(toStack.end())
