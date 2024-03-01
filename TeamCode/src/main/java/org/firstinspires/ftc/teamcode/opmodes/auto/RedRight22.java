@@ -226,7 +226,6 @@ public class RedRight22 extends OpMode {
                 switch (subTransition) {
                     case 0:
                         intake.off();
-                        driveTrain.turn(-(Math.toRadians(180) - (driveTrain.getPoseEstimate().getHeading() * 1.2)));
                         subTransition++;
                         break;
                     case 1:
@@ -406,7 +405,7 @@ public class RedRight22 extends OpMode {
                         }
                         break;
                     case 4:
-                        if (timerAt(200)){
+                        if (timerAt(300)){
                             subTransition++;
                         }
                     case 5:
@@ -645,8 +644,8 @@ public class RedRight22 extends OpMode {
     private void buildPaths() {
         preloadDeliveryBackdropRight = driveTrain.trajectorySequenceBuilder(startPose)
                 .setReversed(true)
-                .lineToLinearHeading(new Pose2d(47, -40, Math.toRadians(180)))
-                .back(1)
+                .lineToLinearHeading(new Pose2d(48, -42, Math.toRadians(180)))
+                .back(2)
                 .build();
 
         preloadDeliveryBackdropCenter = driveTrain.trajectorySequenceBuilder(startPose)
@@ -662,7 +661,7 @@ public class RedRight22 extends OpMode {
                 .build();
 
         preloadDeliveryRight = driveTrain.trajectorySequenceBuilder(preloadDeliveryBackdropRight.end())
-                .lineToConstantHeading(new Vector2d(21,-40))
+                .lineToConstantHeading(new Vector2d(27,-30))
                 .build();
 
         preloadDeliveryCenter = driveTrain.trajectorySequenceBuilder(preloadDeliveryBackdropCenter.end())
@@ -679,10 +678,10 @@ public class RedRight22 extends OpMode {
                 .build();
 
         toCommonPathRight = driveTrain.trajectorySequenceBuilder(preloadDeliveryRight.end())
-                .back(3)
-                .lineToLinearHeading(new Pose2d(42, -15, Math.toRadians(180)))
+                .back(8)
                 .lineToLinearHeading(new Pose2d(35, -13, Math.toRadians(180)))
                 .build();
+
         toCommonPathLeft = driveTrain.trajectorySequenceBuilder(preloadDeliveryLeft.end())
                 .back(6)
                 .lineToLinearHeading(new Pose2d(22,-24, Math.toRadians(180)))
@@ -694,7 +693,13 @@ public class RedRight22 extends OpMode {
                 .lineToLinearHeading(new Pose2d(-60, -14, Math.toRadians(180)))
                 .build();
 
-        toStackRight = driveTrain.trajectorySequenceBuilder(toCommonPathRight.end())
+        toStackRight = driveTrain.trajectorySequenceBuilder(toCommonPathCenter.end())
+                .lineToLinearHeading(new Pose2d(0, -14, Math.toRadians(180)))
+                .setReversed(false)
+                .lineToLinearHeading(new Pose2d(-60, -12, Math.toRadians(180)))
+                .build();
+
+        toStackLeft = driveTrain.trajectorySequenceBuilder(toCommonPathLeft.end())
                 .lineToLinearHeading(new Pose2d(0, -10, Math.toRadians(180)))
                 .setReversed(false)
                 .lineToLinearHeading(new Pose2d(-63, -9, Math.toRadians(180)))
@@ -702,8 +707,8 @@ public class RedRight22 extends OpMode {
 
         backToKnownPosition = driveTrain.trajectorySequenceBuilder(new Pose2d(-65, -15, Math.toRadians(180)))
                 .setReversed(true)
-                .lineToLinearHeading(new Pose2d(-35, -12, Math.toRadians(180)))
-                .lineToLinearHeading(new Pose2d(20, -8, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-35, -13, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(28, -14, Math.toRadians(180)))
                 .build();
 
         backToKnownPositionLeft = driveTrain.trajectorySequenceBuilder(new Pose2d(-65, -15, Math.toRadians(180)))
@@ -714,12 +719,12 @@ public class RedRight22 extends OpMode {
 
         stackDeliveryBackdrop = driveTrain.trajectorySequenceBuilder(backToKnownPosition.end())
                 .setReversed(true)
-                .lineToLinearHeading(new Pose2d(42, -32, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(43, -30, Math.toRadians(180)))
                 .build();
 
         stackDeliveryBackdropLeft = driveTrain.trajectorySequenceBuilder(backToKnownPositionLeft.end())
                 .setReversed(true)
-                .lineToLinearHeading(new Pose2d(42, -32, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(43, -32, Math.toRadians(180)))
                 .build();
 
         park = driveTrain.trajectorySequenceBuilder(backToKnownPosition.end())
