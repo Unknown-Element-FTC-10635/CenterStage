@@ -57,8 +57,8 @@ public class BlueLeft22 extends OpMode {
     public void init() {
         CurrentOpmode.setCurrentOpmode(CurrentOpmode.OpMode.AUTO);
 
-        colorSensor = new StackColorSensor(hardwareMap, "left color");
         slideLimit = new LimitSwitch(hardwareMap, "slide limit");
+        colorSensor = new StackColorSensor(hardwareMap, true);
         rightBeam = new BreakBeam(hardwareMap, "right break");
         leftBeam = new BreakBeam(hardwareMap, "left break");
         driveTrain = new SampleMecanumDrive(hardwareMap);

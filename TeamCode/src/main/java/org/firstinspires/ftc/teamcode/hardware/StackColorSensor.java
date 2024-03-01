@@ -10,11 +10,17 @@ public class StackColorSensor {
     public static final double RIGHT_SENSOR_OFFSET_CM = 5;
 
     private final RevColorSensorV3 colorSensor;
+    private final boolean blue;
 
     private double rawLight, distance;
 
-    public StackColorSensor(HardwareMap hardwareMap, String name) {
-        this.colorSensor = hardwareMap.get(RevColorSensorV3.class, name);
+    public StackColorSensor(HardwareMap hardwareMap, boolean blue) {
+        this.blue = blue;
+        if (blue) {
+            this.colorSensor = hardwareMap.get(RevColorSensorV3.class, "left color");
+        } else {
+            this.colorSensor = hardwareMap.get(RevColorSensorV3.class, "right color");
+        }
     }
 
     public void update() {
@@ -23,11 +29,19 @@ public class StackColorSensor {
     }
 
     public boolean linedUpWithStack() {
-        return rawLight > 100;
+        if (blue) {
+            return rawLight > 100;
+        } else {
+            return rawLight > 115;
+        }
     }
 
     public boolean correctDistanceFromStack() {
-        return distance < 5;
+        if (blue) {
+            return distance < 5;
+        } else {
+            return distance < 4;
+        }
     }
 
     public double getRawLight() {
