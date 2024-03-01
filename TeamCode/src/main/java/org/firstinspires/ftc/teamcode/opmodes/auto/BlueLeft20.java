@@ -75,13 +75,13 @@ public class BlueLeft20 extends LinearOpMode {
         TrajectorySequence preloadDeliveryRight = driveTrain.trajectorySequenceBuilder(startPose)
                 .lineTo(new Vector2d(15, 52))
                 .lineToLinearHeading(new Pose2d(-1, 33, Math.toRadians(180)))
-                .back(12)
+                .back(8)
                 .build();
 
         TrajectorySequence preloadBackboardLeftDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryLeft.end())
                 .back(10)
                 .setReversed(true)
-                .lineToLinearHeading(new Pose2d(48, 36, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(48, 38, Math.toRadians(180)))
                 .back(5)
                 .build();
 
@@ -94,7 +94,7 @@ public class BlueLeft20 extends LinearOpMode {
 
         TrajectorySequence preloadBackboardRightDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryRight.end())
                 .setReversed(true)
-                .lineToLinearHeading(new Pose2d(48, 24, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(48, 27, Math.toRadians(180)))
                 .back(5)
                 .build();
 
@@ -106,12 +106,14 @@ public class BlueLeft20 extends LinearOpMode {
 
         TrajectorySequence parkMiddle = driveTrain.trajectorySequenceBuilder(preloadBackboardMiddleDelivery.end())
                 .forward(15)
-                .strafeLeft(21)
+                .strafeLeft(18)
+                .back(15)
                 .build();
 
         TrajectorySequence parkRight = driveTrain.trajectorySequenceBuilder(preloadBackboardRightDelivery.end())
                 .forward(15)
-                .strafeLeft(15)
+                .strafeLeft(17)
+                .back(15)
                 .build();
 
         telemetry.addLine("Ready to start");
