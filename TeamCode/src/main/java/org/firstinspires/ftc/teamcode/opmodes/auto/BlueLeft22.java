@@ -30,6 +30,7 @@ public class BlueLeft22 extends OpMode {
         SCORE_PURPLE_PRELOAD,
         SCORE_YELLOW_PRELOAD,
         DRIVE_TO_STACK,
+        ALIGN_TO_STACK,
         PICKUP_STACK_PIXELS,
         RETRY_STACK,
         DRIVE_THROUGH_BARRIER,
@@ -60,13 +61,13 @@ public class BlueLeft22 extends OpMode {
     private TrajectorySequence  preloadDeliveryLeft, preloadDeliveryBackdropLeft, preloadDeliveryCenter,
             preloadDeliveryBackdropCenter, preloadDeliveryRight, preloadDeliveryBackdropRight,
             toCommonPathLeft, toCommonPathCenter, toCommonPathRight;
-    private TrajectorySequence  preloadDelivery, preloadDeliveryBackdrop, toCommonPath, toStack, backToKnownPosition, stackDeliveryBackdrop, park, park2, stackStrafe, stackStrafe2;
+    private TrajectorySequence  preloadDelivery, preloadDeliveryBackdrop, toCommonPath, toStack, backToKnownPosition, stackDeliveryBackdrop, park, park2;
     private Pose2d startPose;
     private AutoStates currentState, targetState;
     private int subTransition, saveTransition;
     private int tries;
     private boolean tryToScore;
-
+    private int numOfStalls;
     @Override
     public void init() {
         CurrentOpmode.setCurrentOpmode(CurrentOpmode.OpMode.AUTO);
@@ -97,6 +98,7 @@ public class BlueLeft22 extends OpMode {
         parkTimer = new ElapsedTime();
 
         currentState = AutoStates.START;
+        numOfStalls = 0;
     }
 
     @Override
@@ -190,7 +192,7 @@ public class BlueLeft22 extends OpMode {
                         break;
                     case 3:
                         delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
-                        intake.setServoPosition(Intake.IntakeState.STACK_AUTO);
+                        intake.setServoPosition(Intake.IntakeState.STACK_HIGH);
                         driveTrain.followTrajectorySequenceAsync(preloadDelivery);
                         slides.setHeight(Slides.SlidesHeights.BASE);
 
@@ -248,13 +250,13 @@ public class BlueLeft22 extends OpMode {
                         driveTrain.followTrajectorySequence(toStack);
 
                         subTransition = 0;
-                        targetState = AutoStates.PICKUP_STACK_PIXELS;
+                        targetState = AutoStates.ALIGN_TO_STACK;
                         currentState = AutoStates.WAIT_ARRIVAL;
                         break;
                 }
                 break;
-            case PICKUP_STACK_PIXELS:
-                switch (subTransition) {
+            case ALIGN_TO_STACK:
+                switch (subTransition)  {
                     case 0:
                         intake.setServoPosition(Intake.IntakeState.GROUND);
                         driveTrain.setMotorPowers(.5, -.5, .5, -.5);
@@ -262,7 +264,7 @@ public class BlueLeft22 extends OpMode {
                         subTransition++;
                         break;
                     case 1:
-                        if (colorSensor.linedUpWithStack()) {
+                        if (colorSensor.linedUpWithStack() || timerAt(2000)) {
                             subTransition++;
                         }
                         break;
@@ -271,24 +273,37 @@ public class BlueLeft22 extends OpMode {
                         timer.reset();
                         subTransition++;
                     case 3:
-                        if (colorSensor.correctDistanceFromStack()) {
+                        if (colorSensor.correctDistanceFromStack() || timerAt(500)) {
                             subTransition++;
                         }
                         break;
                     case 4:
+                        subTransition = 0;
+                        if (!intake.isStalled()) {
+                            driveTrain.followTrajectorySequenceAsync(driveTrain.trajectorySequenceBuilder(driveTrain.getPoseEstimate())
+                                    .strafeRight(8)
+                                    .build());
+                        }
+                        targetState = AutoStates.PICKUP_STACK_PIXELS;
+                        currentState = AutoStates.WAIT_ARRIVAL;
+                        break;
+                }
+                break;
+            case PICKUP_STACK_PIXELS:
+                switch (subTransition) {
+                    case 0:
                         delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_HOLD);
                         claw.setClawState(Claw.ClawState.OPEN_INTAKE);
                         intake.on(0.8);
                         timer.reset();
-                        driveTrain.followTrajectorySequenceAsync(stackStrafe);
                         subTransition++;
                         break;
-                    case 5:
+                    case 1:
                         if (!driveTrain.isBusy()) {
                             subTransition++;
                         }
                         break;
-                    case 6:
+                    case 2:
                         if (tries == 0) {
                             if (timerAt(1100)) {
                                 subTransition++;
@@ -299,19 +314,19 @@ public class BlueLeft22 extends OpMode {
                             }
                         }
                         break;
-                    case 7:
+                    case 3:
                         intake.on();
 
                         subTransition++;
                         timer.reset();
                         break;
-                    case 8:
+                    case 4:
                         if (timerAt(500)) {
                             subTransition++;
                         }
 
                         break;
-                    case 9:
+                    case 5:
                         subTransition = 0;
 
                         if (tries < 1) {
@@ -395,14 +410,19 @@ public class BlueLeft22 extends OpMode {
                         if (timerAt(199)){
                             subTransition++;
                             intake.on();
+                            timer.reset();
                         }
                         break;
                     case 4:
+                        if (timerAt(200)){
+                            subTransition++;
+                        }
+                    case 5:
                         delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_PICKUP);
                         timer.reset();
                         subTransition++;
                         break;
-                    case 5:
+                    case 6:
                         // Wait until we know the claw is parallel to the ground
                         if (timerAt(600)) {
                             subTransition++;
@@ -410,7 +430,7 @@ public class BlueLeft22 extends OpMode {
 
                         break;
 
-                    case 6:
+                    case 7:
                         // Close claw onto the pixels
                         claw.setClawState(Claw.ClawState.CLOSED);
                         timer.reset();
@@ -418,14 +438,14 @@ public class BlueLeft22 extends OpMode {
 
                         subTransition++;
                         break;
-                    case 7:
+                    case 8:
                         // Wait <milliseconds> so the physical servo has time to actually move
                         if (timerAt(725)) {
                             subTransition++;
                         }
 
                         break;
-                    case 8:
+                    case 9:
                         // Move to safe transition point to avoid the cross-beam
                         delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_HOLD);
                         intake.off();
@@ -433,7 +453,7 @@ public class BlueLeft22 extends OpMode {
 
                         subTransition++;
                         break;
-                    case 9:
+                    case 10:
                         if (!driveTrain.isBusy()) {
                             subTransition = 0;
                             if (tryToScore) {
@@ -554,7 +574,6 @@ public class BlueLeft22 extends OpMode {
                 break;
             case WAIT_ARRIVAL:
                 if (!driveTrain.isBusy()) {
-
                     currentState = targetState;
                 }
 
@@ -562,6 +581,7 @@ public class BlueLeft22 extends OpMode {
             case IS_STALLED:
                 switch (subTransition){
                     case 0:
+                        driveTrain.setMotorPowers(-.2, -.2, -.2, -.2);
                         intake.reverse();
                         intake.setServoPosition(Intake.IntakeState.STACK_HIGH);
                         timer.reset();
@@ -573,17 +593,20 @@ public class BlueLeft22 extends OpMode {
                             intake.on();
                             intake.setServoPosition(Intake.IntakeState.GROUND);
                             subTransition++;
+                            driveTrain.setMotorPowers(0,0,0,0);
                         }
                         break;
                     case 2:
                         subTransition = saveTransition;
                         currentState = targetState;
+                        numOfStalls++;
+                        timer.reset();
                         break;
                 }
                 break;
         }
 
-        if ((currentState == AutoStates.PICKUP_STACK_PIXELS || currentState == AutoStates.RETRY_STACK) && intakeProcessor.hasTwoPixel()) {
+        if ((currentState == AutoStates.PICKUP_STACK_PIXELS || currentState == AutoStates.RETRY_STACK || currentState == AutoStates.IS_STALLED || currentState == AutoStates.ALIGN_TO_STACK) && intakeProcessor.hasTwoPixel()) {
             tryToScore = true;
             subTransition = 0;
             currentState = AutoStates.DRIVE_THROUGH_BARRIER;
@@ -595,7 +618,7 @@ public class BlueLeft22 extends OpMode {
             slides.resetEncoders();
         }
 
-        if (intake.isStalled()) {
+        if ((intake.isStalled()) && (numOfStalls<2) && (currentState == AutoStates.PICKUP_STACK_PIXELS || currentState == AutoStates.RETRY_STACK)) {
             saveTransition = subTransition;
             subTransition = 0;
             targetState = currentState;
@@ -630,7 +653,7 @@ public class BlueLeft22 extends OpMode {
     private void buildPaths() {
         preloadDeliveryBackdropLeft = driveTrain.trajectorySequenceBuilder(startPose)
                 .setReversed(true)
-                .lineToLinearHeading(new Pose2d(48, 36, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(48, 39, Math.toRadians(180)))
                 .back(1)
                 .build();
 
@@ -645,8 +668,8 @@ public class BlueLeft22 extends OpMode {
                 .lineToLinearHeading(new Pose2d(48, 24, Math.toRadians(180)))
                 .back(1)
                 .build();
-        preloadDeliveryLeft = driveTrain.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(32, 33, Math.toRadians(180)))
+        preloadDeliveryLeft = driveTrain.trajectorySequenceBuilder(preloadDeliveryBackdropLeft.end())
+                .lineToConstantHeading(new Vector2d(29, 34))
                 .build();
 
         preloadDeliveryCenter = driveTrain.trajectorySequenceBuilder(preloadDeliveryBackdropCenter.end())
@@ -662,27 +685,22 @@ public class BlueLeft22 extends OpMode {
                 .build();
 
         toCommonPathLeft = driveTrain.trajectorySequenceBuilder(preloadDeliveryLeft.end())
+                .back(4)
+                .lineToLinearHeading(new Pose2d(42, 15, Math.toRadians(180)))
                 .lineToLinearHeading(new Pose2d(35, 13, Math.toRadians(180)))
                 .build();
 
         toStack = driveTrain.trajectorySequenceBuilder(toCommonPathCenter.end())
                 .lineToLinearHeading(new Pose2d(0, 10, Math.toRadians(180)))
                 .setReversed(false)
-                .lineToLinearHeading(new Pose2d(-63, 9, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-63, 10, Math.toRadians(180)))
                 .build();
 
-        stackStrafe = driveTrain.trajectorySequenceBuilder(toStack.end())
-                .strafeRight(9)
-                .build();
 
-        stackStrafe2 = driveTrain.trajectorySequenceBuilder(stackStrafe.end())
-                .strafeLeft(4)
-                .build();
-
-        backToKnownPosition = driveTrain.trajectorySequenceBuilder(stackStrafe2.end())
+        backToKnownPosition = driveTrain.trajectorySequenceBuilder(new Pose2d(-65, 15, Math.toRadians(180)))
                 .setReversed(true)
                 .lineToLinearHeading(new Pose2d(-35, 12, Math.toRadians(180)))
-                .lineToLinearHeading(new Pose2d(20, 5, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(31, 8, Math.toRadians(180)))
                 .build();
 
         stackDeliveryBackdrop = driveTrain.trajectorySequenceBuilder(backToKnownPosition.end())
@@ -696,7 +714,7 @@ public class BlueLeft22 extends OpMode {
                 .build();
 
         park2 = driveTrain.trajectorySequenceBuilder(stackDeliveryBackdrop.end())
-                .forward(5)
+                .forward(2)
                 .strafeLeft(17)
                 .back(5)
                 .build();
