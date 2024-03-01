@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.utils.hardware.MotorBuilder;
 
 public class Intake {
@@ -55,6 +56,14 @@ public class Intake {
 
     public void reverse(double power) {
         intake.setPower(-power);
+    }
+
+    public boolean isStalled(){
+        return intake.getCurrent(CurrentUnit.AMPS) > 7;
+    }
+
+    public double getCurrent(){
+        return intake.getCurrent(CurrentUnit.AMPS);
     }
 
     public void setServoPosition(IntakeState intakeState) {
