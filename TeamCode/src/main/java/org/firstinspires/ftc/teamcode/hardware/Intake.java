@@ -7,13 +7,14 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.utils.hardware.MotorBuilder;
 
 public class Intake {
    public enum IntakeState {
         START_POSITION(0.1),
         STACK_HIGH(0.18),
-        STACK_AUTO(0.18),
+        STACK_AUTO(0.35),
         STACK_MID(0.27),
         GROUND(0.435);
 
@@ -25,7 +26,7 @@ public class Intake {
     }
 
     private static final double ON_POWER = 0.75;
-    private static final double REVERSE_POWER = -0.4;
+    private static final double REVERSE_POWER = -0.6;
 
     private final DcMotorEx intake;
     private final ServoImplEx servo;
@@ -55,6 +56,14 @@ public class Intake {
 
     public void reverse(double power) {
         intake.setPower(-power);
+    }
+
+    public boolean isStalled(){
+        return intake.getCurrent(CurrentUnit.AMPS) > 7;
+    }
+
+    public double getCurrent(){
+        return intake.getCurrent(CurrentUnit.AMPS);
     }
 
     public void setServoPosition(IntakeState intakeState) {
