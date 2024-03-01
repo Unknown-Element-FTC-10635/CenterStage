@@ -17,25 +17,13 @@ import org.firstinspires.ftc.teamcode.hardware.Slides;
 import org.firstinspires.ftc.teamcode.hardware.Webcam;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.utils.AutoStates;
 import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
 import org.firstinspires.ftc.teamcode.vision.IntakeProcessor;
 import org.firstinspires.ftc.teamcode.vision.PropProcessor;
 
 @Autonomous(name = "RED (Backboard) - 2+2", group = "red")
 public class RedRight22 extends OpMode {
-    public enum AutoStates {
-        START,
-        SCORE_PURPLE_PRELOAD,
-        SCORE_YELLOW_PRELOAD,
-        DRIVE_TO_STACK,
-        PICKUP_STACK_PIXELS,
-        RETRY_STACK,
-        SCORE_STACK_PIXELS,
-        PARK,
-        DONE,
-        WAIT_ARRIVAL,
-    }
-
     private SampleMecanumDrive driveTrain;
     private BreakBeam leftBeam, rightBeam;
     private LimitSwitch slideLimit;

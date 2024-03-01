@@ -17,19 +17,13 @@ import org.firstinspires.ftc.teamcode.hardware.Slides;
 import org.firstinspires.ftc.teamcode.hardware.Webcam;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.utils.AutoStates;
 import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
 import org.firstinspires.ftc.teamcode.vision.IntakeProcessor;
 import org.firstinspires.ftc.teamcode.vision.PropProcessor;
 
 @Autonomous(name = "RED (Stack Side) - 1+0", group = "red")
 public class Redleft10 extends OpMode {
-    public enum AutoStates {
-        START,
-        SCORE_PURPLE_PRELOAD,
-        WAIT_ARRIVAL,
-        DONE,
-    }
-
     private SampleMecanumDrive driveTrain;
     private BreakBeam leftBeam, rightBeam;
     private LimitSwitch slideLimit;

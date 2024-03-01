@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.hardware.Slides;
 import org.firstinspires.ftc.teamcode.hardware.Webcam;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.utils.AutoStates;
 import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
 import org.firstinspires.ftc.teamcode.vision.IntakeProcessor;
 import org.firstinspires.ftc.teamcode.vision.PropProcessor;
@@ -25,18 +26,6 @@ import java.util.logging.Logger;
 
 @Autonomous(name = "RED (Stack Side) - 2+1", group = "red")
 public class RedLeft21 extends OpMode {
-    public enum AutoStates {
-        START,
-        SCORE_PURPLE_PRELOAD,
-        PICKUP_STACK_PIXELS,
-        DRIVE_THROUGH_BARRIER,
-        SCORE_STACK_PIXELS,
-        PARK,
-        DONE,
-        WAIT_ARRIVAL,
-        RETRY_STACK
-    }
-
     private SampleMecanumDrive driveTrain;
     private BreakBeam leftBeam, rightBeam;
     private LimitSwitch slideLimit;
