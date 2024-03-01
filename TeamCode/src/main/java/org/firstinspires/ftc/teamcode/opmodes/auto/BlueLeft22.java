@@ -602,6 +602,9 @@ public class BlueLeft22 extends OpMode {
             currentState = AutoStates.IS_STALLED;
         }
 
+        telemetry .addData("Current state", currentState);
+        telemetry.addData("Sub transition", subTransition);
+        telemetry.update();
     }
 
     private void update() {
