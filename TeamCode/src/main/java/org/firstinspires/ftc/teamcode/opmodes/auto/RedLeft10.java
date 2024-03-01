@@ -23,7 +23,7 @@ import org.firstinspires.ftc.teamcode.vision.IntakeProcessor;
 import org.firstinspires.ftc.teamcode.vision.PropProcessor;
 
 @Autonomous(name = "RED (Stack Side) - 1+0", group = "red")
-public class Redleft10 extends OpMode {
+public class RedLeft10 extends OpMode {
     private SampleMecanumDrive driveTrain;
     private BreakBeam leftBeam, rightBeam;
     private LimitSwitch slideLimit;
