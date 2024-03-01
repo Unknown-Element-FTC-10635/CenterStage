@@ -69,16 +69,16 @@ public class RedRight20 extends LinearOpMode {
 
         TrajectorySequence preloadDeliveryLeft = driveTrain.trajectorySequenceBuilder(startPose)
                 .lineTo(new Vector2d(17, -50))
-                .lineToLinearHeading(new Pose2d(1, -33, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(1, -35, Math.toRadians(180)))
                 .build();
 
         TrajectorySequence preloadDeliveryMiddle = driveTrain.trajectorySequenceBuilder(startPose)
-                .lineTo(new Vector2d(15, -31))
+                .lineTo(new Vector2d(13, -35))
                 .build();
 
         TrajectorySequence preloadDeliveryRight = driveTrain.trajectorySequenceBuilder(startPose)
                 .lineTo(new Vector2d(14, -53))
-                .lineToLinearHeading(new Pose2d(23,-38, Math.toRadians(100)))
+                .lineToLinearHeading(new Pose2d(23,-40, Math.toRadians(100)))
                 .back(7)
 
                 .build();
@@ -92,7 +92,7 @@ public class RedRight20 extends LinearOpMode {
         TrajectorySequence preloadBackboardMiddleDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryMiddle.end())
                 .back(7)
                 .setReversed(true)
-                .lineToLinearHeading(new Pose2d(46, -31, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(46, -33, Math.toRadians(180)))
                 .back(6)
                 .build();
 
@@ -110,7 +110,7 @@ public class RedRight20 extends LinearOpMode {
 
         TrajectorySequence parkMiddle = driveTrain.trajectorySequenceBuilder(preloadBackboardMiddleDelivery.end())
                 .forward(15)
-                .strafeRight(25)
+                .strafeRight(22)
                 .back(20)
                 .build();
 
