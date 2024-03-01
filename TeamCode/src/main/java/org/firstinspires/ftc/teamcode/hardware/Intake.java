@@ -59,7 +59,7 @@ public class Intake {
     }
 
     public boolean isStalled(){
-        return intake.getCurrent(CurrentUnit.AMPS) > 7;
+        return intake.getCurrent(CurrentUnit.AMPS) > 5;
     }
 
     public double getCurrent(){
