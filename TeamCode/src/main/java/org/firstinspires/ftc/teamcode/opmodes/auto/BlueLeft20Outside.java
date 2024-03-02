@@ -58,37 +58,42 @@ public class BlueLeft20Outside extends LinearOpMode {
         Pose2d startPose = new Pose2d( 9, 62, Math.toRadians(270));
         driveTrain.setPoseEstimate(startPose);
 
+
         TrajectorySequence preloadDeliveryLeft = driveTrain.trajectorySequenceBuilder(startPose)
                 .lineTo(new Vector2d(14, 53))
-                .splineTo(new Vector2d(27,36), Math.toRadians(230))
+                .lineToLinearHeading(new Pose2d(22,36, Math.toRadians(260)))
+                .back(5)
                 .build();
 
         TrajectorySequence preloadDeliveryMiddle = driveTrain.trajectorySequenceBuilder(startPose)
-                .lineTo(new Vector2d(14, 29))
+                .lineTo(new Vector2d(13, 30))
+                .back(7)
                 .build();
 
         TrajectorySequence preloadDeliveryRight = driveTrain.trajectorySequenceBuilder(startPose)
                 .lineTo(new Vector2d(15, 52))
-                .lineToLinearHeading(new Pose2d(0, 28, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-1, 33, Math.toRadians(180)))
+                .back(8)
                 .build();
 
         TrajectorySequence preloadBackboardLeftDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryLeft.end())
+                .back(10)
                 .setReversed(true)
-                .splineTo(new Vector2d(52, 38), Math.toRadians(0))
-                .back(3)
+                .lineToLinearHeading(new Pose2d(48, 38, Math.toRadians(180)))
+                .back(5)
                 .build();
 
         TrajectorySequence preloadBackboardMiddleDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryMiddle.end())
-                .back(6)
-                .setReversed(true)
-                .lineToLinearHeading(new Pose2d(48, 28, Math.toRadians(180)))
                 .back(7)
+                .setReversed(true)
+                .lineToLinearHeading(new Pose2d(48, 31, Math.toRadians(180)))
+                .back(6)
                 .build();
 
         TrajectorySequence preloadBackboardRightDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryRight.end())
                 .setReversed(true)
-                .splineTo(new Vector2d(49, 24), Math.toRadians(0))
-                .back(2)
+                .lineToLinearHeading(new Pose2d(48, 27, Math.toRadians(180)))
+                .back(5)
                 .build();
 
         TrajectorySequence parkLeft = driveTrain.trajectorySequenceBuilder(preloadBackboardLeftDelivery.end())
