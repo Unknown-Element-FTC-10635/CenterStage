@@ -80,20 +80,20 @@ public class BlueLeft20Outside extends LinearOpMode {
                 .back(10)
                 .setReversed(true)
                 .lineToLinearHeading(new Pose2d(48, 38, Math.toRadians(180)))
-                .back(5)
+                .back(7)
                 .build();
 
         TrajectorySequence preloadBackboardMiddleDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryMiddle.end())
                 .back(7)
                 .setReversed(true)
                 .lineToLinearHeading(new Pose2d(48, 31, Math.toRadians(180)))
-                .back(6)
+                .back(8)
                 .build();
 
         TrajectorySequence preloadBackboardRightDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryRight.end())
                 .setReversed(true)
-                .lineToLinearHeading(new Pose2d(48, 27, Math.toRadians(180)))
-                .back(5)
+                .lineToLinearHeading(new Pose2d(48, 29, Math.toRadians(180)))
+                .back(7)
                 .build();
 
         TrajectorySequence parkLeft = driveTrain.trajectorySequenceBuilder(preloadBackboardLeftDelivery.end())

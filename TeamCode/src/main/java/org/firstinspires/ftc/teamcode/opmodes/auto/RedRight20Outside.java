@@ -66,37 +66,38 @@ public class RedRight20Outside extends LinearOpMode {
 
         Pose2d startPose = new Pose2d(9, -62, Math.toRadians(90));
         driveTrain.setPoseEstimate(startPose);
-
-        TrajectorySequence preloadDeliveryLeft = driveTrain.trajectorySequenceBuilder(startPose)
+                TrajectorySequence preloadDeliveryLeft = driveTrain.trajectorySequenceBuilder(startPose)
                 .lineTo(new Vector2d(17, -50))
-                .lineToLinearHeading(new Pose2d(1, -33, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(5, -35, Math.toRadians(180)))
                 .build();
 
         TrajectorySequence preloadDeliveryMiddle = driveTrain.trajectorySequenceBuilder(startPose)
-                .lineTo(new Vector2d(13, -31))
+                .lineTo(new Vector2d(13, -35))
                 .build();
 
         TrajectorySequence preloadDeliveryRight = driveTrain.trajectorySequenceBuilder(startPose)
                 .lineTo(new Vector2d(14, -53))
-                .lineToLinearHeading(new Pose2d(26,-36, Math.toRadians(100)))
+                .lineToLinearHeading(new Pose2d(21,-40, Math.toRadians(100)))
+                .back(4)
                 .build();
 
         TrajectorySequence preloadBackboardLeftDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryLeft.end())
                 .setReversed(true)
                 .lineToLinearHeading(new Pose2d(47, -30, Math.toRadians(180)))
-                .back(6)
+                .back(7)
                 .build();
 
         TrajectorySequence preloadBackboardMiddleDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryMiddle.end())
                 .back(7)
                 .setReversed(true)
-                .lineToLinearHeading(new Pose2d(47, -34, Math.toRadians(180)))
-                .back(6)
+                .lineToLinearHeading(new Pose2d(46, -33, Math.toRadians(180)))
+                .back(8)
                 .build();
 
         TrajectorySequence preloadBackboardRightDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryRight.end())
+                .back(4)
                 .setReversed(true)
-                .lineToLinearHeading(new Pose2d(47, -41, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(47, -40, Math.toRadians(180)))
                 .back(8)
                 .build();
 

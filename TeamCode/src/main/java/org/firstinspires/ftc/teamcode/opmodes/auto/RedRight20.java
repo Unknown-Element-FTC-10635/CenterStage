@@ -78,28 +78,28 @@ public class RedRight20 extends LinearOpMode {
 
         TrajectorySequence preloadDeliveryRight = driveTrain.trajectorySequenceBuilder(startPose)
                 .lineTo(new Vector2d(14, -53))
-                .lineToLinearHeading(new Pose2d(21,-40, Math.toRadians(100)))
+                .lineToLinearHeading(new Pose2d(19,-40, Math.toRadians(100)))
                 .back(4)
                 .build();
 
         TrajectorySequence preloadBackboardLeftDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryLeft.end())
                 .setReversed(true)
                 .lineToLinearHeading(new Pose2d(47, -30, Math.toRadians(180)))
-                .back(5)
+                .back(7)
                 .build();
 
         TrajectorySequence preloadBackboardMiddleDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryMiddle.end())
                 .back(7)
                 .setReversed(true)
                 .lineToLinearHeading(new Pose2d(46, -33, Math.toRadians(180)))
-                .back(6)
+                .back(8)
                 .build();
 
         TrajectorySequence preloadBackboardRightDelivery = driveTrain.trajectorySequenceBuilder(preloadDeliveryRight.end())
                 .back(4)
                 .setReversed(true)
                 .lineToLinearHeading(new Pose2d(47, -40, Math.toRadians(180)))
-                .back(6)
+                .back(8)
                 .build();
 
         TrajectorySequence parkLeft = driveTrain.trajectorySequenceBuilder(preloadBackboardLeftDelivery.end())

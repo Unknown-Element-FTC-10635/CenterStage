@@ -16,7 +16,7 @@ public class Intake {
         STACK_HIGH(0.18),
         STACK_AUTO(0.35),
         STACK_MID(0.27),
-        GROUND(0.435);
+        GROUND(0.4375);
 
         public final double position;
 
