@@ -16,7 +16,8 @@ public class Intake {
         STACK_HIGH(0.18),
         STACK_AUTO(0.35),
         STACK_MID(0.27),
-        GROUND(0.4375);
+        GROUND(0.4375),
+        PRELOAD(0.53);
 
         public final double position;
 
@@ -25,7 +26,7 @@ public class Intake {
         }
     }
 
-    private static final double ON_POWER = 0.75;
+    private static final double ON_POWER = 1;
     private static final double REVERSE_POWER = -0.6;
 
     private final DcMotorEx intake;

@@ -25,20 +25,26 @@ public class MeepMeepTesting {
                 .setColorScheme(new ColorSchemeBlueDark())
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(9, 62, Math.toRadians(270)))
+                        drive.trajectorySequenceBuilder(new Pose2d(9, 61, Math.toRadians(270)))
+                                //drop yellow
                                 .setReversed(true)
-                                .lineToLinearHeading(new Pose2d(50, 41.5, Math.toRadians(180)))
-                                .forward(5)
+                                .lineToLinearHeading(new Pose2d(48, 32.5, Math.toRadians(180)))
+                                //drop purple
                                 .setReversed(true)
-                                .lineToLinearHeading(new Pose2d(35, 32,  Math.toRadians(180)))
-                                .forward(3)
-                                .back(5)
-                                .lineTo(new Vector2d(30, 5))
-                                .setReversed(false)
-                                .splineTo(new Vector2d(-60, 10.5), Math.toRadians(180))
-                                .lineTo(new Vector2d(26, 7))
-                                .splineTo(new Vector2d(46, 33), Math.toRadians(0))
-                                .back(6)
+                                .lineToLinearHeading(new Pose2d(24, 24,  Math.toRadians(180)))
+                                //drive to stack
+                                .lineToLinearHeading(new Pose2d(5,35, Math.toRadians(180)))
+                                .lineToLinearHeading(new Pose2d(-40,35, Math.toRadians(180)))
+                                .lineToLinearHeading(new Pose2d(-62,34,Math.toRadians(180)))
+                                .waitSeconds(.5)
+                                .lineToLinearHeading(new Pose2d(0,32, Math.toRadians(180)))
+                                //drive back
+                                .lineToLinearHeading(new Pose2d(48, 31, Math.toRadians(180)))
+                                //drive back to stack
+                                .lineToLinearHeading(new Pose2d(-60,32, Math.toRadians(180)))
+                                .lineToLinearHeading(new Pose2d(0,32, Math.toRadians(180)))
+                                //drive back
+                                .lineToLinearHeading(new Pose2d(48, 32.5, Math.toRadians(180)))
                                 .build()
                 );
 

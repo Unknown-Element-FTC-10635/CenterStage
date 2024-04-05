@@ -10,6 +10,7 @@ public enum AutoStates {
     RETRY_STACK,
     DRIVE_THROUGH_BARRIER,
     SCORE_STACK_PIXELS,
+    SCORE_STACK_PIXELS_TWO,
     PARK,
     DONE,
     WAIT_ARRIVAL,
