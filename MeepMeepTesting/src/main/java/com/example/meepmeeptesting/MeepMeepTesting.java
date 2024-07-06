@@ -17,141 +17,70 @@ import java.util.Vector;
 
 public class MeepMeepTesting {
     public static void main(String[] args) {
-        MeepMeep meepMeep = new MeepMeep(700);
+        MeepMeep meepMeep = new MeepMeep(910, 682);
 
-        // Declare our first bot
-        RoadRunnerBotEntity blueBotPos1 = new DefaultBotBuilder(meepMeep)
+        // Left = 1, center = 2, right = 3
+
+
+        RoadRunnerBotEntity blueCenter2 = new DefaultBotBuilder(meepMeep)
+                .setColorScheme(new ColorSchemeBlueDark())
+                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
+                .followTrajectorySequence(drive ->
+                        drive.trajectorySequenceBuilder(new Pose2d(-12, 61, Math.toRadians(270)))
+                                //drop yellow
+                                .setReversed(false)
+                                .lineToLinearHeading(new Pose2d(-12, 11, Math.toRadians(270)))
+                                .lineToLinearHeading(new Pose2d(-17, 10, Math.toRadians(230)))
+                                .lineToLinearHeading(new Pose2d(-3, 13, Math.toRadians(180)))
+                                .lineToLinearHeading(new Pose2d(48, 13, Math.toRadians(180)))
+                                .lineToLinearHeading(new Pose2d(71, 33, Math.toRadians(180)))
+
+                                .build()
+                );
+
+        RoadRunnerBotEntity blueCenter1 = new DefaultBotBuilder(meepMeep)
                 // We set this bot to be blue
                 .setColorScheme(new ColorSchemeBlueDark())
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(9, 61, Math.toRadians(270)))
+                        drive.trajectorySequenceBuilder(new Pose2d(-12, 61, Math.toRadians(270)))
                                 //drop yellow
-                                .setReversed(true)
-                                .lineToLinearHeading(new Pose2d(48, 32.5, Math.toRadians(180)))
-                                //drop purple
-                                .setReversed(true)
-                                .lineToLinearHeading(new Pose2d(24, 24,  Math.toRadians(180)))
-                                //drive to stack
-                                .lineToLinearHeading(new Pose2d(5,35, Math.toRadians(180)))
-                                .lineToLinearHeading(new Pose2d(-40,35, Math.toRadians(180)))
-                                .lineToLinearHeading(new Pose2d(-62,34,Math.toRadians(180)))
-                                .waitSeconds(.5)
-                                .lineToLinearHeading(new Pose2d(0,32, Math.toRadians(180)))
-                                //drive back
-                                .lineToLinearHeading(new Pose2d(48, 31, Math.toRadians(180)))
-                                //drive back to stack
-                                .lineToLinearHeading(new Pose2d(-60,32, Math.toRadians(180)))
-                                .lineToLinearHeading(new Pose2d(0,32, Math.toRadians(180)))
-                                //drive back
-                                .lineToLinearHeading(new Pose2d(48, 32.5, Math.toRadians(180)))
+                                .setReversed(false)
+                                .lineToLinearHeading(new Pose2d(-12, 11, Math.toRadians(270)))
+                                .lineToLinearHeading(new Pose2d(-17, 10, Math.toRadians(230)))
+                                .lineToLinearHeading(new Pose2d(-3, 13, Math.toRadians(180)))
+                                .lineToLinearHeading(new Pose2d(48, 13, Math.toRadians(180)))
+                                .lineToLinearHeading(new Pose2d(71, 33, Math.toRadians(180)))
+
+
                                 .build()
                 );
 
-        RoadRunnerBotEntity blueBotPos2 = new DefaultBotBuilder(meepMeep)
+        RoadRunnerBotEntity blueCenter3 = new DefaultBotBuilder(meepMeep)
+                // We set this bot to be blue
                 .setColorScheme(new ColorSchemeBlueDark())
-                .setConstraints(60,60, Math.toRadians(180), Math.toRadians(105), 15)
-                .followTrajectorySequence(drive ->
-                drive.trajectorySequenceBuilder(new Pose2d(-36, -62, Math.toRadians(90)))
-                        .splineTo(new Vector2d(-46, -33), Math.toRadians(100))
-                        .back(8)
-                        .back(10)
-                        .setReversed(false)
-                        .splineTo(new Vector2d(-58, -39), Math.toRadians(180))
-                        .setReversed(true)
-                        .splineTo(new Vector2d(-30, -58), Math.toRadians(180))
-                        .back(53)
-                        .setReversed(true)
-                        .splineTo(new Vector2d(48, -26), Math.toRadians(180))
-                        .back(5)
-                        .build()
-
-
-        );
-//
-        RoadRunnerBotEntity blueBotPos3 = new DefaultBotBuilder(meepMeep)
-                .setColorScheme(new ColorSchemeBlueDark())
-                .setConstraints(60,60, Math.toRadians(180), Math.toRadians(105), 15)
-                .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(-36, -62, Math.toRadians(90)))
-                                .splineTo(new Vector2d(-30, -38), Math.toRadians(0))
-                                .build()
-
-                );
-
-
-//
-        RoadRunnerBotEntity redBotPos1 = new DefaultBotBuilder(meepMeep)
-                // We set this bot to be red
-                .setColorScheme(new ColorSchemeRedDark())
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(10, -62, Math.toRadians(90)))
-                            .splineTo(new Vector2d(9, -38.5), Math.toRadians(135))
-                            .waitSeconds(2)
-                            .back(10)
-                            .turn(Math.toRadians(90))
-                            .back(5)
-                            .setReversed(true)
-                            .splineTo(new Vector2d(46, -28), Math.toRadians(90))
-                            .back(10)
-                            .waitSeconds(1)
-                            .forward(15)
-                            .lineTo(new Vector2d(45, -60))
-                            .build()
-                );
+                        drive.trajectorySequenceBuilder(new Pose2d(-12, 61, Math.toRadians(270)))
+                                //drop yellow
+                                .setReversed(false)
+                                .lineToLinearHeading(new Pose2d(-12, 11, Math.toRadians(270)))
+                                .lineToLinearHeading(new Pose2d(-17, 10, Math.toRadians(230)))
+                                .lineToLinearHeading(new Pose2d(-3, 13, Math.toRadians(180)))
+                                .lineToLinearHeading(new Pose2d(48, 13, Math.toRadians(180)))
+                                .lineToLinearHeading(new Pose2d(71, 33, Math.toRadians(180)))
 
-
-        RoadRunnerBotEntity redBotPos2 = new DefaultBotBuilder(meepMeep)
-                .setColorScheme(new ColorSchemeRedDark())
-                .setConstraints(60,60, Math.toRadians(180), Math.toRadians(105), 15)
-                .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(10, -62, Math.toRadians(90)))
-                                .splineTo(new Vector2d(10, -35), Math.toRadians(95))
-                                .waitSeconds(2)
-                                .setReversed(true)
-                                .splineTo(new Vector2d(50, -36), Math.toRadians(0))
-                                .forward(15)
-                                .lineTo(new Vector2d(45, -60))
+                                //drop purple
                                 .build()
                 );
 
-//
-        RoadRunnerBotEntity redBotPos3 = new DefaultBotBuilder(meepMeep)
-                .setColorScheme(new ColorSchemeRedDark())
-                .setConstraints(60,60, Math.toRadians(180), Math.toRadians(105), 15)
-                .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(10, -62, Math.toRadians(90)))
-                                .lineTo(new Vector2d(25, -42))
-                                .waitSeconds(2)
-                                .back(10)
-                                .turn(Math.toRadians(90))
-                                .setReversed(true)
-                                .lineTo(new Vector2d(50, -38))
-                                .back(8)
-                                .waitSeconds(2)
-                                .forward(10)
-                                .lineTo(new Vector2d(45, -60))
-                                .build()
-                );
 
-//        redBotPos3.runAction(redBotPos3.getDrive().actionBuilder(new Pose2d(15, -62, Math.toRadians(90)))
-//                .splineTo(new Vector2d(25, -38.5), Math.toRadians(135))
-//                .waitSeconds(2)
-//                .setReversed(true)
-//                .splineTo(new Vector2d(50, -41.5), Math.toRadians(0))
-//                .lineToX(45)
-//                .strafeTo(new Vector2d(45, -60))
-//                .build());
-//
-//
-
-        meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_JUICE_DARK)
+        meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_JUICE_DARK_CRI)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
                 // Add both of our declared bot entities
 //                  .addEntity(blueBotPos1)
-                 .addEntity(blueBotPos1)
+                 .addEntity(blueCenter2)
 //                 .addEntity(blueBotPos3)
 //               .addEntity(redBotPos1)
 //                 .addEntity(redBotPos2)

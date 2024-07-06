@@ -18,6 +18,7 @@ public class Airplane {
     private final Servo airplane;
 
     private static final double LAUNCH_POSITION = 0.3;
+    private static final double START_POSITION = 0;
 
     public Airplane(HardwareMap hardwareMap) {
         airplane = hardwareMap.get(Servo.class, "airplane");
@@ -26,4 +27,7 @@ public class Airplane {
     public void launch() {
         airplane.setPosition(LAUNCH_POSITION);
     }
+     public void reset(){
+        airplane.setPosition(START_POSITION);
+     }
 }

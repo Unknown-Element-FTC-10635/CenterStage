@@ -1,17 +1,21 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
+import android.net.wifi.aware.IdentityChangedListener;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
+import org.firstinspires.ftc.teamcode.hardware.Delivery;
 import org.firstinspires.ftc.teamcode.hardware.StackColorSensor;
 import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
 
 @Config
-@Disabled
 @TeleOp()
 public class TesterTelop extends LinearOpMode {
     public static double target = 0;
@@ -22,6 +26,8 @@ public class TesterTelop extends LinearOpMode {
 
         StackColorSensor leftColorSensor = new StackColorSensor(hardwareMap, true);
         StackColorSensor rightColorSensor = new StackColorSensor(hardwareMap, false);
+        Delivery delivery = new Delivery(hardwareMap);
+
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         telemetry.addLine("Ready to start");
@@ -31,8 +37,10 @@ public class TesterTelop extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
+            delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_PICKUP);
             leftColorSensor.update();
             rightColorSensor.update();
+
 
             telemetry.addData("Raw light", leftColorSensor.getRawLight());
             telemetry.addData("Distance", leftColorSensor.getDistance());

@@ -14,8 +14,8 @@ import java.util.logging.Logger;
 public class IntakeProcessor extends SimpleProcessor {
     private final Logger logger = Logger.getLogger(this.getClass().getName());
 
-    private static final Rect LEFT_INTAKE = new Rect(390, 425, 90, 60);
-    private static final Rect RIGHT_INTAKE = new Rect(690, 425, 90, 60);
+    private static final Rect LEFT_INTAKE = new Rect(390, 390, 90, 60);
+    private static final Rect RIGHT_INTAKE = new Rect(690, 390, 90, 60);
 
     private static final Size BLUR_SIZE = new Size(5, 5);
 
