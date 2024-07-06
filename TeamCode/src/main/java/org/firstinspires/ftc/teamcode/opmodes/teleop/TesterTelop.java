@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.hardware.Delivery;
+import org.firstinspires.ftc.teamcode.hardware.Slides;
 import org.firstinspires.ftc.teamcode.hardware.StackColorSensor;
 import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
 
@@ -27,6 +28,7 @@ public class TesterTelop extends LinearOpMode {
         StackColorSensor leftColorSensor = new StackColorSensor(hardwareMap, true);
         StackColorSensor rightColorSensor = new StackColorSensor(hardwareMap, false);
         Delivery delivery = new Delivery(hardwareMap);
+        Slides slides = new Slides(hardwareMap);
 
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
@@ -37,16 +39,17 @@ public class TesterTelop extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_PICKUP);
-            leftColorSensor.update();
-            rightColorSensor.update();
+            delivery.setDeliveryState(Delivery.DeliveryState.SCORE);
+            slides.setHeight(Slides.SlidesHeights.TENTH_LEVEL);
 
 
-            telemetry.addData("Raw light", leftColorSensor.getRawLight());
-            telemetry.addData("Distance", leftColorSensor.getDistance());
-            telemetry.addData("Raw light", rightColorSensor.getRawLight());
-            telemetry.addData("Distance", rightColorSensor.getDistance());
-            telemetry.addData("target", target);
+            telemetry.addData("Raw light", slides.atTargetPosition());
+            telemetry.addData("left pos", slides.getCurrentLeftPosition());
+            telemetry.addData("left", slides.getCurrentLeftPower());
+            telemetry.addData("right", slides.getCurrentRightPower());
+            telemetry.addData("right pos", slides.getCurrentRightPosition());
+
+
             telemetry.update();
         }
     }

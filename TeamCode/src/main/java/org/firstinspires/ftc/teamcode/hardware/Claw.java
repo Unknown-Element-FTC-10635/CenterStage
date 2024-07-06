@@ -11,6 +11,7 @@ public class Claw {
         OPEN_SCORE(0.36),
         CLOSED(0.49),
         SINGLE_CLOSED(0.45),
+        ClOSED_ONE_PIXEL(0.55),
         UNKNOWN(0.0);
 
         public final double position;

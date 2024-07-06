@@ -82,7 +82,7 @@ public class UKTeleOp extends OpMode {
 
     @Override
     public void start() {
-        intake.setServoPosition(Intake.IntakeState.STACK_MID);
+        intake.setServoPosition(Intake.IntakeState.GROUND);
     }
 
     @Override
@@ -291,7 +291,7 @@ public class UKTeleOp extends OpMode {
             // For scoring on the backboard
             case SCORE:
                 if (controller1.risingEdgeOf(GamepadEx.Buttons.BUMPER_RIGHT)) {
-                    if (targetBackboardLevel < 4) {
+                    if (targetBackboardLevel < 5) {
                         targetBackboardLevel++;
 
                         if (targetBackboardLevel > 3) {
@@ -488,6 +488,8 @@ public class UKTeleOp extends OpMode {
         driveTrain.writeTeleOp();
 
         telemetry.addData("Delivery", delivery.getDeliveryState());
+
+        telemetry.addData("slides height", targetBackboardLevel);
         telemetry.addData("Delivery Right Rotation", delivery.getRightRotationPosition());
         telemetry.addData("Slide Switch", slideLimit.isPressed());
         telemetry.addData("Transition Timer", transitionTimer.milliseconds());

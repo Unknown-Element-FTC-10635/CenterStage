@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.hardware.Blinkin;
 import org.firstinspires.ftc.teamcode.hardware.BreakBeam;
 import org.firstinspires.ftc.teamcode.hardware.Claw;
+import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.hardware.Hang;
 import org.firstinspires.ftc.teamcode.hardware.StackColorSensor;
 import org.firstinspires.ftc.teamcode.hardware.Delivery;
@@ -44,7 +45,7 @@ public class CRI_BlueCenter21 extends OpMode {
     private ElapsedTime timer;
     private ElapsedTime parkTimer;
 
-    private TrajectorySequence purple, pickupStack, throughBarrier, toBackboard;
+    private TrajectorySequence purple, pickupStack, throughBarrier, toBackboard, park;
     private Pose2d startPose;
     private AutoStates currentState, targetState;
     private int subTransition, saveTransition;
@@ -71,7 +72,7 @@ public class CRI_BlueCenter21 extends OpMode {
         claw.setClawState(Claw.ClawState.SINGLE_CLOSED);
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        startPose = new Pose2d( -34, 61, Math.toRadians(275));
+        startPose = new Pose2d( -34, 61, Math.toRadians(270));
         driveTrain.setPoseEstimate(startPose);
         buildPaths();
 
@@ -137,15 +138,204 @@ public class CRI_BlueCenter21 extends OpMode {
                         }
                         break;
                     case 2:
-                        claw.setClawState(Claw.ClawState.OPEN_SCORE);
+                        claw.setClawState(Claw.ClawState.OPEN_AUTO);
+                        timer.reset();
+                        subTransition++;
+                        break;
+                    case 3:
+                        if (timerAt(400)){
+                            subTransition++;
+                        }
+                        break;
+                    case 4:
+                        delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_HOLD);
+                        claw.setClawState(Claw.ClawState.OPEN_INTAKE);
+                        intake.setServoPosition(Intake.IntakeState.STACK_MID);
+                        intake.reverse(0.3);
                         driveTrain.followTrajectorySequenceAsync(pickupStack);
-                        targetState = AutoStates.DRIVE_TO_STACK;
-                        currentState = AutoStates.WAIT_ARRIVAL;
+                        subTransition = 0;
+                        timer.reset();
+                        currentState = AutoStates.PICKUP_STACK_PIXELS;
                         break;
                 }
-            case DRIVE_TO_STACK:
-                currentState = AutoStates.DONE;
                 break;
+            case PICKUP_STACK_PIXELS:
+                switch (subTransition){
+                    case 0:
+                        if(timerAt(2000)){
+                            subTransition++;
+                        }
+                        break;
+                    case 1:
+                        intake.setServoPosition(Intake.IntakeState.GROUND);
+                        timer.reset();
+                        intake.on();
+                        subTransition++;
+                    case 2:
+                        if (!driveTrain.isBusy() || intakeProcessor.hasTwoPixel()){
+                            intake.setServoPosition(Intake.IntakeState.STACK_MID);
+                            timer.reset();
+                            intake.reverse(0.3);
+                            subTransition++;
+                        }
+                        break;
+                    case 3:
+                        if(timerAt(200)){
+                            intake.setServoPosition(Intake.IntakeState.GROUND);
+                            if(intakeProcessor.hasTwoPixel()){
+                                intake.off();
+                            }
+                            else{
+                                intake.on();
+                            }
+                            subTransition++;
+
+                        }
+                        break;
+                    case 4:
+                        if(timerAt(2000) || intakeProcessor.hasTwoPixel()){
+                            subTransition++;
+                        }
+                        break;
+                    case 5:
+                        delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_PICKUP);
+                        intake.on();
+                        timer.reset();
+                        driveTrain.followTrajectorySequenceAsync(throughBarrier);
+                        subTransition =0;
+                        currentState = AutoStates.DRIVE_THROUGH_BARRIER;
+                        break;
+
+                }
+                break;
+            case DRIVE_THROUGH_BARRIER:
+                switch (subTransition){
+                    case 0:
+                        if (timerAt(600)) {
+                            subTransition++;
+                        }
+
+                        break;
+
+                    case 1:
+                        // Close claw onto the pixels
+                        claw.setClawState(Claw.ClawState.ClOSED_ONE_PIXEL);
+                        timer.reset();
+
+
+                        subTransition++;
+                        break;
+                    case 2:
+                        // Wait <milliseconds> so the physical servo has time to actually move
+                        if (timerAt(725)) {
+                            subTransition++;
+                        }
+
+                        break;
+                    case 3:
+                        // Move to safe transition point to avoid the cross-beam
+                        delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_HOLD);
+                        intake.off();
+                        timer.reset();
+
+                        subTransition++;
+                        break;
+                    case 4:
+                        if (timerAt(700)) {
+                            subTransition++;
+                        }
+
+                        break;
+                    case 5:
+                        // Move to safe transition point that works for both intake and score
+                        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_1);
+                        subTransition++;
+                        timer.reset();
+                        break;
+                    case 6:
+                        // Wait <milliseconds> so the physical servo has time to actually move
+                        if (timerAt(500)) {
+                            subTransition++;
+                        }
+
+                        break;
+                    case 7:
+                        // Move to safe transition point that works for both intake and score
+                        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
+                        subTransition++;
+                        timer.reset();
+                        break;
+                    case 8:
+                        if(!driveTrain.isBusy()){
+                            subTransition++;
+                        }
+                        break;
+                    case 9:
+                        driveTrain.followTrajectorySequenceAsync(toBackboard);
+                        subTransition =0;
+                        currentState = AutoStates.SCORE_STACK_PIXELS;
+                        timer.reset();
+                        break;
+
+
+                }
+                break;
+            case SCORE_STACK_PIXELS:
+                switch (subTransition){
+                    case 0:
+                        slides.setHeight(Slides.SlidesHeights.FOURTH_LEVEL);
+                        delivery.setDeliveryState(Delivery.DeliveryState.SCORE);
+
+                        timer.reset();
+                        subTransition++;
+                        break;
+                    case 1:
+                        if (slides.atTargetPosition() || timerAt(500)) {
+                            timer.reset();
+                            subTransition++;
+                        }
+
+                        break;
+                    case 2:
+                        if (!driveTrain.isBusy()) {
+                            subTransition++;
+                        }
+
+                        break;
+                    case 3:
+                        claw.setClawState(Claw.ClawState.OPEN_SCORE);
+                        timer.reset();
+
+                        subTransition++;
+                        break;
+                    case 4:
+                        if (timerAt(250)) {
+                            subTransition++;
+                        }
+
+                        break;
+                    case 5:
+                        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_2);
+                        blinkin.clear();
+
+                        timer.reset();
+                        subTransition++;
+                        break;
+                    case 6:
+                        if (timerAt(400)) {
+                            subTransition++;
+                        }
+
+                        break;
+                    case 7:
+                        // Move to transition point between intake and score
+                        slides.setHeight(Slides.SlidesHeights.BASE);
+                        delivery.setDeliveryState(Delivery.DeliveryState.TRANSITION_1);
+                        subTransition = 0;
+                        driveTrain.followTrajectorySequenceAsync(park);
+                        currentState = AutoStates.DONE;
+                        break;
+                }
             case DONE:
                 break;
             case WAIT_ARRIVAL:
@@ -159,12 +349,12 @@ public class CRI_BlueCenter21 extends OpMode {
             slides.resetEncoders();
         }
 
-        if (intakeProcessor.hasTwoPixel()) {
-            intake.off();
-            intake.setServoPosition(Intake.IntakeState.STACK_HIGH);
-            delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_PICKUP);
-            intake.reverse();
-        }
+//        if (intakeProcessor.hasTwoPixel()) {
+//            intake.off();
+//            intake.setServoPosition(Intake.IntakeState.STACK_HIGH);
+//            delivery.setDeliveryState(Delivery.DeliveryState.INTAKE_PICKUP);
+//            intake.reverse();
+//        }
 
 //        if ((intake.isStalled()) && (numOfStalls<2) && (currentState == AutoStates.PICKUP_STACK_PIXELS || currentState == AutoStates.RETRY_STACK)) {
 //            saveTransition = subTransition;
@@ -201,22 +391,28 @@ public class CRI_BlueCenter21 extends OpMode {
     private void buildPaths() {
         purple = driveTrain.trajectorySequenceBuilder(startPose)
                 .setReversed(false)
-                .lineToLinearHeading(new Pose2d(-32, 11, Math.toRadians(275)))
+                .lineToLinearHeading(new Pose2d(-34, 11, Math.toRadians(270)))
                 .build();
 
         pickupStack = driveTrain.trajectorySequenceBuilder(purple.end())
                 .setReversed(false)
-                .lineToLinearHeading(new Pose2d(-37, 10, Math.toRadians(240)))
+                .lineToLinearHeading(new Pose2d(-39, 10, Math.toRadians(235)))
+                .forward(6)
                 .build();
         throughBarrier = driveTrain.trajectorySequenceBuilder(pickupStack.end())
                 .setReversed(false)
-                .lineToLinearHeading(new Pose2d(-26, 13, Math.toRadians(185)))
-                .waitSeconds(1)
-                .lineToLinearHeading(new Pose2d(25, 13, Math.toRadians(185)))
+                .lineToLinearHeading(new Pose2d(-26, 10, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(25, 11, Math.toRadians(180)))
                 .build();
         toBackboard = driveTrain.trajectorySequenceBuilder(throughBarrier.end())
                 .setReversed(false)
-                .lineToLinearHeading(new Pose2d(54, 42, Math.toRadians(185)))
+                .lineToLinearHeading(new Pose2d(50, 35, Math.toRadians(180)))
                 .build();
+        park = driveTrain.trajectorySequenceBuilder(toBackboard.end())
+                .lineToLinearHeading(new Pose2d(47, 38, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(47, 12, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(51, 12, Math.toRadians(180)))
+                .build();
+
     }
 }
