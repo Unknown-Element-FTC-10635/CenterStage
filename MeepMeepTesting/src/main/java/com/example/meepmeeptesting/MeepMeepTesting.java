@@ -18,6 +18,7 @@ import java.util.Vector;
 public class MeepMeepTesting {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(910, 682);
+//        MeepMeep meepMeep = new MeepMeep(500);
 
         // Left = 1, center = 2, right = 3
 
@@ -28,12 +29,11 @@ public class MeepMeepTesting {
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(-12, 61, Math.toRadians(270)))
                                 //drop yellow
-                                .setReversed(false)
-                                .lineToLinearHeading(new Pose2d(-12, 11, Math.toRadians(270)))
-                                .lineToLinearHeading(new Pose2d(-17, 10, Math.toRadians(230)))
-                                .lineToLinearHeading(new Pose2d(-3, 13, Math.toRadians(180)))
-                                .lineToLinearHeading(new Pose2d(48, 13, Math.toRadians(180)))
-                                .lineToLinearHeading(new Pose2d(71, 33, Math.toRadians(180)))
+                                .lineToLinearHeading(new Pose2d(-10, 35, Math.toRadians(0)))
+                                .setReversed(true)
+                                .splineTo(new Vector2d(2, 55), Math.toRadians(0))
+
+
 
                                 .build()
                 );

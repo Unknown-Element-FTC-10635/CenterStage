@@ -72,7 +72,7 @@ public class CRI_BlueCenter21 extends OpMode {
         claw.setClawState(Claw.ClawState.SINGLE_CLOSED);
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        startPose = new Pose2d( -34, 61, Math.toRadians(270));
+        startPose = new Pose2d( -11, 61, Math.toRadians(270));
         driveTrain.setPoseEstimate(startPose);
         buildPaths();
 
@@ -169,7 +169,7 @@ public class CRI_BlueCenter21 extends OpMode {
                     case 1:
                         intake.setServoPosition(Intake.IntakeState.GROUND);
                         timer.reset();
-                        intake.on();
+                        intake.on(0.4);
                         subTransition++;
                     case 2:
                         if (!driveTrain.isBusy() || intakeProcessor.hasTwoPixel()){
@@ -181,19 +181,19 @@ public class CRI_BlueCenter21 extends OpMode {
                         break;
                     case 3:
                         if(timerAt(200)){
-                            intake.setServoPosition(Intake.IntakeState.GROUND);
+                            intake.setServoPosition(Intake.IntakeState.RYANS_DUMB);
                             if(intakeProcessor.hasTwoPixel()){
                                 intake.off();
                             }
                             else{
-                                intake.on();
+                                intake.on(0.4);
                             }
                             subTransition++;
 
                         }
                         break;
                     case 4:
-                        if(timerAt(2000) || intakeProcessor.hasTwoPixel()){
+                        if(timerAt(3000) || intakeProcessor.hasTwoPixel()){
                             subTransition++;
                         }
                         break;
@@ -219,7 +219,7 @@ public class CRI_BlueCenter21 extends OpMode {
 
                     case 1:
                         // Close claw onto the pixels
-                        claw.setClawState(Claw.ClawState.ClOSED_ONE_PIXEL);
+                        claw.setClawState(Claw.ClawState.CLOSED);
                         timer.reset();
 
 
@@ -391,27 +391,27 @@ public class CRI_BlueCenter21 extends OpMode {
     private void buildPaths() {
         purple = driveTrain.trajectorySequenceBuilder(startPose)
                 .setReversed(false)
-                .lineToLinearHeading(new Pose2d(-34, 11, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(-11, 11, Math.toRadians(270)))
                 .build();
 
         pickupStack = driveTrain.trajectorySequenceBuilder(purple.end())
                 .setReversed(false)
-                .lineToLinearHeading(new Pose2d(-39, 10, Math.toRadians(235)))
+                .lineToLinearHeading(new Pose2d(-16, 10, Math.toRadians(235)))
                 .forward(6)
                 .build();
         throughBarrier = driveTrain.trajectorySequenceBuilder(pickupStack.end())
                 .setReversed(false)
-                .lineToLinearHeading(new Pose2d(-26, 10, Math.toRadians(180)))
-                .lineToLinearHeading(new Pose2d(25, 11, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-3, 10, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(53, 11, Math.toRadians(180)))
                 .build();
         toBackboard = driveTrain.trajectorySequenceBuilder(throughBarrier.end())
                 .setReversed(false)
-                .lineToLinearHeading(new Pose2d(50, 35, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(73, 35, Math.toRadians(180)))
                 .build();
         park = driveTrain.trajectorySequenceBuilder(toBackboard.end())
-                .lineToLinearHeading(new Pose2d(47, 38, Math.toRadians(180)))
-                .lineToLinearHeading(new Pose2d(47, 12, Math.toRadians(180)))
-                .lineToLinearHeading(new Pose2d(51, 12, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(70, 38, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(70, 12, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(74, 12, Math.toRadians(180)))
                 .build();
 
     }
