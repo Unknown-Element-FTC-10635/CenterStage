@@ -44,11 +44,12 @@ public class UKTeleOp extends OpMode {
 
     private ElapsedTime transitionTimer, matchTimer;
     private int targetBackboardLevel = 0;
-    private boolean cameraDisabled, backboardDropoffToggle, tiltToggle;
+    private boolean cameraDisabled, backboardDropoffToggle, tiltToggle, slideToggle;
 
     @Override
     public void init() {
         CurrentOpmode.setCurrentOpmode(CurrentOpmode.OpMode.TELEOP);
+
 
         controller1 = new GamepadEx(gamepad1);
         controller2 = new GamepadEx(gamepad2);
@@ -68,6 +69,7 @@ public class UKTeleOp extends OpMode {
         hang = new Hang(hardwareMap);
         //backboardDetector = new BackboardDetector(hardwareMap);
 
+        slideToggle = false;q cX
         transitionTimer = new ElapsedTime();
         transitionTimer.startTime();
 
@@ -293,9 +295,11 @@ public class UKTeleOp extends OpMode {
                 if (controller1.risingEdgeOf(GamepadEx.Buttons.BUMPER_RIGHT)) {
                     if (targetBackboardLevel < 5) {
                         targetBackboardLevel++;
+                        slideToggle = true;
 
-                        if (targetBackboardLevel > 3) {
+                        if (targetBackboardLevel > 4) {
                             delivery.setDeliveryState(Delivery.DeliveryState.SCORE_NO_OUT);
+                            slideToggle = false;
                         }
 
                         slides.setHeight(Slides.SlidesHeights.levelFromInt(targetBackboardLevel));
@@ -306,7 +310,7 @@ public class UKTeleOp extends OpMode {
                     if (targetBackboardLevel > 0) {
                         targetBackboardLevel--;
 
-                        if (targetBackboardLevel < 4) {
+                        if (targetBackboardLevel < 5) {
                             delivery.setDeliveryState(Delivery.DeliveryState.SCORE);
                         }
 
@@ -436,20 +440,24 @@ public class UKTeleOp extends OpMode {
             transitionTimer.reset();
         }
 
-        if (controller1.risingEdgeOf(GamepadEx.Buttons.CIRCLE)) {
-            if (targetBackboardLevel < 4) {
-                targetBackboardLevel++;
-            }
-        }
 
         if (controller2.risingEdgeOf(GamepadEx.Buttons.TRIANGLE)) {
             slides.setPidEnabled(false);
-            slides.manual(-0.2);
+            slides.manual(-0.7);
         } else if (controller2.fallingEdgeOf(GamepadEx.Buttons.TRIANGLE)) {
             slides.manual(0);
             slides.resetEncoders();
             slides.setPidEnabled(true);
         }
+        if (controller2.risingEdgeOf(GamepadEx.Buttons.CROSS)) {
+            slides.setPidEnabled(false);
+            slides.manual(0.7);
+        } else if (controller2.fallingEdgeOf(GamepadEx.Buttons.CROSS)) {
+            slides.manual(0);
+            slides.resetEncoders();
+            slides.setPidEnabled(true);
+        }
+
 
         if (slideLimit.isRisingEdge()) {
             slides.resetEncoders();
@@ -461,6 +469,16 @@ public class UKTeleOp extends OpMode {
 
         if (controller2.risingEdgeOf(GamepadEx.Buttons.CIRCLE)) {
             backboardDropoffToggle = true;
+        }
+
+        if (controller1.risingEdgeOf(GamepadEx.Buttons.CIRCLE)){
+            if(slideToggle){
+                delivery.setDeliveryState(Delivery.DeliveryState.SCORE_NO_OUT);
+                slideToggle = !slideToggle;
+            }else{
+                delivery.setDeliveryState(Delivery.DeliveryState.SCORE);
+                slideToggle = !slideToggle;
+            }
         }
 
         write();

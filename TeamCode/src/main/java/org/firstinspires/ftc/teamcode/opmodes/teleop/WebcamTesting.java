@@ -11,7 +11,6 @@ import org.firstinspires.ftc.vision.VisionProcessor;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 @TeleOp()
-@Disabled
 public class WebcamTesting extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
@@ -25,16 +24,16 @@ public class WebcamTesting extends LinearOpMode {
 
         waitForStart();
 
-        webcam.stopWebcam();
-
         while (opModeIsActive()) {
-            /*
+            processor.update();
+
             telemetry.addData("Camera FPS", webcam.getFPS());
             telemetry.addData("Left Pixel", processor.getLeftPixel());
             telemetry.addData("Left Mean", processor.getLeftMean());
-            telemetry.addData("Right Pixel", processor.getRightColor());
+            telemetry.addData("has two", processor.hasTwoPixel());
+            telemetry.addData("has one", processor.hasOnePixel());
             telemetry.addData("Right Mean", processor.getRightMean());
-            */
+
             telemetry.update();
         }
     }

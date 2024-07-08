@@ -15,8 +15,8 @@ public class Intake {
         START_POSITION(0.1),
         STACK_HIGH(0.18),
         STACK_AUTO(0.35),
-        STACK_MID(0.27),
-        RYANS_DUMB(0.35),
+        STACK_MID(0.30),
+        RYANS_SMART(0.38),
         GROUND(0.4375),
         PRELOAD(0.56);
 

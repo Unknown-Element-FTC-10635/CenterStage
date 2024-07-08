@@ -8,10 +8,10 @@ public class Delivery {
         INTAKE_PICKUP   (0.0,  0.35,   0.75,   0.75),
         INTAKE_HOLD     (0.45,  0.35,   0.75,   0.75),
         TRANSITION_1    (0.52,  0.9,    0.75,   0.75),
-        TRANSITION_2    (0.72,  0.9,    0.75,   0.75),
-        SCORE           (0.75,  0.9,    0.39,   0.39),
-        SCORE_NO_OUT    (0.79,  0.9,    0.75,   0.75),
-        SCORE_PRELOAD   (0.78,  0.9,    0.75,   0.75),
+        TRANSITION_2    (0.65,  0.9,    0.75,   0.75),
+        SCORE           (0.70,  0.9,    0.10,   0.10),
+        SCORE_NO_OUT    (0.70,  0.9,    0.75,   0.75),
+        SCORE_PRELOAD   (0.70,  0.9,    0.75,   0.75),
         SCORE_PURPLE    (1,     0.9,   0.75,   0.75),
         UNKNOWN         (0,     0,      0,      0);
 

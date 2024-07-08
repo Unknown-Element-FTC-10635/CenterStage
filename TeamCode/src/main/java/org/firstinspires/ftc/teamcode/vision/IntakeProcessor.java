@@ -35,6 +35,7 @@ public class IntakeProcessor extends SimpleProcessor {
     @Override
     public Object processFrame(Mat frame, long captureTimeNanos) {
         Imgproc.GaussianBlur(frame, processMat, BLUR_SIZE, 0);
+        Imgproc.cvtColor(frame, processMat, Imgproc.COLOR_RGB2GRAY);
 
         leftMean = Core.mean(processMat.submat(LEFT_INTAKE));
         rightMean = Core.mean(processMat.submat(RIGHT_INTAKE));
@@ -90,14 +91,17 @@ public class IntakeProcessor extends SimpleProcessor {
             return PixelColors.NONE;
         }
 
-        if (val[0] >= 190 && val[1] >= 190 && val[2] >= 190) {
+//        if (val[0] >= 245 && val[1] >= 245 && val[2] >= 245) {
+//            return PixelColors.WHITE;
+//        } else if (val[1] >= 140 && val[0] < val[1] && val[2] < val[1]) {
+//            return PixelColors.GREEN;
+//        } else if (val[2] >= 150 && val[0] < val[2] && val[1] < val[2]) {
+//            return PixelColors.PURPLE;
+//        } else if (val[0] >= 175 && val[1] < val[0] && val[2] < val[0]) {
+//            return PixelColors.YELLOW;
+//        }
+        if (val[0] > 150){
             return PixelColors.WHITE;
-        } else if (val[1] >= 140 && val[0] < val[1] && val[2] < val[1]) {
-            return PixelColors.GREEN;
-        } else if (val[2] >= 150 && val[0] < val[2] && val[1] < val[2]) {
-            return PixelColors.PURPLE;
-        } else if (val[0] >= 175 && val[1] < val[0] && val[2] < val[0]) {
-            return PixelColors.YELLOW;
         }
 
         return PixelColors.NONE;

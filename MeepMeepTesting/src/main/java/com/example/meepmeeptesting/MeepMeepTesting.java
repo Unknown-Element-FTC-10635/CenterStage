@@ -27,11 +27,21 @@ public class MeepMeepTesting {
                 .setColorScheme(new ColorSchemeBlueDark())
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(-12, 61, Math.toRadians(270)))
+                        drive.trajectorySequenceBuilder(new Pose2d(33, 61, Math.toRadians(270)))
                                 //drop yellow
-                                .lineToLinearHeading(new Pose2d(-10, 35, Math.toRadians(0)))
                                 .setReversed(true)
-                                .splineTo(new Vector2d(2, 55), Math.toRadians(0))
+                                .forward(5)
+                                .lineToLinearHeading(new Pose2d(49, 22,  Math.toRadians(180)))
+                                //drop yellow
+                                .setReversed(true)
+                                .lineToLinearHeading(new Pose2d(76, 34, Math.toRadians(180)))
+                                .lineToLinearHeading(new Pose2d(35, 10, Math.toRadians(180)))
+                                .setReversed(false)
+                                .splineTo(new Vector2d(-15, 6), Math.toRadians(220))
+                                .setReversed(false)
+                                .lineToLinearHeading(new Pose2d(-6, 12, Math.toRadians(180)))
+                                .lineToLinearHeading(new Pose2d(30, 13, Math.toRadians(180)))
+                                .lineToLinearHeading(new Pose2d(76, 6, Math.toRadians(180)))
 
 
 

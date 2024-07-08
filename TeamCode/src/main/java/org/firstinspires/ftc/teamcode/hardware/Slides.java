@@ -23,7 +23,7 @@ public class Slides {
         SIXTH_LEVEL(310),
         EIGTH_LEVEL(385),
         TENTH_LEVEL(450),
-        HIGHEST_LEVEL(800);
+        HIGHEST_LEVEL(850);
 
         public final double targetPosition;
 
