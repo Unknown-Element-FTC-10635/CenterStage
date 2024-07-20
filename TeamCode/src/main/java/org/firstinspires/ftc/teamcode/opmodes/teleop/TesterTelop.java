@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.hardware.Webcam;
 import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
 import org.firstinspires.ftc.teamcode.vision.IntakeProcessor;
 
+@Disabled
 @Config
 @TeleOp()
 public class TesterTelop extends OpMode {

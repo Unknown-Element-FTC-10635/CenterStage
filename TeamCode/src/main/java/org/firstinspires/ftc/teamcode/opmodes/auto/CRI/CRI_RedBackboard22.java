@@ -2,17 +2,14 @@ package org.firstinspires.ftc.teamcode.opmodes.auto.CRI;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.fasterxml.jackson.databind.ser.std.ObjectArraySerializer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.apache.commons.math3.util.BigReal;
 import org.firstinspires.ftc.teamcode.hardware.Blinkin;
 import org.firstinspires.ftc.teamcode.hardware.BreakBeam;
 import org.firstinspires.ftc.teamcode.hardware.Claw;
-import org.firstinspires.ftc.teamcode.hardware.Hang;
 import org.firstinspires.ftc.teamcode.hardware.StackColorSensor;
 import org.firstinspires.ftc.teamcode.hardware.Delivery;
 import org.firstinspires.ftc.teamcode.hardware.Intake;
@@ -25,10 +22,9 @@ import org.firstinspires.ftc.teamcode.utils.AutoStates;
 import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
 import org.firstinspires.ftc.teamcode.vision.IntakeProcessor;
 import org.firstinspires.ftc.teamcode.vision.PropProcessor;
-import org.opencv.core.Mat;
 
-@Autonomous(name = "🟦 Backboard 2+2", group = "blue")
-public class CRI_BlueLeft22 extends OpMode {
+@Autonomous(name = "🟥 Backboard 2+2", group = "red")
+public class CRI_RedBackboard22 extends OpMode {
     private SampleMecanumDrive driveTrain;
     private BreakBeam leftBeam, rightBeam;
     private StackColorSensor colorSensor;
@@ -76,7 +72,7 @@ public class CRI_BlueLeft22 extends OpMode {
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         delivery.setPixelOrientation(Delivery.PixelOrientation.NORMAL);
 
-        startPose = new Pose2d( 33, 61, Math.toRadians(275));
+        startPose = new Pose2d( 33, -61, Math.toRadians(90));
         driveTrain.setPoseEstimate(startPose);
         buildPaths();
 
@@ -304,7 +300,7 @@ public class CRI_BlueLeft22 extends OpMode {
                         timer.reset();
                         break;
                     case 1:
-                        if(timerAt(1000) || slides.atTargetPosition()){
+                        if(timerAt(1800) || slides.atTargetPosition()){
                             delivery.setDeliveryState(Delivery.DeliveryState.SCORE_NO_OUT);
                             timer.reset();
                             subTransition++;
@@ -402,30 +398,35 @@ public class CRI_BlueLeft22 extends OpMode {
                 //drop Purple
                 .setReversed(true)
                 .forward(5)
-                .lineToLinearHeading(new Pose2d(49, 23,  Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(38, -33,  Math.toRadians(90)))
+
                 //drop yellow
                 .setReversed(true)
-                .lineToLinearHeading(new Pose2d(78, 35, Math.toRadians(180)))
+                .splineTo(new Vector2d(45, -45), Math.toRadians(0))
+                .setReversed(false)
+                .lineToLinearHeading(new Pose2d(77, -34, Math.toRadians(180)))
                 .build();
 
         leftPath = driveTrain.trajectorySequenceBuilder(startPose)
                 //drop Purple
                 .setReversed(true)
                 .forward(5)
-                .lineToLinearHeading(new Pose2d(62, 30,  Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(32, -32,  Math.toRadians(180)))
                 //drop yellow
                 .setReversed(true)
-                .lineToLinearHeading(new Pose2d(76, 42, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(77, -26, Math.toRadians(180)))
                 .build();
+
         rightPath = driveTrain.trajectorySequenceBuilder(startPose)
                 //drop Purple
                 .setReversed(true)
                 .forward(5)
-                .lineToLinearHeading(new Pose2d(32, 32,  Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(55, -30,  Math.toRadians(180)))
                 //drop yellow
                 .setReversed(true)
-                .lineToLinearHeading(new Pose2d(76, 29, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(78, -41, Math.toRadians(180)))
                 .build();
+
 
 
 
@@ -433,61 +434,62 @@ public class CRI_BlueLeft22 extends OpMode {
         centerPark =  driveTrain.trajectorySequenceBuilder(centerPath.end())
                 .setReversed(false)
                 .forward(8)
-                .strafeRight(25)
+                .strafeLeft(25)
                 .back(8)
                 .build();
 
         leftPark =  driveTrain.trajectorySequenceBuilder(leftPath.end())
                 .setReversed(false)
                 .forward(8)
-                .strafeRight(17)
+                .strafeLeft(17)
                 .back(8)
                 .build();
 
         rightPark = driveTrain.trajectorySequenceBuilder(rightPath.end())
                 .setReversed(false)
                 .forward(8)
-                .strafeRight(32)
+                .strafeLeft(32)
                 .back(8)
                 .build();
 
         toStackCenter = driveTrain.trajectorySequenceBuilder(centerPath.end())
                 .setReversed(false)
-                .lineToLinearHeading(new Pose2d(45, 11, Math.toRadians(175)))
-                .lineToLinearHeading(new Pose2d(-10, 13, Math.toRadians(180)))
-                .lineToLinearHeading(new Pose2d(-19, 11, Math.toRadians(235)))
+                .lineToLinearHeading(new Pose2d(60, -34, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(45, -13, Math.toRadians(185)))
+                .lineToLinearHeading(new Pose2d(-15, -15, Math.toRadians(185)))
+                .lineToLinearHeading(new Pose2d(-24, -13, Math.toRadians(135)))
                 .build();
 
         toStackLeft = driveTrain.trajectorySequenceBuilder(leftPath.end())
                 .setReversed(false)
-                .forward(6)
-                .lineToLinearHeading(new Pose2d(50, 11, Math.toRadians(175)))
-                .lineToLinearHeading(new Pose2d(-10, 16, Math.toRadians(180)))
-                .lineToLinearHeading(new Pose2d(-21, 11, Math.toRadians(235)))
+                .lineToLinearHeading(new Pose2d(60, -26, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(50, -14, Math.toRadians(185)))
+                .lineToLinearHeading(new Pose2d(-10, -16, Math.toRadians(185)))
+                .lineToLinearHeading(new Pose2d(-25, -14, Math.toRadians(135)))
                 .build();
 
         toStackRight = driveTrain.trajectorySequenceBuilder(rightPath.end())
                 .setReversed(false)
-                .forward(8)
-                .lineToLinearHeading(new Pose2d(45, 11, Math.toRadians(175)))
-                .lineToLinearHeading(new Pose2d(-10, 13, Math.toRadians(180)))
-                .lineToLinearHeading(new Pose2d(-20, 11, Math.toRadians(235)))
+                .lineToLinearHeading(new Pose2d(65, -42, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(50, -14, Math.toRadians(185)))
+                .lineToLinearHeading(new Pose2d(-12, -17, Math.toRadians(190)))
+                .lineToLinearHeading(new Pose2d(-28.5, -13, Math.toRadians(135)))
                 .build();
 
         backToBackboardCenter = driveTrain.trajectorySequenceBuilder(toStackCenter.end())
-                .lineToLinearHeading(new Pose2d(-6, 12, Math.toRadians(180)))
-                .lineToLinearHeading(new Pose2d(55, 11, Math.toRadians(180)))
-                .lineToLinearHeading(new Pose2d(77, 1, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-6, -15, Math.toRadians(185)))
+                .lineToLinearHeading(new Pose2d(55, -13, Math.toRadians(185)))
+                .lineToLinearHeading(new Pose2d(72, 1, Math.toRadians(185)))
                 .build();
         backTobackboardRight = driveTrain.trajectorySequenceBuilder(toStackRight.end())
-                .lineToLinearHeading(new Pose2d(-6, 12, Math.toRadians(180)))
-                .lineToLinearHeading(new Pose2d(55, 11, Math.toRadians(180)))
-                .lineToLinearHeading(new Pose2d(77, 1, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-6, -17, Math.toRadians(190)))
+                .lineToLinearHeading(new Pose2d(55, -10, Math.toRadians(190)))
+                .lineToLinearHeading(new Pose2d(72, -1, Math.toRadians(190)))
                 .build();
         backToBackboardLeft = driveTrain.trajectorySequenceBuilder(toStackLeft.end())
-                .lineToLinearHeading(new Pose2d(-6, 12, Math.toRadians(180)))
-                .lineToLinearHeading(new Pose2d(55, 11, Math.toRadians(180)))
-                .lineToLinearHeading(new Pose2d(77, 0, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-6, -15, Math.toRadians(185)))
+                .lineToLinearHeading(new Pose2d(55, -11, Math.toRadians(185)))
+                .lineToLinearHeading(new Pose2d(75, 0, Math.toRadians(185)))
                 .build();
 
 

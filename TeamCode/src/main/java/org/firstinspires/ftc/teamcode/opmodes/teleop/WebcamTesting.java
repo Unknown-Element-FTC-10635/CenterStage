@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.vision.IntakeProcessor;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
+@Disabled
 @TeleOp()
 public class WebcamTesting extends LinearOpMode {
     @Override

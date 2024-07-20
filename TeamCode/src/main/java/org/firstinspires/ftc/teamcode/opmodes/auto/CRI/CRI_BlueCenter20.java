@@ -26,7 +26,7 @@ import org.firstinspires.ftc.teamcode.vision.IntakeProcessor;
 import org.firstinspires.ftc.teamcode.vision.PropProcessor;
 import org.opencv.core.Mat;
 
-@Autonomous(name = "🟦 Center Wall 2+0", group = "blue")
+@Autonomous(name = "🟦 Center 2+0", group = "blue")
 public class CRI_BlueCenter20 extends OpMode {
     private SampleMecanumDrive driveTrain;
     private BreakBeam leftBeam, rightBeam;
@@ -332,7 +332,7 @@ public class CRI_BlueCenter20 extends OpMode {
                 .splineTo(new Vector2d(-6, 55), Math.toRadians(0))
                 .setReversed(false)
                 .lineToLinearHeading(new Pose2d(40, 51, Math.toRadians(180)))
-                .lineToLinearHeading(new Pose2d(75, 30, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(77, 30, Math.toRadians(180)))
                 .build();
 
         leftPath = driveTrain.trajectorySequenceBuilder(startPose)
@@ -344,7 +344,7 @@ public class CRI_BlueCenter20 extends OpMode {
                 .setReversed(false)
                 .lineToLinearHeading(new Pose2d(40, 51, Math.toRadians(180)))
                 .waitSeconds(1)
-                .lineToLinearHeading(new Pose2d(75, 36, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(77, 36, Math.toRadians(180)))
                 .build();
         rightPath = driveTrain.trajectorySequenceBuilder(startPose)
                 .setReversed(false)
@@ -354,7 +354,7 @@ public class CRI_BlueCenter20 extends OpMode {
                 .lineToLinearHeading(new Pose2d(2, 55, Math.toRadians(180)))
                 .lineToLinearHeading(new Pose2d(40, 51, Math.toRadians(180)))
                 .waitSeconds(1)
-                .lineToLinearHeading(new Pose2d(75, 25, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(77, 23, Math.toRadians(180)))
                 .build();
 
 

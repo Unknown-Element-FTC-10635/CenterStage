@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.auto.CRI;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -26,6 +27,7 @@ import org.firstinspires.ftc.teamcode.vision.IntakeProcessor;
 import org.firstinspires.ftc.teamcode.vision.PropProcessor;
 import org.opencv.core.Mat;
 
+@Disabled
 @Autonomous(name = "🟦 Center 21", group = "blue")
 public class CRI_BlueCenter21 extends OpMode {
     private SampleMecanumDrive driveTrain;

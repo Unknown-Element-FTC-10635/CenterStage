@@ -67,11 +67,12 @@ public class UKTeleOp extends OpMode {
         slides = new Slides(hardwareMap);
         claw = new Claw(hardwareMap);
         hang = new Hang(hardwareMap);
-        //backboardDetector = new BackboardDetector(hardwareMap);
+        //backboardDetector = new BackbosardDetector(hardwareMap);
 
-        slideToggle = false;q cX
+        slideToggle = false;
         transitionTimer = new ElapsedTime();
         transitionTimer.startTime();
+        airplane.reset();
 
         matchTimer = new ElapsedTime();
         matchTimer.startTime();

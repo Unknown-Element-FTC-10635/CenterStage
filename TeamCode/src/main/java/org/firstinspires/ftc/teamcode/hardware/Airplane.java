@@ -17,8 +17,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Airplane {
     private final Servo airplane;
 
-    private static final double LAUNCH_POSITION = 0.3;
-    private static final double START_POSITION = 0;
+    private static final double LAUNCH_POSITION = 0.3 ;
+    private static final double START_POSITION = 0.55;
 
     public Airplane(HardwareMap hardwareMap) {
         airplane = hardwareMap.get(Servo.class, "airplane");

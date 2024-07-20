@@ -21,11 +21,10 @@ import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.utils.AutoStates;
 import org.firstinspires.ftc.teamcode.utils.CurrentOpmode;
-import org.firstinspires.ftc.teamcode.vision.IntakeProcessor;
 import org.firstinspires.ftc.teamcode.vision.PropProcessor;
 import org.opencv.core.Mat;
 
-@Autonomous(name = "🟦 left 20", group = "blue")
+@Autonomous(name = "🟦 Backboard 2+0", group = "blue")
 public class CRI_BlueLeft20 extends OpMode {
     private SampleMecanumDrive driveTrain;
     private BreakBeam leftBeam, rightBeam;
@@ -38,7 +37,6 @@ public class CRI_BlueLeft20 extends OpMode {
     private Claw claw;
 
     private PropProcessor processor;
-    private IntakeProcessor intakeProcessor;
     private Webcam webcam;
 
     private ElapsedTime timer;
@@ -118,9 +116,6 @@ public class CRI_BlueLeft20 extends OpMode {
 
 
         webcam.stopWebcam();
-
-        intakeProcessor = new IntakeProcessor();
-        webcam = new Webcam(hardwareMap, intakeProcessor, "intake webcam");
 
 
 
@@ -235,10 +230,6 @@ public class CRI_BlueLeft20 extends OpMode {
             slides.resetEncoders();
         }
 
-        if (intakeProcessor.hasTwoPixel()) {
-            intake.off();
-        }
-
 //        if ((intake.isStalled()) && (numOfStalls<2) && (currentState == AutoStates.PICKUP_STACK_PIXELS || currentState == AutoStates.RETRY_STACK)) {
 //            saveTransition = subTransition;
 //            subTransition = 0;
@@ -260,11 +251,6 @@ public class CRI_BlueLeft20 extends OpMode {
         leftBeam.update();
         rightBeam.update();
         colorSensor.update();
-
-        intakeProcessor.update();
-        if (intakeProcessor.hasTwoPixel() || intakeProcessor.hasOnePixel()) {
-            blinkin.setLEDColors(intakeProcessor.getLeftPixel(), intakeProcessor.getRightPixel());
-        }
     }
 
     private boolean timerAt(double targetMS) {
@@ -279,17 +265,17 @@ public class CRI_BlueLeft20 extends OpMode {
                 .lineToLinearHeading(new Pose2d(25, 22,  Math.toRadians(180)))
                 //drop yellow
                 .setReversed(true)
-                .lineToLinearHeading(new Pose2d(52, 34, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(54, 34, Math.toRadians(180)))
                 .build();
 
         leftPath = driveTrain.trajectorySequenceBuilder(startPose)
                 //drop Purple
                 .setReversed(true)
                 .forward(5)
-                .lineToLinearHeading(new Pose2d(38, 30,  Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(36, 30,  Math.toRadians(180)))
                 //drop yellow
                 .setReversed(true)
-                .lineToLinearHeading(new Pose2d(52, 42, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(54, 42, Math.toRadians(180)))
                 .build();
         rightPath = driveTrain.trajectorySequenceBuilder(startPose)
                 //drop Purple
@@ -298,7 +284,7 @@ public class CRI_BlueLeft20 extends OpMode {
                 .lineToLinearHeading(new Pose2d(8, 32,  Math.toRadians(180)))
                 //drop yellow
                 .setReversed(true)
-                .lineToLinearHeading(new Pose2d(52, 29, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(54, 29, Math.toRadians(180)))
                 .build();
 
 

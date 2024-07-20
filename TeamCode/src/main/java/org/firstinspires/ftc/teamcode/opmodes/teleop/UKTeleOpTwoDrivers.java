@@ -20,8 +20,8 @@ import org.firstinspires.ftc.teamcode.utils.RobotState;
 import org.firstinspires.ftc.teamcode.utils.hardware.GamepadEx;
 import org.firstinspires.ftc.teamcode.vision.IntakeProcessor;
 
-@TeleOp
-public class UKteleOpTwoDrivers extends OpMode {
+@TeleOp(name = "UkTeleOp 2 Driver")
+public class UKTeleOpTwoDrivers extends OpMode {
     private GamepadEx controller1, controller2;
     private BreakBeam leftBeam, rightBeam;
     private LimitSwitch slideLimit;
@@ -44,11 +44,12 @@ public class UKteleOpTwoDrivers extends OpMode {
 
     private ElapsedTime transitionTimer, matchTimer;
     private int targetBackboardLevel = 0;
-    private boolean cameraDisabled, backboardDropoffToggle, tiltToggle;
+    private boolean cameraDisabled, backboardDropoffToggle, tiltToggle, slideToggle;
 
     @Override
     public void init() {
         CurrentOpmode.setCurrentOpmode(CurrentOpmode.OpMode.TELEOP);
+
 
         controller1 = new GamepadEx(gamepad1);
         controller2 = new GamepadEx(gamepad2);
@@ -68,6 +69,7 @@ public class UKteleOpTwoDrivers extends OpMode {
         hang = new Hang(hardwareMap);
         //backboardDetector = new BackboardDetector(hardwareMap);
 
+        slideToggle = false;
         transitionTimer = new ElapsedTime();
         transitionTimer.startTime();
 
@@ -82,7 +84,7 @@ public class UKteleOpTwoDrivers extends OpMode {
 
     @Override
     public void start() {
-        intake.setServoPosition(Intake.IntakeState.STACK_MID);
+        intake.setServoPosition(Intake.IntakeState.GROUND);
     }
 
     @Override
@@ -222,7 +224,7 @@ public class UKteleOpTwoDrivers extends OpMode {
                 break;
             // Mostly just a transition state, don't think anything special needs to be here
             case DRIVE:
-                if (controller2.risingEdgeOf(GamepadEx.Buttons.CROSS)) {
+                if (controller1.risingEdgeOf(GamepadEx.Buttons.CROSS)) {
                     // The cross over
                     if (toBackboard) {
                         driveDeliveryTransition = 0;
@@ -232,7 +234,7 @@ public class UKteleOpTwoDrivers extends OpMode {
                     }
                 }
 
-                if (controller2.risingEdgeOf(GamepadEx.Buttons.TRIANGLE)) {
+                if (controller1.risingEdgeOf(GamepadEx.Buttons.TRIANGLE)) {
                     // The cross over
                     if (!toBackboard) {
                         driveDeliveryTransition = 0;
@@ -242,9 +244,9 @@ public class UKteleOpTwoDrivers extends OpMode {
                     }
                 }
 
-                if (controller2.risingEdgeOf(GamepadEx.Buttons.BUMPER_RIGHT)) {
+                if (controller1.risingEdgeOf(GamepadEx.Buttons.BUMPER_RIGHT)) {
                     intake.reverse();
-                } else if (controller2.fallingEdgeOf(GamepadEx.Buttons.BUMPER_RIGHT)) {
+                } else if (controller1.fallingEdgeOf(GamepadEx.Buttons.BUMPER_RIGHT)) {
                     intake.off();
                 }
 
@@ -290,23 +292,25 @@ public class UKteleOpTwoDrivers extends OpMode {
                 break;
             // For scoring on the backboard
             case SCORE:
-                if (controller2.risingEdgeOf(GamepadEx.Buttons.BUMPER_RIGHT)) {
-                    if (targetBackboardLevel < 4) {
+                if (controller1.risingEdgeOf(GamepadEx.Buttons.BUMPER_RIGHT)) {
+                    if (targetBackboardLevel < 5) {
                         targetBackboardLevel++;
+                        slideToggle = true;
 
-                        if (targetBackboardLevel > 3) {
+                        if (targetBackboardLevel > 4) {
                             delivery.setDeliveryState(Delivery.DeliveryState.SCORE_NO_OUT);
+                            slideToggle = false;
                         }
 
                         slides.setHeight(Slides.SlidesHeights.levelFromInt(targetBackboardLevel));
                     }
                 }
 
-                if (controller2.risingEdgeOf(GamepadEx.Buttons.BUMPER_LEFT)) {
+                if (controller1.risingEdgeOf(GamepadEx.Buttons.BUMPER_LEFT)) {
                     if (targetBackboardLevel > 0) {
                         targetBackboardLevel--;
 
-                        if (targetBackboardLevel < 4) {
+                        if (targetBackboardLevel < 5) {
                             delivery.setDeliveryState(Delivery.DeliveryState.SCORE);
                         }
 
@@ -314,7 +318,7 @@ public class UKteleOpTwoDrivers extends OpMode {
                     }
                 }
 
-                if (controller1.leftTriggerRisingEdge()) {
+                if (controller2.leftTriggerRisingEdge()) {
                     if (!tiltToggle) {
                         delivery.setPixelOrientation(Delivery.PixelOrientation.LEFT_45);
                     } else {
@@ -324,7 +328,7 @@ public class UKteleOpTwoDrivers extends OpMode {
                     backboardDropoffToggle = !backboardDropoffToggle;
                 }
 
-                if (controller1.rightTriggerRisingEdge()) {
+                if (controller2.rightTriggerRisingEdge()) {
                     if (!tiltToggle) {
                         delivery.setPixelOrientation(Delivery.PixelOrientation.RIGHT_45);
                     } else {
@@ -436,20 +440,24 @@ public class UKteleOpTwoDrivers extends OpMode {
             transitionTimer.reset();
         }
 
-        if (controller1.risingEdgeOf(GamepadEx.Buttons.CIRCLE)) {
-            if (targetBackboardLevel < 4) {
-                targetBackboardLevel++;
-            }
-        }
 
-        if (controller2.risingEdgeOf(GamepadEx.Buttons.DPAD_UP)) {
+        if (controller2.risingEdgeOf(GamepadEx.Buttons.TRIANGLE)) {
             slides.setPidEnabled(false);
-            slides.manual(-0.2);
-        } else if (controller2.risingEdgeOf(GamepadEx.Buttons.DPAD_UP)) {
+            slides.manual(-0.7);
+        } else if (controller2.fallingEdgeOf(GamepadEx.Buttons.TRIANGLE)) {
             slides.manual(0);
             slides.resetEncoders();
             slides.setPidEnabled(true);
         }
+        if (controller2.risingEdgeOf(GamepadEx.Buttons.CROSS)) {
+            slides.setPidEnabled(false);
+            slides.manual(0.7);
+        } else if (controller2.fallingEdgeOf(GamepadEx.Buttons.CROSS)) {
+            slides.manual(0);
+            slides.resetEncoders();
+            slides.setPidEnabled(true);
+        }
+
 
         if (slideLimit.isRisingEdge()) {
             slides.resetEncoders();
@@ -459,8 +467,18 @@ public class UKteleOpTwoDrivers extends OpMode {
             cameraDisabled = !cameraDisabled;
         }
 
-        if (controller2.risingEdgeOf(GamepadEx.Buttons.CIRCLE)) {
+        if (controller2.risingEdgeOf(GamepadEx.Buttons.DPAD_DOWN)) {
             backboardDropoffToggle = true;
+        }
+
+        if (controller2.risingEdgeOf(GamepadEx.Buttons.CIRCLE)){
+            if(slideToggle){
+                delivery.setDeliveryState(Delivery.DeliveryState.SCORE_NO_OUT);
+                slideToggle = !slideToggle;
+            }else{
+                delivery.setDeliveryState(Delivery.DeliveryState.SCORE);
+                slideToggle = !slideToggle;
+            }
         }
 
         write();
@@ -488,6 +506,8 @@ public class UKteleOpTwoDrivers extends OpMode {
         driveTrain.writeTeleOp();
 
         telemetry.addData("Delivery", delivery.getDeliveryState());
+
+        telemetry.addData("slides height", targetBackboardLevel);
         telemetry.addData("Delivery Right Rotation", delivery.getRightRotationPosition());
         telemetry.addData("Slide Switch", slideLimit.isPressed());
         telemetry.addData("Transition Timer", transitionTimer.milliseconds());
